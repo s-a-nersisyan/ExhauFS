@@ -297,8 +297,9 @@ class ExhaustiveClassification:
             # Normalize dataset using preprocessor fitted on training set
             X_test = preprocessor.transform(X_test)
             # Make predictions
-            # TODO: predict_proba for ROC AUC
             y_pred = classifier.predict(X_test)
+            # TODO: predict_proba for ROC AUC
+            #y_score = classifier.predict_proba(X_test)
 
             scores[dataset] = {}
             for s in self.scoring_functions:
