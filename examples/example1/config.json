@@ -1,0 +1,32 @@
+{
+	"data_path": "data.csv",
+	"annotation_path": "annotation.csv",
+	"n_k_path": "n_k.csv",
+
+	"feature_pre_selector": "from_file",
+	"feature_pre_selector_kwargs": {},
+
+	"feature_selector": "t_test",
+	"feature_selector_kwargs": {},
+
+	"preprocessor": "StandardScaler",
+	"preprocessor_kwargs": {},
+	
+	"classifier": "SVC",
+	"classifier_kwargs": {
+		"kernel": "linear",
+		"class_weight": "balanced"
+	},
+	"classifier_CV_ranges": {
+		"C": [0.00390625, 0.015625, 0.0625, 0.25, 1.0, 4.0, 16.0, 64.0, 256.0]
+	},
+	"classifier_CV_folds": 5,
+	
+	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
+	"main_scoring_function": "min_TPR_TNR",
+	"main_scoring_threshold": 0.15,
+	
+	"n_processes": 1,
+	"random_state": null,
+	"verbose": true
+}

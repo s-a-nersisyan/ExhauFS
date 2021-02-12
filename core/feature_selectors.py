@@ -17,7 +17,7 @@ import numpy as np
 from scipy.stats import spearmanr, ttest_ind
 
 
-def t_test(df, ann, n, datasets):
+def t_test(df, ann, n, datasets=None):
     """Select n features with the lowest p-values according to t-test
     
     Parameters
@@ -28,7 +28,7 @@ def t_test(df, ann, n, datasets):
     ann : pandas.DataFrame
         DataFrame with annotation of samples. Three columns are mandatory:
         Class (binary labels), Dataset (dataset identifiers) and 
-        Dataset type (training, filtration, validation).
+        Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
     datasets : array-like
@@ -69,7 +69,7 @@ def spearman_correlation(df, ann, n, datasets):
     ann : pandas.DataFrame
         DataFrame with annotation of samples. Three columns are mandatory:
         Class (binary labels), Dataset (dataset identifiers) and 
-        Dataset type (training, filtration, validation).
+        Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
     datasets : array-like

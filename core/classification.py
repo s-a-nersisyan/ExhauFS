@@ -5,28 +5,21 @@ from multiprocessing import Pool
 import time
 import math
 import itertools
-from natsort import natsorted
 
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import make_scorer
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
-
-from FeatureSelectors import t_test
-from AccuracyMetrics import TPR, TNR, min_TPR_TNR
 
 
-class ExhaustivePipeline:
+class ExhaustiveClassification:
     def __init__(
-        self, df, ann, n_k, 
-        n_processes=1, random_state=None, verbose=True,
-        feature_pre_selector=None, feature_pre_selector_kwargs={},
-        feature_selector=t_test, feature_selector_kwargs={},
-        preprocessor=StandardScaler, preprocessor_kwargs={},
-        classifier=SVC, classifier_kwargs={"kernel": "linear", "class_weight": "balanced"},
-        classifier_CV_ranges={"C": np.logspace(-4, 4, 9, base=4)}, classifier_CV_folds=5,
-        scoring_functions={"TPR": TPR, "TNR": TNR, "min_TPR_TNR": min_TPR_TNR},
-        main_scoring_function="min_TPR_TNR", main_scoring_threshold=0.65
+        self, df, ann, n_k,
+        feature_pre_selector, feature_pre_selector_kwargs,
+        feature_selector, feature_selector_kwargs,
+        preprocessor, preprocessor_kwargs,
+        classifier, classifier_kwargs,
+        classifier_CV_ranges, classifier_CV_folds,
+        scoring_functions, main_scoring_function, main_scoring_threshold,
+        n_processes=1, random_state=None, verbose=True
     ):
         """Class constructor
         
@@ -44,12 +37,6 @@ class ExhaustivePipeline:
             for exhaustive feature selection: n is a number
             of selected features, k is a length of each
             features subset.
-        n_processes : int
-            Number of processes.
-        random_state : int
-            Random seed (set to an arbitrary integer for reproducibility).
-        verbose : bool
-            If True, print running time for each pair of n, k.
         feature_pre_selector : callable
             Function for feature pre-selection. For examples, see
             feature_pre_selectors.py.
@@ -90,6 +77,12 @@ class ExhaustivePipeline:
             A number defining threshold for classifier filtering: 
             classifiers with score below this threshold on 
             training/filtration sets will not be further evaluated.
+        n_processes : int
+            Number of processes.
+        random_state : int
+            Random seed (set to an arbitrary integer for reproducibility).
+        verbose : bool
+            If True, print running time for each pair of n, k.
         """
 
         self.df = df
@@ -162,7 +155,7 @@ class ExhaustivePipeline:
             # Run exhaustive search in multiple processes
             start_time = time.time()
             with Pool(self.n_processes) as p:
-                process_results = p.map(self.__exhaustive_run_over_chunk, process_args, chunksize=1)
+                process_results = p.map(self.exhaustive_run_over_chunk, process_args, chunksize=1)
             end_time = time.time()
             
             if self.verbose:
@@ -176,7 +169,7 @@ class ExhaustivePipeline:
 
         return pd.concat(all_result_dfs, axis=0)
 
-    def __exhaustive_run_over_chunk(self, args):
+    def exhaustive_run_over_chunk(self, args):
         """Run the pipeline for classifier construction
         using exhaustive feature selection over chunk of
         feature subsets
@@ -207,7 +200,7 @@ class ExhaustivePipeline:
             if filtration_passed:
                 results.append(item)
         
-        score_cols = ["{};{}".format(dataset, s) for dataset in natsorted(np.unique(df_selected["Dataset"])) for s in self.scoring_functions]
+        score_cols = ["{};{}".format(dataset, s) for dataset in np.unique(self.ann["Dataset"]) for s in self.scoring_functions]
         parameter_cols = list(self.classifier_CV_ranges)
 
         df_results = pd.DataFrame(columns=score_cols + parameter_cols)
