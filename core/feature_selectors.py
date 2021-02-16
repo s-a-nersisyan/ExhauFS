@@ -58,7 +58,7 @@ def t_test(df, ann, n, datasets=None):
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
 
 
-def spearman_correlation(df, ann, n, datasets):
+def spearman_correlation(df, ann, n, datasets=None):
     """Select n features with the highest correlation with target label
     
     Parameters

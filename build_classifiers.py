@@ -39,12 +39,14 @@ if __name__ == "__main__":
 
     model = classification.ExhaustiveClassification(
         df, ann, n_k,
-        #getattr(feature_pre_selectors, config["feature_pre_selector"]),
-        #config["feature_pre_selector_kwargs"],
-        None, {},
-        getattr(feature_selectors, config["feature_selector"]), config["feature_selector_kwargs"],
-        getattr(preprocessors, config["preprocessor"]), config["preprocessor_kwargs"],
-        getattr(classifiers, config["classifier"]), config["classifier_kwargs"],
+        getattr(feature_pre_selectors, config["feature_pre_selector"] or "", None),
+        config["feature_pre_selector_kwargs"],
+        getattr(feature_selectors, config["feature_selector"]),
+        config["feature_selector_kwargs"],
+        getattr(preprocessors, config["preprocessor"] or "", None),
+        config["preprocessor_kwargs"],
+        getattr(classifiers, config["classifier"]), 
+        config["classifier_kwargs"],
         config["classifier_CV_ranges"], config["classifier_CV_folds"],
         {s: getattr(accuracy_scores, s) for s in config["scoring_functions"]},
         config["main_scoring_function"], config["main_scoring_threshold"],
@@ -54,3 +56,4 @@ if __name__ == "__main__":
     )
     out = model.exhaustive_run()
     print(out)
+    out.to_csv("test.csv")

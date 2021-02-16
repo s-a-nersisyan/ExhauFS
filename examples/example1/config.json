@@ -3,14 +3,14 @@
 	"annotation_path": "annotation.csv",
 	"n_k_path": "n_k.csv",
 
-	"feature_pre_selector": "from_file",
+	"feature_pre_selector": null,
 	"feature_pre_selector_kwargs": {},
 
 	"feature_selector": "t_test",
 	"feature_selector_kwargs": {},
 
-	"preprocessor": "StandardScaler",
-	"preprocessor_kwargs": {},
+	"preprocessor": "KBinsDiscretizer",
+	"preprocessor_kwargs": {"n_bins": 2},
 	
 	"classifier": "SVC",
 	"classifier_kwargs": {
@@ -24,9 +24,9 @@
 	
 	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
 	"main_scoring_function": "min_TPR_TNR",
-	"main_scoring_threshold": 0.15,
+	"main_scoring_threshold": 0.6,
 	
-	"n_processes": 1,
-	"random_state": null,
+	"n_processes": 8,
+	"random_state": 17,
 	"verbose": true
 }
