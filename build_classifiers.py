@@ -11,28 +11,6 @@ from core import preprocessors
 from core import classifiers
 from core import accuracy_scores
 
-def classifiers_num (df, scoring, threshold, datasets):
-    """Get number of classifiers that have scoring greater than threshold in given datasets
-    
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        A pandas DataFrame whose rows represent classifiers
-        and columns represent their quality scores.
-    scoring : str
-        Key from scoring_functions dict defining the scoring function.
-    threshold : float
-        A number defining threshold for classifier filtering.
-    datasets : list
-        List of dataset identifiers.
-    
-    Returns
-    -------
-    int
-        Number of classifiers
-    """
-    queries = [ "(out['{}'] > {})".format(f"{ds};{scoring}", threshold) for ds in datasets ]
-    return df[eval(" & ".join(queries))].shape[0]
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -78,36 +56,59 @@ if __name__ == "__main__":
         random_state=config["random_state"],
         verbose=config["verbose"]
     )
-    out = model.exhaustive_run()
-    print(out)
+    res = model.exhaustive_run()
+    
+    output_dir = os.path.join(config_dirname, config["output_dir"])
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    
+    res.to_csv("{}/classifiers.csv".format(output_dir))
 
-    table = pd.DataFrame(columns=['n','k','train_filtr','train_filtr_valid','percent'])
+    # Summary table #1: number of classifiers which passed
+    # scoring threshold on training + filtration sets,
+    # and training + filtration + validation sets
+    summary_n_k = pd.DataFrame(columns=[
+        "n", "k", "num_training_reliable", "num_validation_reliable", "percentage_reliable"
+    ])
     for n, k in zip(n_k["n"], n_k["k"]):
+        res_n_k = res.loc[(res["n"] == n) & (res["k"] == k)]
+        # All classifiers already passed filtration on training and filtration datasets
+        tf_num = len(res_n_k)
 
-        tf_datasets = ann.loc[ann["Dataset type"].isin(["Training", "Filtration"]), "Dataset"].unique()
-        tf_num = classifiers_num(out, main_scoring_function, main_scoring_threshold, tf_datasets)
+        # Now do filtration on training, filtration and 
+        # validation datasets (i.e. all datasets)
+        all_datasets = ann["Dataset"].unique()
+        query_string = " & ".join([
+            "(`{};{}` >= {})".format(ds, main_scoring_function, main_scoring_threshold) for ds in all_datasets
+        ])
+        all_num = len(res_n_k.query(query_string))
 
-        tfv_datasets = ann.loc[ann["Dataset type"].isin(["Training", "Filtration", "Validation"]), "Dataset"].unique()
-        tfv_num = classifiers_num(out, main_scoring_function, main_scoring_threshold, tfv_datasets)
+        summary_n_k = summary_n_k.append({
+            "n": n, "k": k,
+            "num_training_reliable": tf_num,
+            "num_validation_reliable": all_num,
+            "percentage_reliable": all_num / tf_num * 100 if tf_num != 0 else 0
+        }, ignore_index=True)
+    
+    summary_n_k["n"] = summary_n_k["n"].astype(int)
+    summary_n_k["k"] = summary_n_k["k"].astype(int)
+    summary_n_k["num_training_reliable"] = summary_n_k["num_training_reliable"].astype(int)
+    summary_n_k["percentage_reliable"] = summary_n_k["percentage_reliable"].astype(int)
+    summary_n_k.to_csv("{}/summary_n_k.csv".format(output_dir), index=None)
+    
+    # Summary table #2: for each feature calculate
+    # percentage of reliable classifiers which use it
+    feature_counts = {}
+    for features_subset in res.index:
+        for feature in features_subset.split(";"):
+            feature_counts[feature] = feature_counts.get(feature, 0) + 1
 
-        table = table.append( { 'n'                 : n, 
-                                'k'                 : k, 
-                                'train_filtr'       : tf_num,
-                                'train_filtr_valid' : tfv_num,
-                                'percent'           : 100 * tfv_num / tf_num }, ignore_index=True)
-    print(table)
+    summary_features = pd.DataFrame(
+        {"percentage_classifiers": feature_counts.values()},
+        index=feature_counts.keys()
+    )
+    summary_features["percentage_classifiers"] *= 100 / len(res) if len(res) else 1
+    summary_features = summary_features.sort_values("percentage_classifiers", ascending=False)
+    summary_features.index.name = "gene"
 
-    table = pd.DataFrame(columns=['gene','percent'])
-    clsfs_num = out.shape[0]
-    genes_to_clsfs_num = {}
-    for clsf in out.index:
-        for g in clsf.split(';'):
-            if g in genes_to_clsfs_num:
-                genes_to_clsfs_num[g] += 1
-            else:
-                genes_to_clsfs_num[g] = 1
-    for g in genes_to_clsfs_num:
-        table = table.append( { 'gene'    : g, 
-                                'percent' : 100 * genes_to_clsfs_num[g] / clsfs_num }, ignore_index=True)
-    table.sort_values(by=['percent'])
-    print(table)
+    summary_features.to_csv("{}/summary_features.csv".format(output_dir))

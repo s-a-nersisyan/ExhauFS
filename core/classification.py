@@ -167,7 +167,11 @@ class ExhaustiveClassification:
             df_n_k_results["k"] = k
             all_result_dfs.append(df_n_k_results)
 
-        return pd.concat(all_result_dfs, axis=0)
+        res = pd.concat(all_result_dfs, axis=0)
+        res.index.name = "features"
+        res["n"] = res["n"].astype(int)
+        res["k"] = res["k"].astype(int)
+        return res
 
     def exhaustive_run_over_chunk(self, args):
         """Run the pipeline for classifier construction

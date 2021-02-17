@@ -2,6 +2,7 @@
 	"data_path": "data.csv",
 	"annotation_path": "annotation.csv",
 	"n_k_path": "n_k.csv",
+	"output_dir": "test_output",
 
 	"feature_pre_selector": null,
 	"feature_pre_selector_kwargs": {},
@@ -24,7 +25,7 @@
 	
 	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
 	"main_scoring_function": "min_TPR_TNR",
-	"main_scoring_threshold": 0.6,
+	"main_scoring_threshold": 0.65,
 	
 	"n_processes": 8,
 	"random_state": 17,
