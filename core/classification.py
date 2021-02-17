@@ -167,7 +167,11 @@ class ExhaustiveClassification:
             df_n_k_results["k"] = k
             all_result_dfs.append(df_n_k_results)
 
-        return pd.concat(all_result_dfs, axis=0)
+        res = pd.concat(all_result_dfs, axis=0)
+        res.index.name = "features"
+        res["n"] = res["n"].astype(int)
+        res["k"] = res["k"].astype(int)
+        return res
 
     def exhaustive_run_over_chunk(self, args):
         """Run the pipeline for classifier construction
@@ -235,9 +239,12 @@ class ExhaustiveClassification:
         y_train = self.ann.loc[self.ann["Dataset type"] == "Training", "Class"].to_numpy()
 
         # Fit preprocessor and transform training set
-        preprocessor = self.preprocessor(**self.preprocessor_kwargs)
-        preprocessor.fit(X_train)
-        X_train = preprocessor.transform(X_train)
+        if self.preprocessor:
+            preprocessor = self.preprocessor(**self.preprocessor_kwargs)
+            preprocessor.fit(X_train)
+            X_train = preprocessor.transform(X_train)
+        else:
+            preprocessor = None
 
         # Fit classifier with CV search of unknown parameters
         classifier = self.classifier(random_state=self.random_state, **self.classifier_kwargs)
@@ -295,7 +302,8 @@ class ExhaustiveClassification:
             y_test = self.ann.loc[self.ann["Dataset"] == dataset, "Class"].to_numpy()
 
             # Normalize dataset using preprocessor fitted on training set
-            X_test = preprocessor.transform(X_test)
+            if preprocessor:
+                X_test = preprocessor.transform(X_test)
             # Make predictions
             y_pred = classifier.predict(X_test)
             

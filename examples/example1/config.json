@@ -2,15 +2,16 @@
 	"data_path": "data.csv",
 	"annotation_path": "annotation.csv",
 	"n_k_path": "n_k.csv",
+	"output_dir": "test_output",
 
-	"feature_pre_selector": "from_file",
+	"feature_pre_selector": null,
 	"feature_pre_selector_kwargs": {},
 
 	"feature_selector": "t_test",
 	"feature_selector_kwargs": {},
 
-	"preprocessor": "StandardScaler",
-	"preprocessor_kwargs": {},
+	"preprocessor": "KBinsDiscretizer",
+	"preprocessor_kwargs": {"n_bins": 2},
 	
 	"classifier": "SVC",
 	"classifier_kwargs": {
@@ -21,12 +22,13 @@
 	"classifier_CV_ranges": {
 		"C": [0.00390625, 0.015625, 0.0625, 0.25, 1.0, 4.0, 16.0, 64.0, 256.0]
 	},
-	"classifier_CV_folds": 5,	
-	"scoring_functions": ["min_TPR_TNR", "ROC_AUC"],
-	"main_scoring_function": "ROC_AUC",
-	"main_scoring_threshold": 0.6,
+	"classifier_CV_folds": 5,
 	
-	"n_processes": 1,
-	"random_state": null,
+	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR", "ROC_AUC"],
+	"main_scoring_function": "ROC_AUC",
+	"main_scoring_threshold": 0.65,
+	
+	"n_processes": 8,
+	"random_state": 17,
 	"verbose": true
 }
