@@ -298,13 +298,17 @@ class ExhaustiveClassification:
             X_test = preprocessor.transform(X_test)
             # Make predictions
             y_pred = classifier.predict(X_test)
-            # TODO: predict_proba for ROC AUC
-            #y_score = classifier.predict_proba(X_test)
+            
+            if 'ROC_AUC' in self.scoring_functions.keys():
+                y_score = classifier.predict_proba(X_test)
 
             scores[dataset] = {}
             for s in self.scoring_functions:
-                scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)
-
+                if ( s == 'ROC_AUC' ):
+                    scores[dataset][s] = self.scoring_functions[s](y_test, y_score[:, 1])
+                else:
+                    scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)
+                    
             if (
                 dataset_type in ["Training", "Filtration"] and
                 scores[dataset][self.main_scoring_function] < self.main_scoring_threshold
