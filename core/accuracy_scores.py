@@ -11,6 +11,7 @@ def score(y_true, y_pred):
 """
 
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import roc_auc_score
 
 
 def TPR(y_true, y_pred):
@@ -70,3 +71,21 @@ def min_TPR_TNR(y_true, y_pred):
         min(true positive rate, true negative rate)
     """
     return min(TNR(y_true, y_pred), TPR(y_true, y_pred))
+
+def ROC_AUC(y_true, y_proba):
+    """ Area under curve.
+    
+    Parameters
+    ----------
+    y_true : array-like
+        List of true class labels
+    y_proba : array-like
+        List of predicted probabilities of 1-labels
+
+    Returns
+    -------
+    float
+        area under curve
+    """
+    roc_auc = roc_auc_score(y_true, y_proba)
+    return roc_auc
