@@ -9,6 +9,10 @@ import itertools
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import make_scorer
 
+# This is needed for ROC AUC scoring
+# since SVM requires special care in this case
+from sklearn.svm import SVC
+
 
 class ExhaustiveClassification:
     def __init__(
@@ -110,6 +114,10 @@ class ExhaustiveClassification:
         self.scoring_functions = scoring_functions
         self.main_scoring_function = main_scoring_function
         self.main_scoring_threshold = main_scoring_threshold
+        
+        # For ROC AUC and SVM we should pass probability=True argument
+        if "ROC_AUC" in self.scoring_functions and self.classifier == SVC:
+            self.classifier_kwargs["probability"] = True
 
     def exhaustive_run(self):
         """Run the pipeline for classifier construction 
@@ -254,10 +262,14 @@ class ExhaustiveClassification:
                 shuffle=True, 
                 random_state=self.random_state
         )
+        scoring = {
+            s: make_scorer(self.scoring_functions[s], needs_proba=True if s == "ROC_AUC" else False)
+            for s in self.scoring_functions
+        }
         searcher = GridSearchCV(
             classifier,
             self.classifier_CV_ranges,
-            scoring={s: make_scorer(self.scoring_functions[s]) for s in self.scoring_functions},
+            scoring=scoring,
             cv=splitter,
             refit=False
         )
@@ -307,12 +319,12 @@ class ExhaustiveClassification:
             # Make predictions
             y_pred = classifier.predict(X_test)
             
-            if 'ROC_AUC' in self.scoring_functions.keys():
+            if "ROC_AUC" in self.scoring_functions:
                 y_score = classifier.predict_proba(X_test)
 
             scores[dataset] = {}
             for s in self.scoring_functions:
-                if ( s == 'ROC_AUC' ):
+                if s == "ROC_AUC":
                     scores[dataset][s] = self.scoring_functions[s](y_test, y_score[:, 1])
                 else:
                     scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)

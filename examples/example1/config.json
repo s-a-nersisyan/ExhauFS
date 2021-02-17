@@ -16,16 +16,15 @@
 	"classifier": "SVC",
 	"classifier_kwargs": {
 		"kernel": "linear",
-		"class_weight": "balanced",
-		"probability": true
+		"class_weight": "balanced"
 	},
 	"classifier_CV_ranges": {
 		"C": [0.00390625, 0.015625, 0.0625, 0.25, 1.0, 4.0, 16.0, 64.0, 256.0]
 	},
 	"classifier_CV_folds": 5,
 	
-	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR", "ROC_AUC"],
-	"main_scoring_function": "ROC_AUC",
+	"scoring_functions": ["ROC_AUC", "TPR", "TNR", "min_TPR_TNR"],
+	"main_scoring_function": "min_TPR_TNR",
 	"main_scoring_threshold": 0.65,
 	
 	"n_processes": 8,
