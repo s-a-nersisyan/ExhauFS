@@ -1,7 +1,7 @@
 """Functions for feature selection
 
-Every feature selection function takes input DataFrame, 
-annotation DataFrame, number n and some optional arguments, 
+Every feature selection function takes input DataFrame,
+annotation DataFrame, number n and some optional arguments,
 and returns a list of n features which is
 a subset of DataFrame column names.
 
@@ -15,11 +15,38 @@ def feature_selector(df, ann, n, **kwargs):
 import numpy as np
 
 from scipy.stats import spearmanr, ttest_ind
+from sklearn.svm import SVC
+from sklearn.decomposition import PCA
+
+def pca_svm(df, ann, n, datasets=None, pca_dim=None):
+    if not datasets:
+        datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
+
+    samples = ann.loc[ann["Dataset"].isin(datasets)].index
+    df_subset = df.loc[samples]
+    ann_subset = ann.loc[samples]
+    X = df_subset.to_numpy()
+    y = ann_subset["Class"].to_numpy()
+
+    pca = PCA(n_components=pca_dim)
+    clf = SVC(kernel="linear", class_weight="balanced")
+
+    pca.fit(X)
+    pca_components = pca.components_.transpose()
+
+    X = pca.transform(X)
+    clf.fit(X, y)
+
+    svm_intern_vec = clf.coef_.transpose()
+    svm_extern_vec = np.matmul(pca_components, svm_intern_vec).transpose()[0]
+
+    sorted_idx = np.argsort(svm_extern_vec)
+    return np.array(df_subset.columns.tolist())[sorted_idx[:n]]
 
 
 def t_test(df, ann, n, datasets=None):
     """Select n features with the lowest p-values according to t-test
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -27,7 +54,7 @@ def t_test(df, ann, n, datasets=None):
         and columns represent features.
     ann : pandas.DataFrame
         DataFrame with annotation of samples. Three columns are mandatory:
-        Class (binary labels), Dataset (dataset identifiers) and 
+        Class (binary labels), Dataset (dataset identifiers) and
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
@@ -45,7 +72,7 @@ def t_test(df, ann, n, datasets=None):
     # By default, consider all datasets except validation ones
     if not datasets:
         datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
-    
+
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
@@ -60,7 +87,7 @@ def t_test(df, ann, n, datasets=None):
 
 def spearman_correlation(df, ann, n, datasets=None):
     """Select n features with the highest correlation with target label
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -68,7 +95,7 @@ def spearman_correlation(df, ann, n, datasets=None):
         and columns represent features.
     ann : pandas.DataFrame
         DataFrame with annotation of samples. Three columns are mandatory:
-        Class (binary labels), Dataset (dataset identifiers) and 
+        Class (binary labels), Dataset (dataset identifiers) and
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
@@ -87,7 +114,7 @@ def spearman_correlation(df, ann, n, datasets=None):
     # By default, consider all datasets except validation ones
     if not datasets:
         datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
-    
+
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
@@ -102,7 +129,7 @@ def spearman_correlation(df, ann, n, datasets=None):
 
 def from_file(df, ann, n, path_to_file, sep=None):
     """Select first n features from a given file
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -123,11 +150,11 @@ def from_file(df, ann, n, path_to_file, sep=None):
     Returns
     -------
     list
-        List of first n entries in the intersection of features from a given file 
+        List of first n entries in the intersection of features from a given file
         with a list of features from a given DataFrame.
     """
 
     with open(path_to_file, "r") as f:
         features_from_file = [line.split(sep)[0] for line in f]
-    
+
     return [feature for feature in features_from_file if feature in df.columns][:n]
