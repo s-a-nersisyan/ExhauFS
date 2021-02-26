@@ -1,17 +1,15 @@
 {
-	"data_path": "data.csv",
-	"annotation_path": "annotation.csv",
-	"n_k_path": "n_k.csv",
-	"output_dir": "test_output",
+	"data_path": "../../runs/breast_cancer/data.csv",
+	"annotation_path": "../../runs/breast_cancer/annotation.csv",
+	"output_dir": "example_output_dir",
 
-	"feature_pre_selector": null,
-	"feature_pre_selector_kwargs": {},
-
-	"feature_selector": "t_test",
-	"feature_selector_kwargs": {},
+	"features_subset": ["PRC1", "HSPD1", "MRPS17", "UBE2C", "LMNB1"],
 
 	"preprocessor": "KBinsDiscretizer",
-	"preprocessor_kwargs": {"n_bins": 2},
+	"preprocessor_kwargs": {
+		"n_bins": 2,
+		"encode": "ordinal"
+	},
 	
 	"classifier": "SVC",
 	"classifier_kwargs": {
@@ -25,9 +23,6 @@
 	
 	"scoring_functions": ["ROC_AUC", "TPR", "TNR", "min_TPR_TNR"],
 	"main_scoring_function": "min_TPR_TNR",
-	"main_scoring_threshold": 0.65,
 	
-	"n_processes": 8,
-	"random_state": 17,
-	"verbose": true
+	"random_state": 17
 }

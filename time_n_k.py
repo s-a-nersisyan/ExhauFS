@@ -3,10 +3,9 @@ import os
 import time
 
 import pandas as pd
-
 from scipy.special import binom
 
-import build_classifiers
+from utils import *
 
 
 def predict_running_time(warm_up_n, warm_up_k, warm_up_time, grid_size, config):
@@ -75,7 +74,8 @@ if __name__ == "__main__":
 
     # Do warm-up run and measure the running time
     start_time = time.time()
-    build_classifiers.run_exhaustive_classification(config, df, ann, warm_up_n_k)
+    model = initialize_classification_model(config, df, ann, warm_up_n_k)
+    model.exhaustive_run()
     end_time = time.time()
     warm_up_time = end_time - start_time
     

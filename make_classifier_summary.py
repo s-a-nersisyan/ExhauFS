@@ -13,11 +13,14 @@ if __name__ == "__main__":
     
     # Load config and input data
     config_path = sys.argv[1]
-    config, df, ann, n_k = load_config_and_input_data(config_path)
-    
-    # Build classifiers
-    model = initialize_classification_model(config, df, ann, n_k)
-    res = model.exhaustive_run()
+    config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
+
+    # Fit classifier
+    model = initialize_classification_model(config, df, ann, None)
+    classifier, best_params, preprocessor = model.fit_classifier(config["features_subset"])
+    scores, _ = model.evaluate_classifier(classifier, preprocessor, config["features_subset"])
+    print(scores)
+    quit()
     
     # Save raw results (classifiers and their quality scores)
     config_dirname = os.path.dirname(config_path)
