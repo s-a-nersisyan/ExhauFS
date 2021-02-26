@@ -20,8 +20,11 @@ if __name__ == "__main__":
     classifier, best_params, preprocessor = model.fit_classifier(config["features_subset"])
     scores, _ = model.evaluate_classifier(classifier, preprocessor, config["features_subset"])
     print(scores)
-    quit()
     
+    quit()
+    # You can delete everything from this point,
+    # this is a copy-paste from build_classifiers.py
+
     # Save raw results (classifiers and their quality scores)
     config_dirname = os.path.dirname(config_path)
     output_dir = os.path.join(config_dirname, config["output_dir"])
