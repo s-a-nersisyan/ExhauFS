@@ -50,6 +50,15 @@ def load_config_and_input_data(config_path, load_n_k=True):
         n_k = pd.read_csv(os.path.join(config_dirname, config["n_k_path"]))
     else:
         n_k = pd.DataFrame()
+    
+    # Ensure paths in config are relative to config directory
+    if "path_to_file" in config.get("feature_pre_selector_kwargs", {}):
+        correct_path = os.path.join(config_dirname, config["feature_pre_selector_kwargs"]["path_to_file"])
+        config["feature_pre_selector_kwargs"]["path_to_file"] = correct_path
+    
+    if "path_to_file" in config.get("feature_selector_kwargs", {}):
+        correct_path = os.path.join(config_dirname, config["feature_selector_kwargs"]["path_to_file"])
+        config["feature_selector_kwargs"]["path_to_file"] = correct_path
 
     return config, df, ann, n_k
 
