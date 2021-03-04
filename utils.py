@@ -44,20 +44,20 @@ def load_config_and_input_data(config_path, load_n_k=True):
     # Paths are absolute or relative to config file
     # TODO: add some checks (files can be opened, indices are the same, columns names are here etc)
     config_dirname = os.path.dirname(config_path)
-    df = pd.read_csv(os.path.join(config_dirname, config["data_path"]), index_col=0)
-    ann = pd.read_csv(os.path.join(config_dirname, config["annotation_path"]), index_col=0)
+    df = pd.read_csv(os.path.join(config_dirname, config["data_path"]).replace("\\","/"), index_col=0)
+    ann = pd.read_csv(os.path.join(config_dirname, config["annotation_path"]).replace("\\","/"), index_col=0)
     if load_n_k:
-        n_k = pd.read_csv(os.path.join(config_dirname, config["n_k_path"]))
+        n_k = pd.read_csv(os.path.join(config_dirname, config["n_k_path"]).replace("\\","/"))
     else:
         n_k = pd.DataFrame()
     
     # Ensure paths in config are relative to config directory
     if "path_to_file" in config.get("feature_pre_selector_kwargs", {}):
-        correct_path = os.path.join(config_dirname, config["feature_pre_selector_kwargs"]["path_to_file"])
+        correct_path = os.path.join(config_dirname, config["feature_pre_selector_kwargs"]["path_to_file"]).replace("\\","/")
         config["feature_pre_selector_kwargs"]["path_to_file"] = correct_path
     
     if "path_to_file" in config.get("feature_selector_kwargs", {}):
-        correct_path = os.path.join(config_dirname, config["feature_selector_kwargs"]["path_to_file"])
+        correct_path = os.path.join(config_dirname, config["feature_selector_kwargs"]["path_to_file"]).replace("\\","/")
         config["feature_selector_kwargs"]["path_to_file"] = correct_path
 
     return config, df, ann, n_k
