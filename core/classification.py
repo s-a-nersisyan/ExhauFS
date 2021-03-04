@@ -8,6 +8,7 @@ import itertools
 
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import make_scorer
+from sklearn.utils import shuffle
 
 # This is needed for ROC AUC scoring
 # since SVM requires special care in this case
@@ -22,6 +23,7 @@ class ExhaustiveClassification:
         preprocessor, preprocessor_kwargs,
         classifier, classifier_kwargs,
         classifier_CV_ranges, classifier_CV_folds,
+        limit_feature_subsets, n_feature_subsets, shuffle_feature_subsets,
         scoring_functions, main_scoring_function, main_scoring_threshold,
         n_processes=1, random_state=None, verbose=True
     ):
@@ -68,6 +70,12 @@ class ExhaustiveClassification:
             iterables for grid search.
         classifier_CV_folds : int
             Number of fold for K-Folds cross-validation.
+        limit_feature_subsets : bool
+            If true, limit the number of processed feature subsets.
+        n_feature_subsets : int
+            Number of processed feature subsets.
+        shuffle_feature_subsets : bool
+            If true, processed feature subsets are selected randomly.
         scoring_functions : dict
             Dict with scoring functions which will be calculated
             for each classifier. Keys are names (arbitrary strings),
@@ -111,6 +119,10 @@ class ExhaustiveClassification:
         self.classifier_CV_ranges = classifier_CV_ranges
         self.classifier_CV_folds = classifier_CV_folds
 
+        self.limit_feature_subsets = limit_feature_subsets
+        self.n_feature_subsets = n_feature_subsets
+        self.shuffle_feature_subsets = shuffle_feature_subsets
+
         self.scoring_functions = scoring_functions
         self.main_scoring_function = main_scoring_function
         self.main_scoring_threshold = main_scoring_threshold
@@ -153,6 +165,10 @@ class ExhaustiveClassification:
             
             # Split feature subsets to chunks for multiprocessing
             feature_subsets = list(itertools.combinations(features, k))
+            if self.limit_feature_subsets:
+                if self.shuffle_feature_subsets:
+                    shuffle(feature_subsets, random_state=self.random_state)
+                feature_subsets = feature_subsets[:self.n_feature_subsets]
             chunk_size = math.ceil(len(feature_subsets) / self.n_processes)
             process_args = []
             for i in range(self.n_processes):
@@ -179,6 +195,10 @@ class ExhaustiveClassification:
         res.index.name = "features"
         res["n"] = res["n"].astype(int)
         res["k"] = res["k"].astype(int)
+
+        if self.limit_feature_subsets and self.shuffle_feature_subsets:
+            res.sort_values(by=["n","k","features"])
+
         return res
 
     def exhaustive_run_over_chunk(self, args):
