@@ -16,6 +16,10 @@ if __name__ == "__main__":
     config_path = sys.argv[1]
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
 
+    # if necessary add roc_auc metric
+    if "ROC_AUC" not in config["scoring_functions"]:
+        config["scoring_functions"].append("ROC_AUC")
+
     # Fit classifier
     model = initialize_classification_model(config, df, ann, None)
     classifier, best_params, preprocessor = model.fit_classifier(config["features_subset"])
