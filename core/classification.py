@@ -183,7 +183,12 @@ class ExhaustiveClassification:
             end_time = time.time()
             
             if self.verbose:
-                print("Pipeline iteration finished in {} seconds for n={}, k={} (n_processes = {})".format(end_time - start_time, n, k, self.n_processes))
+                main_info = f"Pipeline iteration finished in {end_time - start_time} seconds for n={n}, k={k}"
+                tail_infos = [f"n_processes = {self.n_processes}"]
+                if self.limit_feature_subsets:
+                    tail_infos.append(f"n_feature_subsets = {self.n_feature_subsets}")
+                tail_info = ", ".join(tail_infos)
+                print(f"{main_info} ({tail_info})")
             
             # Merge results
             df_n_k_results = pd.concat(process_results, axis=0)

@@ -5,14 +5,9 @@ import pandas as pd
 
 from utils import *
 
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please specify configuration file", file=sys.stderr)
-        sys.exit(1)
+def main(config_path):
     
     # Load config and input data
-    config_path = sys.argv[1]
     config, df, ann, n_k = load_config_and_input_data(config_path)
     
     # Build classifiers
@@ -79,3 +74,10 @@ if __name__ == "__main__":
     summary_features.index.name = "gene"
 
     summary_features.to_csv("{}/summary_features.csv".format(output_dir))
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please specify configuration file", file=sys.stderr)
+        sys.exit(1)
+
+    main(sys.argv[1])
