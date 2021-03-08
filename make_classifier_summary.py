@@ -5,7 +5,18 @@ import pandas as pd
 
 from utils import *
 import matplotlib.pyplot as plt
+import pickle
 
+def save_svm_feat_importances(classifier, fname):
+    imp = classifier.coef_[0]
+    names = config["features_subset"]
+    imp,names = zip(*sorted(zip(imp,names)))
+    plt.barh(range(len(names)), imp, align='center')
+    plt.yticks(range(len(names)), names)   
+    plt.title("SVM-classifier feature importances")
+    plt.xlabel("coeff. values")  
+    plt.savefig(fname)
+    plt.close()
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -28,36 +39,57 @@ if __name__ == "__main__":
         
     # 1. Short summary on classifiers accuracy on datasets
     config_dirname = os.path.dirname(config_path)
-    data_dirname = os.path.dirname(os.path.join(config_dirname, config["data_path"]).replace("\\","/") )
-    print("Feature subset characteristics (by dataset):")
-    print("//--------------------------------------------")
+    output_dir = os.path.join(config_dirname, config["output_dir"]).replace("\\","/")
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)    
+        
+    # generate report and roc_auc pdfs
+    report = []
+    report.append("Feature subset characteristics (by dataset):")
+    report.append("//--------------------------------------------")
     i=1
     for ds in scores:       
         tp = ann.loc[ann['Dataset']==ds].loc[:,'Dataset type'].values[0]        
-        print("{}. {} - ({})".format(i, ds, tp))
+        report.append("{}. {} - ({})".format(i, ds, tp))
         for metr, val in scores[ds].items():
             if metr == "ROC_AUC":
                 auc_val = val[0]
-                print("      {:12s} - {:6.4f}".format(metr, auc_val))
+                report.append("      {:12s} - {:6.4f}".format(metr, auc_val))
                 # plot roc_auc curve
                 fpr = val[1][0]
                 tpr = val[1][1]                              
-                plt.title('ROC curve, {}'.format(ds))
+                plt.title("ROC curve, {}".format(ds))
                 plt.plot(fpr, tpr)
                 plt.plot([0, 1], [0, 1], '--')
                 plt.xlim([0, 1])
                 plt.ylim([0, 1])
-                plt.ylabel('Sensitivity')
-                plt.xlabel('1 - Specificity')
-                roc_fname=os.path.join(data_dirname,"ROC_{}.pdf".format(ds)).replace("\\","/")
+                plt.ylabel("Sensitivity")
+                plt.xlabel("1 - Specificity")
+                roc_fname=os.path.join(output_dir,"ROC_{}.pdf".format(ds)).replace("\\","/")
                 plt.savefig(roc_fname)
                 plt.close()                
             else:
-                print("      {:12s} - {:6.4f}".format(metr, val))               
-        print("")
+                report.append("      {:12s} - {:6.4f}".format(metr, val))               
+        report.append("")
         i=i+1
-        
     
+    # save feature importances report
+    if config["classifier"]=="SVC":
+        fi_fname=os.path.join(output_dir,"feat_imp.pdf").replace("\\","/")
+        save_svm_feat_importances(classifier, fi_fname)        
+    
+    # save report in file
+    rep_fname=os.path.join(output_dir,"report.txt").replace("\\","/")
+    with open(rep_fname, 'w') as f:
+        for item in report:
+            f.write("%s\n" % item)
+            print("%s" % item)
+    
+    # save (classifier,preprocessor) in file
+    clf_fname=os.path.join(output_dir,"model.pkl").replace("\\","/")
+    with open(clf_fname, 'wb') as f:
+        pickle.dump((classifier, preprocessor), f)
+        
     
     # You can delete everything from this point,
     # this is a copy-paste from build_classifiers.py
