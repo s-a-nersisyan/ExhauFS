@@ -1,33 +1,36 @@
 import sys
 import os
-
-import pandas as pd
-
-from utils import *
-import matplotlib.pyplot as plt
 import pickle
 
-def save_svm_feat_importances(classifier, fname):
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, roc_auc_score
+
+from utils import *
+
+
+def save_SVM_feature_importances(classifier, fname):
     imp = classifier.coef_[0]
     names = config["features_subset"]
-    imp,names = zip(*sorted(zip(imp,names)))
-    plt.barh(range(len(names)), imp, align='center')
-    plt.yticks(range(len(names)), names)   
-    plt.title("SVM-classifier feature importances")
-    plt.xlabel("coeff. values")  
+    imp, names = zip(*sorted(zip(imp, names)))
+    plt.barh(range(len(names)), imp, align="center")
+    plt.yticks(range(len(names)), names)
+    plt.title("SVM classifier feature importances")
+    plt.xlabel("Feature weight")
     plt.savefig(fname)
     plt.close()
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Please specify configuration file", file=sys.stderr)
         sys.exit(1)
-    
+
     # Load config and input data
     config_path = sys.argv[1]
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
 
-    # if necessary add roc_auc metric
+    # If necessary, add ROC AUC metric
     if "ROC_AUC" not in config["scoring_functions"]:
         config["scoring_functions"].append("ROC_AUC")
 
@@ -35,122 +38,68 @@ if __name__ == "__main__":
     model = initialize_classification_model(config, df, ann, None)
     classifier, best_params, preprocessor = model.fit_classifier(config["features_subset"])
     scores, _ = model.evaluate_classifier(classifier, preprocessor, config["features_subset"])
-    #print(scores)
-        
+
     # 1. Short summary on classifiers accuracy on datasets
     config_dirname = os.path.dirname(config_path)
     output_dir = os.path.join(config_dirname, config["output_dir"]).replace("\\","/")
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)    
-        
-    # generate report and roc_auc pdfs
+        os.mkdir(output_dir)
+
+    # Generate report and roc_auc pdfs
     report = []
-    report.append("Feature subset characteristics (by dataset):")
+    report.append("Accuracy metrics:")
     report.append("//--------------------------------------------")
-    i=1
-    for ds in scores:       
-        tp = ann.loc[ann['Dataset']==ds].loc[:,'Dataset type'].values[0]        
-        report.append("{}. {} - ({})".format(i, ds, tp))
-        for metr, val in scores[ds].items():
+    for i, dataset in enumerate(scores):
+        dataset_type = ann.loc[ann["Dataset"] == dataset].loc[:, "Dataset type"].values[0].lower()
+        report.append("{} ({} set)".format(dataset, dataset_type))
+        for metr, val in scores[dataset].items():
+            report.append("\t{:12s}: {:.4f}".format(metr, val))
+            
+            # Plot ROC curve
             if metr == "ROC_AUC":
-                auc_val = val[0]
-                report.append("      {:12s} - {:6.4f}".format(metr, auc_val))
-                # plot roc_auc curve
-                fpr = val[1][0]
-                tpr = val[1][1]                              
-                plt.title("ROC curve, {}".format(ds))
+                X = df.loc[ann["Dataset"] == dataset, config["features_subset"]].to_numpy()
+                y = ann.loc[ann["Dataset"] == dataset, "Class"].to_numpy()
+                
+                if preprocessor:
+                    X = preprocessor.transform(X)
+                
+                y_score = classifier.predict_proba(X)
+                fpr, tpr, _ = roc_curve(y, y_score[:, 1])
+
+                plt.figure(figsize=(6, 6))
+                plt.title("ROC curve, {} ({} set)".format(dataset, dataset_type))
+                
                 plt.plot(fpr, tpr)
-                plt.plot([0, 1], [0, 1], '--')
-                plt.xlim([0, 1])
-                plt.ylim([0, 1])
-                plt.ylabel("Sensitivity")
+                plt.plot([0, 1], [0, 1], "--", c="grey")
+                
+                plt.xlim([-0.01, 1.01])
+                plt.ylim([-0.01, 1.01])
+
                 plt.xlabel("1 - Specificity")
-                roc_fname=os.path.join(output_dir,"ROC_{}.pdf".format(ds)).replace("\\","/")
-                plt.savefig(roc_fname)
-                plt.close()                
-            else:
-                report.append("      {:12s} - {:6.4f}".format(metr, val))               
+                plt.ylabel("Sensitivity")
+                
+                plot_fname = os.path.join(
+                    output_dir,
+                    "ROC_{}.pdf".format(dataset)
+                ).replace("\\","/")
+                plt.savefig(plot_fname)
+                plt.close()
+
         report.append("")
-        i=i+1
-    
-    # save feature importances report
-    if config["classifier"]=="SVC":
-        fi_fname=os.path.join(output_dir,"feat_imp.pdf").replace("\\","/")
-        save_svm_feat_importances(classifier, fi_fname)        
-    
-    # save report in file
+
+    # Save feature importances report
+    if config["classifier"] == "SVC":
+        fi_fname=os.path.join(output_dir,"feature_importances.pdf").replace("\\","/")
+        save_SVM_feature_importances(classifier, fi_fname)
+
+    # Save report in file
     rep_fname=os.path.join(output_dir,"report.txt").replace("\\","/")
-    with open(rep_fname, 'w') as f:
+    with open(rep_fname, "w") as f:
         for item in report:
             f.write("%s\n" % item)
             print("%s" % item)
-    
-    # save (classifier,preprocessor) in file
-    clf_fname=os.path.join(output_dir,"model.pkl").replace("\\","/")
-    with open(clf_fname, 'wb') as f:
+
+    # Save (classifier, preprocessor) in file
+    model_fname = os.path.join(output_dir, "model.pkl").replace("\\","/")
+    with open(model_fname, "wb") as f:
         pickle.dump((classifier, preprocessor), f)
-        
-    
-    # You can delete everything from this point,
-    # this is a copy-paste from build_classifiers.py
-
-    # # Save raw results (classifiers and their quality scores)
-    # config_dirname = os.path.dirname(config_path)
-    # output_dir = os.path.join(config_dirname, config["output_dir"])
-    # if not os.path.exists(output_dir):
-    #     os.mkdir(output_dir)
-    
-    # res.to_csv("{}/classifiers.csv".format(output_dir))
-
-    # # Summary table #1: number of classifiers which passed
-    # # scoring threshold on training + filtration sets,
-    # # and training + filtration + validation sets
-    # summary_n_k = pd.DataFrame(columns=[
-    #     "n", "k", "num_training_reliable", "num_validation_reliable", "percentage_reliable"
-    # ])
-    # for n, k in zip(n_k["n"], n_k["k"]):
-    #     res_n_k = res.loc[(res["n"] == n) & (res["k"] == k)]
-    #     # All classifiers already passed filtration on training and filtration datasets
-    #     tf_num = len(res_n_k)
-
-    #     # Now do filtration on training, filtration and 
-    #     # validation datasets (i.e. all datasets)
-    #     all_datasets = ann["Dataset"].unique()
-    #     query_string = " & ".join([
-    #         "(`{};{}` >= {})".format(
-    #             ds, 
-    #             config["main_scoring_function"], 
-    #             config["main_scoring_threshold"]
-    #         ) for ds in all_datasets
-    #     ])
-    #     all_num = len(res_n_k.query(query_string))
-
-    #     summary_n_k = summary_n_k.append({
-    #         "n": n, "k": k,
-    #         "num_training_reliable": tf_num,
-    #         "num_validation_reliable": all_num,
-    #         "percentage_reliable": all_num / tf_num * 100 if tf_num != 0 else 0
-    #     }, ignore_index=True)
-    
-    # summary_n_k["n"] = summary_n_k["n"].astype(int)
-    # summary_n_k["k"] = summary_n_k["k"].astype(int)
-    # summary_n_k["num_training_reliable"] = summary_n_k["num_training_reliable"].astype(int)
-    # summary_n_k["num_validation_reliable"] = summary_n_k["num_validation_reliable"].astype(int)
-    # summary_n_k.to_csv("{}/summary_n_k.csv".format(output_dir), index=None)
-    
-    # # Summary table #2: for each feature calculate
-    # # percentage of reliable classifiers which use it
-    # feature_counts = {}
-    # for features_subset in res.index:
-    #     for feature in features_subset.split(";"):
-    #         feature_counts[feature] = feature_counts.get(feature, 0) + 1
-
-    # summary_features = pd.DataFrame(
-    #     {"percentage_classifiers": feature_counts.values()},
-    #     index=feature_counts.keys()
-    # )
-    # summary_features["percentage_classifiers"] *= 100 / len(res) if len(res) else 1
-    # summary_features = summary_features.sort_values("percentage_classifiers", ascending=False)
-    # summary_features.index.name = "gene"
-
-    # summary_features.to_csv("{}/summary_features.csv".format(output_dir))

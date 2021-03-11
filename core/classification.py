@@ -13,7 +13,7 @@ from sklearn.utils import shuffle
 # This is needed for ROC AUC scoring
 # since SVM requires special care in this case
 from sklearn.svm import SVC
-from sklearn.metrics import *
+
 
 class ExhaustiveClassification:
     def __init__(
@@ -346,12 +346,11 @@ class ExhaustiveClassification:
             
             if "ROC_AUC" in self.scoring_functions:
                 y_score = classifier.predict_proba(X_test)
-                rc = roc_curve(y_test, y_score[:, 1])
 
             scores[dataset] = {}
             for s in self.scoring_functions:
                 if s == "ROC_AUC":
-                    scores[dataset][s] = (self.scoring_functions[s](y_test, y_score[:, 1]), rc)
+                    scores[dataset][s] = self.scoring_functions[s](y_test, y_score[:, 1])
                 else:
                     scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)
                     
