@@ -14,5 +14,24 @@ Input data can consist from different batches (datasets), and each dataset shoul
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
 3. **Validation (test) set:** performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.
 
+**TODO:** add flowchart.
+
+## Step 1: data preparation
+
+Before running the tool, you should prepare two files containing actual data and its annotation. Both for classification and survival analysis csv data table should contain numerical values associated with samples (rows) and features (columns):
+
+|            | Feature 1 | Feature 2 |
+| ---------- | --------- | --------- |
+| Sample 1   | 17.17     | 365.1     |
+| Sample 2   | 56.99     | 123.9     |
+| ...        |           |           |
+| Sample 98  | 22.22     | 123.4     |
+| Sample 99  | 23.23     | 567.8     |
+| ...        |           |           |
+| Sample 511 | 10.82     | 665.8     |
+| Sample 512 | 11.11     | 200.2     |
+
+**TODO:** add real example to examples/ and write about it here.
+
 ## etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).
