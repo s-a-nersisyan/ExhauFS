@@ -7,6 +7,8 @@ The main idea underlying ExhaustiveFS is the exhaustive search of feature subset
 2. **Feature selection:** select *n* features for exhaustive search.
 3. **Exhaustive search:** iterate through all possible *k*-element feature subsets and fit classification/regression models.
 
+Values of *n* and *k* actually define running time of the pipeline (there are *C<sub>n</sub><sup>k</sup>* feature subsets). For example, iterating through all 8-gene signatures composed of *n = 20* genes is possible (see example breast cancer data below), while search for over *n = 1000* genes will never end even on the most powerful supercomputer.
+
 Input data can consist from different batches (datasets), and each dataset should be labeled by one of the following types:
 1. **Training set:** samples from training datasets will be used for tuning classification/regression models. At least one such dataset is required; if multiple given, the union will be used.
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
