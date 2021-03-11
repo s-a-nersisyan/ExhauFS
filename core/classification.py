@@ -9,6 +9,7 @@ import itertools
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import make_scorer
 from sklearn.utils import shuffle
+from scipy.special import binom
 
 # This is needed for ROC AUC scoring
 # since SVM requires special care in this case
@@ -24,6 +25,7 @@ class ExhaustiveClassification:
         classifier, classifier_kwargs,
         classifier_CV_ranges, classifier_CV_folds,
         limit_feature_subsets, n_feature_subsets, shuffle_feature_subsets,
+        max_n, max_estimated_time,
         scoring_functions, main_scoring_function, main_scoring_threshold,
         n_processes=1, random_state=None, verbose=True
     ):
@@ -76,6 +78,10 @@ class ExhaustiveClassification:
             Number of processed feature subsets.
         shuffle_feature_subsets : bool
             If true, processed feature subsets are selected randomly.
+        max_n : int
+            Maximal number of selected features.
+        max_estimated_time : float
+            Maximal estimated time of pipeline running
         scoring_functions : dict
             Dict with scoring functions which will be calculated
             for each classifier. Keys are names (arbitrary strings),
@@ -123,6 +129,9 @@ class ExhaustiveClassification:
         self.n_feature_subsets = n_feature_subsets
         self.shuffle_feature_subsets = shuffle_feature_subsets
 
+        self.max_n = max_n
+        self.max_estimated_time = max_estimated_time
+
         self.scoring_functions = scoring_functions
         self.main_scoring_function = main_scoring_function
         self.main_scoring_threshold = main_scoring_threshold
@@ -130,6 +139,24 @@ class ExhaustiveClassification:
         # For ROC AUC and SVM we should pass probability=True argument
         if "ROC_AUC" in self.scoring_functions and self.classifier == SVC:
             self.classifier_kwargs["probability"] = True
+
+    @property
+    def pre_selected_features(self):
+        """Get pre-selected features.
+        
+        Returns
+        -------
+        list
+            List of pre-selected features.
+        """
+        if self.feature_pre_selector:
+            return self.feature_pre_selector(
+                self.df, 
+                self.ann, 
+                **self.feature_pre_selector_kwargs
+            )
+        else:
+            return self.df.columns.to_list()
 
     def exhaustive_run(self):
         """Run the pipeline for classifier construction 
@@ -141,57 +168,13 @@ class ExhaustiveClassification:
             DataFrame with constructed classifiers and their
             quality scores.
         """
-
         # Pre-select features
-        if self.feature_pre_selector:
-            pre_selected_features = self.feature_pre_selector(
-                self.df, 
-                self.ann, 
-                **self.feature_pre_selector_kwargs
-            )
-        else:
-            pre_selected_features = self.df.columns.to_list()
+        pre_selected_features=self.pre_selected_features
 
         # Iterate over n, k pairs
         all_result_dfs = []
         for n, k in zip(self.n_k["n"], self.n_k["k"]):
-            # Do feature selection
-            features = self.feature_selector(
-                self.df[pre_selected_features], 
-                self.ann, 
-                n, 
-                **self.feature_selector_kwargs
-            )
-            
-            # Split feature subsets to chunks for multiprocessing
-            feature_subsets = list(itertools.combinations(features, k))
-            if self.limit_feature_subsets:
-                if self.shuffle_feature_subsets:
-                    shuffle(feature_subsets, random_state=self.random_state)
-                feature_subsets = feature_subsets[:self.n_feature_subsets]
-            chunk_size = math.ceil(len(feature_subsets) / self.n_processes)
-            process_args = []
-            for i in range(self.n_processes):
-                start = chunk_size * i
-                end = chunk_size * (i + 1) if i < self.n_processes - 1 else len(feature_subsets)
-                process_args.append(feature_subsets[start:end])
-            
-            # Run exhaustive search in multiple processes
-            start_time = time.time()
-            with Pool(self.n_processes) as p:
-                process_results = p.map(self.exhaustive_run_over_chunk, process_args, chunksize=1)
-            end_time = time.time()
-            
-            if self.verbose:
-                main_info = f"Pipeline iteration finished in {end_time - start_time} seconds for n={n}, k={k}"
-                tail_infos = [f"n_processes = {self.n_processes}"]
-                if self.limit_feature_subsets:
-                    tail_infos.append(f"n_feature_subsets = {self.n_feature_subsets}")
-                tail_info = ", ".join(tail_infos)
-                print(f"{main_info} ({tail_info})")
-            
-            # Merge results
-            df_n_k_results = pd.concat(process_results, axis=0)
+            df_n_k_results, _   = self.exhaustive_run_n_k(n, k, pre_selected_features)
             df_n_k_results["n"] = n
             df_n_k_results["k"] = k
             all_result_dfs.append(df_n_k_results)
@@ -201,10 +184,74 @@ class ExhaustiveClassification:
         res["n"] = res["n"].astype(int)
         res["k"] = res["k"].astype(int)
 
-        if self.limit_feature_subsets and self.shuffle_feature_subsets:
-            res.sort_values(by=["n","k","features"])
-
         return res
+
+    def exhaustive_run_n_k(self, n, k, pre_selected_features
+    ):
+        """Run the pipeline for classifier construction 
+        using exhaustive feature selection over number of
+        selected features, length of features subsets and
+        pre-selected features.
+        
+        Parameters
+        ----------
+        n : int
+            Number of selected features.
+        k : int
+            Length of features subsets.
+        pre_selected_features : list
+            List of pre-selected features.
+        
+        Returns
+        -------
+        pandas.DataFrame, float
+            DataFrame with constructed classifiers and their
+            quality scores, spent time.
+        """
+
+        # Do feature selection
+        features = self.feature_selector(
+            self.df[pre_selected_features], 
+            self.ann, 
+            n, 
+            **self.feature_selector_kwargs
+        )
+        
+        # Split feature subsets to chunks for multiprocessing
+        feature_subsets = list(itertools.combinations(features, k))
+        if self.limit_feature_subsets:
+            if self.shuffle_feature_subsets:
+                shuffle(feature_subsets, random_state=self.random_state)
+            feature_subsets = feature_subsets[:self.n_feature_subsets]
+        chunk_size = math.ceil(len(feature_subsets) / self.n_processes)
+        process_args = []
+        for i in range(self.n_processes):
+            start = chunk_size * i
+            end = chunk_size * (i + 1) if i < self.n_processes - 1 else len(feature_subsets)
+            process_args.append(feature_subsets[start:end])
+        
+        # Run exhaustive search in multiple processes
+        start_time = time.time()
+        with Pool(self.n_processes) as p:
+            process_results = p.map(self.exhaustive_run_over_chunk, process_args, chunksize=1)
+        end_time = time.time()
+        spent_time = end_time - start_time
+        
+        if self.verbose:
+            main_info = f"Pipeline iteration finished in {spent_time} seconds for n={n}, k={k}"
+            tail_infos = [f"n_processes = {self.n_processes}"]
+            if self.limit_feature_subsets:
+                tail_infos.append(f"n_feature_subsets = {self.n_feature_subsets}")
+            tail_info = ", ".join(tail_infos)
+            print(f"{main_info} ({tail_info})")
+        
+        # Merge results
+        df_n_k_results = pd.concat(process_results, axis=0)
+
+        if self.limit_feature_subsets and self.shuffle_feature_subsets:
+            df_n_k_results.sort_index()
+
+        return df_n_k_results, spent_time
 
     def exhaustive_run_over_chunk(self, args):
         """Run the pipeline for classifier construction
@@ -361,3 +408,33 @@ class ExhaustiveClassification:
                 filtration_passed = False
         
         return scores, filtration_passed
+
+    def estimate_run_n_k_time(self, n, k, time):
+        """Estimate run time of the pipeline for classifiers 
+        construction using exhaustive feature selection over 
+        number of selected features and length of features subsets.
+        
+        Parameters
+        ----------
+        n : int
+            Number of selected features.
+        k : int
+            Length of features subsets.
+        time : float
+            Time spent on running of the pipeline over n selected features
+            and k features subsets using only restricted number of processed 
+            feature subsets (given by self.n_feature_subsets).
+        
+        Returns
+        -------
+        float
+            Estimated time that the pipeline will spend on running over
+            n selected features and k features subsets without any restriction
+            on the number of processed feature subsets.
+        """
+        if self.limit_feature_subsets:
+            coef = binom(n,k)
+            if coef > self.n_feature_subsets:
+                time = coef * time / self.n_feature_subsets
+
+        return time

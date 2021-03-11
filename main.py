@@ -4,6 +4,7 @@ import sys
 
 # Internal imports
 import build_classifiers
+import estimator
 
 class EFS(object):
 
@@ -71,6 +72,7 @@ The most commonly used efs commands are:
         args = parser.parse_args(sys.argv[2:])
 
         # Run estimator
+        estimator.main(args.config)
 
     def summary(self):
         

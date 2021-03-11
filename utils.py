@@ -103,6 +103,8 @@ def initialize_classification_model(config, df, ann, n_k):
         config.get("limit_feature_subsets", False),
         config.get("n_feature_subsets", 0),
         config.get("shuffle_feature_subsets", False),
+        config.get("max_n", 100),
+        config.get("max_estimated_time", 720) * 3600,
         {s: getattr(accuracy_scores, s) for s in config["scoring_functions"]},
         config["main_scoring_function"], config.get("main_scoring_threshold", 0.5),
         n_processes=config.get("n_processes", 1),
