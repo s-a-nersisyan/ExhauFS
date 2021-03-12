@@ -18,6 +18,10 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 **TODO:** add flowchart.
 
+# Requirements
+
+**TODO:** list of requirements + how to install.
+
 # Running ExhaustiveFS
 
 ## Step 1: data preparation
@@ -63,5 +67,21 @@ For survival analysis, annotation table should contain binary event indicator an
 
 **TODO:** add real example to examples/ and write about it here.
 
-## etc
+## Step 2: creating configuration file
+
+**TODO:** config format for classification and regression.
+
+## Step 3: defining a *n*, *k* grid
+
+**TODO:** how to run script which will estimate running time
+
+## Step 4: running an exhaustive pipeline
+
+**TODO:** how to run exhaustive search and see the results.
+
+## Step 5: generating report for a single model
+
+**TODO:** how to generate a report for classifier, classifier + Kaplan-Meier, survival analysis.
+
+# etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).
