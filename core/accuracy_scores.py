@@ -41,6 +41,22 @@ def TPR(y_true, y_pred):
     TN, FP, FN, TP = M[0, 0], M[0, 1], M[1, 0], M[1, 1]
     return TP / (TP + FN)
 
+def FPR(y_true, y_pred):
+    """False positive rate
+    
+    Parameters
+    ----------
+    y_true : array-like
+        List of true class labels
+    y_pred : array-like
+        List of predicted class labels
+
+    Returns
+    -------
+    float
+        False positive rate
+    """    
+    return 1 - TNR(y_true, y_pred)
 
 def TNR(y_true, y_pred):
     """True negative rate (specificity)

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, roc_auc_score
 
 from utils import *
+from core.accuracy_scores import TPR, FPR
 
 
 def save_SVM_feature_importances(classifier, fname):
@@ -64,10 +65,18 @@ if __name__ == "__main__":
                     X = preprocessor.transform(X)
                 
                 y_score = classifier.predict_proba(X)
-                fpr, tpr, _ = roc_curve(y, y_score[:, 1])
-
+                fpr, tpr, thresholds = roc_curve(y, y_score[:, 1])
+                
+                y_pred = classifier.predict(X)
+                tpr_def = TPR(y, y_pred)
+                fpr_def = FPR(y, y_pred)
+                
                 plt.figure(figsize=(6, 6))
                 plt.title("ROC curve, {} ({} set)".format(dataset, dataset_type))
+
+                # default threshold classifier performance
+                plt.plot(fpr_def, tpr_def,'o', color='red')
+                # TODO: maybe need to add some test nearby
                 
                 plt.plot(fpr, tpr)
                 plt.plot([0, 1], [0, 1], "--", c="grey")
