@@ -3,6 +3,8 @@ import os
 import pickle
 
 import pandas as pd
+import numpy as np
+
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, roc_auc_score
 
@@ -74,12 +76,15 @@ if __name__ == "__main__":
                 plt.figure(figsize=(6, 6))
                 plt.title("ROC curve, {} ({} set)".format(dataset, dataset_type))
 
-                # default threshold classifier performance
-                plt.plot(fpr_def, tpr_def,'o', color='red')
-                # TODO: maybe need to add some test nearby
-                
                 plt.plot(fpr, tpr)
                 plt.plot([0, 1], [0, 1], "--", c="grey")
+                
+                # Plot actual FPR and TPR of classifier as a dot on ROC curve
+                plt.plot(fpr_def, tpr_def, "o", color="red")
+                # TODO: maybe need to add some test nearby
+                
+                plt.xticks(np.arange(0, 1.1, 0.1))
+                plt.yticks(np.arange(0, 1.1, 0.1))
                 
                 plt.xlim([-0.01, 1.01])
                 plt.ylim([-0.01, 1.01])
