@@ -169,7 +169,7 @@ class ExhaustiveClassification:
             quality scores.
         """
         # Pre-select features
-        pre_selected_features=self.pre_selected_features
+        pre_selected_features = self.pre_selected_features
 
         # Iterate over n, k pairs
         all_result_dfs = []
@@ -186,8 +186,7 @@ class ExhaustiveClassification:
 
         return res
 
-    def exhaustive_run_n_k(self, n, k, pre_selected_features
-    ):
+    def exhaustive_run_n_k(self, n, k, pre_selected_features):
         """Run the pipeline for classifier construction 
         using exhaustive feature selection over number of
         selected features, length of features subsets and
@@ -219,10 +218,12 @@ class ExhaustiveClassification:
         
         # Split feature subsets to chunks for multiprocessing
         feature_subsets = list(itertools.combinations(features, k))
+
         if self.limit_feature_subsets:
             if self.shuffle_feature_subsets:
                 shuffle(feature_subsets, random_state=self.random_state)
             feature_subsets = feature_subsets[:self.n_feature_subsets]
+        
         chunk_size = math.ceil(len(feature_subsets) / self.n_processes)
         process_args = []
         for i in range(self.n_processes):

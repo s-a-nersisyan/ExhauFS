@@ -5,6 +5,7 @@ import pandas as pd
 
 from utils import *
 
+
 def main(config_path):
     
     # Load config and input data
