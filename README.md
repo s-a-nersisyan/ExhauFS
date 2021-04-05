@@ -80,8 +80,18 @@ For survival analysis, annotation table should contain binary event indicator an
 **TODO:** how to run exhaustive search and see the results.
 
 ## Step 5: generating report for a single model
-
-**TODO:** how to generate a report for classifier, classifier + Kaplan-Meier, survival analysis.
+To get detailed report on the specific classifier (set of features): 
+* Create configuration file (use ./examples/make_classifier_summary/config.json as
+   template) and set following key parameters:
+    * "data_path" - path to dataset used for search of classifiers
+  (relative to directory with configuration file);
+    * "annotation_path" - path to annotation file (relative to directory 
+      with configuration file);
+    * "output_dir" - path to output directory for detailed report 
+      (relative to directory with configuration file);
+    * "features_subset" - set of features belonging to the classifier of interest;
+* run "python3 make_classifier_summary.py <configuration file name>"    
+* check the detailed report in "output_dir"
 
 # etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).
