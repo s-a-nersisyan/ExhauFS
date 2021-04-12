@@ -76,7 +76,7 @@ Configuration file should contain the dictionary parameter:value in json format:
     "parametor_2" : value_2,
     ...
     "parametor_N" : value_N
-}
+}.
 For classification task, you can set values for the following parameters:
 * data_path
     Type: path to file.
@@ -91,19 +91,19 @@ For classification task, you can set values for the following parameters:
     Type: path to dir.
     Dir for output files. If not exist, will be create.
 * feature_pre_selector
-    Type: string. Default: None
+    Type: string. Default: None.
     Name of feature pre-selection function from ./core/feature_pre_selectors.py
 * feature_pre_selector_kwargs
-    Type: dict. Default: {}
+    Type: dict. Default: {}.
     Dict of keyword arguments for feature pre-selector.
 * feature_selector
-    Type: string. Default: None
+    Type: string. Default: None.
     Name of feature selection function from ./core/feature_selectors.py
 * feature_selector_kwargs
-    Type: dict. Default: {}
+    Type: dict. Default: {}.
     Dict of keyword arguments for feature selector.
 * preprocessor
-    Type: string. Default: None
+    Type: string. Default: None.
     Name of class for data preprocessing from sklearn.preprocessing
 * preprocessor_kwargs
     Type: dict.
@@ -121,19 +121,19 @@ For classification task, you can set values for the following parameters:
     Type: int.
     Number of fold for K-Folds cross-validation.
 * limit_feature_subsets
-    Type: bool. Default: false
+    Type: bool. Default: false.
     If true, limit the number of processed feature subsets.
 * n_feature_subsets
-    Type: int. Default: 0
+    Type: int. Default: 0.
     Number of processed feature subsets.
 * shuffle_feature_subsets
-    Type: bool. Default: false
+    Type: bool. Default: false.
     If true, processed feature subsets are selected randomly.
 * max_n
-    Type : int. Default: 100
+    Type : int. Default: 100.
     Maximal number of selected features.
 * max_estimated_time
-    Type : float. Default: 720(?)
+    Type : float. Default: 720(?).
     Maximal estimated time of pipeline running.
 * scoring_functions
     Type: list.
@@ -142,16 +142,16 @@ For classification task, you can set values for the following parameters:
     Type: string.
     Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for classifier filtering.
 * main_scoring_threshold
-    Type: float. Default: 0.5
+    Type: float. Default: 0.5.
     A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
 * n_processes
-    Type : int. Default: 1
+    Type : int. Default: 1.
     Number of processes.
 * random_state
     Type : int.
     Random seed (set to an arbitrary integer for reproducibility).
 * verbose
-    Type: bool. Default: true
+    Type: bool. Default: true.
     If True, print running time for each pair of n, k.
 
 
