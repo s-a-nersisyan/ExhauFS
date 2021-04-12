@@ -69,7 +69,92 @@ For survival analysis, annotation table should contain binary event indicator an
 
 ## Step 2: creating configuration file
 
-**TODO:** config format for classification and regression.
+**TODO:** config format for regression.
+Configuration file should contain the dictionary parameter:value in json format:
+{
+    "parametor_1" : value_1,
+    "parametor_2" : value_2,
+    ...
+    "parametor_N" : value_N
+}
+For classification task, you can set values for the following parameters:
+* data_path
+    Type: path to file.
+    Path (absolute or relative to configuration file) to csv table of the data.
+* annotation_path
+    Type: path to file.
+    Path (absolute or relative to configuration file) to csv table of the data annotation.
+* n_k_path
+    Type: path to file.
+    Path (absolute or relative to configuration file) to a file with columns n and k defining a grid for exhaustive feature selection: n is a number of selected features, k is a length of each features subset.
+* output_dir
+    Type: path to dir.
+    Dir for output files. If not exist, will be create.
+* feature_pre_selector
+    Type: string. Default: None
+    Name of feature pre-selection function from ./core/feature_pre_selectors.py
+* feature_pre_selector_kwargs
+    Type: dict. Default: {}
+    Dict of keyword arguments for feature pre-selector.
+* feature_selector
+    Type: string. Default: None
+    Name of feature selection function from ./core/feature_selectors.py
+* feature_selector_kwargs
+    Type: dict. Default: {}
+    Dict of keyword arguments for feature selector.
+* preprocessor
+    Type: string. Default: None
+    Name of class for data preprocessing from sklearn.preprocessing
+* preprocessor_kwargs
+    Type: dict.
+    Dict of keyword arguments for preprocessor initialization.
+* classifier
+    Type: string.
+    Name of class for classification from ./core/classifiers.py
+* classifier_kwargs
+    Type: dict.
+    Dict of keyword arguments for classifier initialization.
+* classifier_CV_ranges
+    Type: dict.
+    Dict defining classifier parameters which should be cross-validated. Keys are parameter names, values are iterables for grid search.
+* classifier_CV_folds
+    Type: int.
+    Number of fold for K-Folds cross-validation.
+* limit_feature_subsets
+    Type: bool. Default: false
+    If true, limit the number of processed feature subsets.
+* n_feature_subsets
+    Type: int. Default: 0
+    Number of processed feature subsets.
+* shuffle_feature_subsets
+    Type: bool. Default: false
+    If true, processed feature subsets are selected randomly.
+* max_n
+    Type : int. Default: 100
+    Maximal number of selected features.
+* max_estimated_time
+    Type : float. Default: 720(?)
+    Maximal estimated time of pipeline running.
+* scoring_functions
+    Type: list.
+    List with names for scoring functions (from accuracy_scores.py) which will be calculated for each classifier.
+* main_scoring_function
+    Type: string.
+    Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for classifier filtering.
+* main_scoring_threshold
+    Type: float. Default: 0.5
+    A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
+* n_processes
+    Type : int. Default: 1
+    Number of processes.
+* random_state
+    Type : int.
+    Random seed (set to an arbitrary integer for reproducibility).
+* verbose
+    Type: bool. Default: true
+    If True, print running time for each pair of n, k.
+
+
 
 ## Step 3: defining a *n*, *k* grid
 
