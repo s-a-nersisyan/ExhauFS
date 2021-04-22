@@ -18,7 +18,7 @@ from sklearn.svm import SVC
 
 class ExhaustiveClassification:
     def __init__(
-        self, df, ann, n_k,
+        self, df, ann, n_k, output_dir,
         feature_pre_selector, feature_pre_selector_kwargs,
         feature_selector, feature_selector_kwargs,
         preprocessor, preprocessor_kwargs,
@@ -45,6 +45,8 @@ class ExhaustiveClassification:
             for exhaustive feature selection: n is a number
             of selected features, k is a length of each
             features subset.
+        output_dir : str
+            Path to dir for output files
         feature_pre_selector : callable
             Function for feature pre-selection. For examples, see
             feature_pre_selectors.py.
@@ -106,6 +108,7 @@ class ExhaustiveClassification:
         self.df = df
         self.ann = ann
         self.n_k = n_k
+        self.output_dir = output_dir
 
         self.n_processes = n_processes
         self.random_state = random_state
@@ -173,16 +176,55 @@ class ExhaustiveClassification:
 
         # Iterate over n, k pairs
         all_result_dfs = []
+        summary_n_k = pd.DataFrame(columns=[
+            "n", "k", "num_training_reliable", "num_validation_reliable", "percentage_reliable"
+        ])
         for n, k in zip(self.n_k["n"], self.n_k["k"]):
             df_n_k_results, _   = self.exhaustive_run_n_k(n, k, pre_selected_features)
             df_n_k_results["n"] = n
             df_n_k_results["k"] = k
             all_result_dfs.append(df_n_k_results)
+            
+            # Save classifiers
+            res = pd.concat(all_result_dfs, axis=0)
+            res.index.name = "features"
+            res["n"] = res["n"].astype(int)
+            res["k"] = res["k"].astype(int)
+            res.to_csv("{}/classifiers.csv".format(self.output_dir))
+            
+            # Summary table #1: number of classifiers which passed
+            # scoring threshold on training + filtration sets,
+            # and training + filtration + validation sets
+            
+            # All classifiers already passed filtration on training and filtration datasets
+            tf_num = len(df_n_k_results)
 
-        res = pd.concat(all_result_dfs, axis=0)
-        res.index.name = "features"
-        res["n"] = res["n"].astype(int)
-        res["k"] = res["k"].astype(int)
+            # Now do filtration on training, filtration and 
+            # validation datasets (i.e. all datasets)
+            all_datasets = self.ann["Dataset"].unique()
+            query_string = " & ".join([
+                "(`{};{}` >= {})".format(
+                    ds, 
+                    self.main_scoring_function, 
+                    self.main_scoring_threshold
+                ) for ds in all_datasets
+            ])
+            all_num = len(df_n_k_results.query(query_string))
+
+            summary_n_k = summary_n_k.append({
+                "n": n, "k": k,
+                "num_training_reliable": tf_num,
+                "num_validation_reliable": all_num,
+                "percentage_reliable": all_num / tf_num * 100 if tf_num != 0 else 0
+            }, ignore_index=True)
+            
+            summary_n_k["n"] = summary_n_k["n"].astype(int)
+            summary_n_k["k"] = summary_n_k["k"].astype(int)
+            summary_n_k["num_training_reliable"] = summary_n_k["num_training_reliable"].astype(int)
+            summary_n_k["num_validation_reliable"] = summary_n_k["num_validation_reliable"].astype(int)
+            summary_n_k.to_csv("{}/summary_n_k.csv".format(self.output_dir), index=None)
+    
+            
 
         return res
 

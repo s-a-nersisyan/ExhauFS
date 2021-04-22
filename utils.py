@@ -50,6 +50,10 @@ def load_config_and_input_data(config_path, load_n_k=True):
         n_k = pd.read_csv(os.path.join(config_dirname, config["n_k_path"]).replace("\\","/"))
     else:
         n_k = pd.DataFrame()
+    output_dir = os.path.join(config_dirname, config["output_dir"])
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    config["output_dir"] = output_dir
     
     # Ensure paths in config are relative to config directory
     if "path_to_file" in config.get("feature_pre_selector_kwargs", {}):
@@ -90,7 +94,7 @@ def initialize_classification_model(config, df, ann, n_k):
         Initialized classification model.
     """
     return classification.ExhaustiveClassification(
-        df, ann, n_k,
+        df, ann, n_k, config["output_dir"],
         getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
         config.get("feature_pre_selector_kwargs", {}),
         getattr(feature_selectors, config.get("feature_selector") or "", None),
