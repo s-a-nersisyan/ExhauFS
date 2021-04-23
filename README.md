@@ -160,7 +160,13 @@ For classification task, you can set values for the following parameters:
 
 **TODO:** how to run script which will estimate running time
 
-## Step 4: running an exhaustive pipeline
+## Step 4: running the exhaustive pipeline
+
+When input data, configuration file and *n*, *k* grid are prepared, it is possible
+to run the exhaustive pipeline:
+```bash
+python3 build_classifiers.py /path/to/config.json
+```
 
 **TODO:** how to run exhaustive search and see the results.
 
