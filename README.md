@@ -162,13 +162,19 @@ For classification task, you can set values for the following parameters:
 
 ## Step 4: running the exhaustive pipeline
 
-When input data, configuration file and *n*, *k* grid are prepared, it is possible
-to run the exhaustive pipeline:
+When input data, configuration file and *n*, *k* grid are ready,
+the exhaustive pipeline could be executed:
 ```bash
 python3 build_classifiers.py /path/to/config.json
 ```
-
-**TODO:** how to run exhaustive search and see the results.
+This will generate three files in the specified output folder:
+* classifiers.csv: this file contains all classifiers which passed the filtration together with their quality metrics.
+* summary_n_k.csv: for each pair of *n*, *k* three numbers are given: number of classifiers which passed the filtration,
+number of classifiers which showed reliable performance (i.e., passed quality thresholds) on the validation set and
+their ratio (in %). Low percentage of validation-reliable classifiers together with high number of 
+filtration-reliable classifiers is usually associated with overfitting.
+* summary_features.csv: for each feature percentage of classifiers carrying this feature 
+is listed (classifiers which passed the filtration are considered).
 
 ## Step 5: generating report for a single model
 To get detailed report on the specific classifier (set of features): 
