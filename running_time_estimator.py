@@ -18,7 +18,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets):
     model = initialize_classification_model(config, df, ann, n_k)
 
     res = pd.DataFrame(columns=["n", "k", "Estimated time"])
-    for k in range(1, max_k + 1):
+    for k in range(21, max_k + 1):
         for n in range(k, df.shape[1] + 1):
             _, time = model.exhaustive_run_n_k(n, k, model.pre_selected_features)
             time = model.estimate_run_n_k_time(n, k, time)
@@ -31,12 +31,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets):
     res["k"] = res["k"].astype(int)
     
     # Save results
-    config_dirname = os.path.dirname(config_path)
-    output_dir = os.path.join(config_dirname, config["output_dir"])
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
-    res.to_csv("{}/estimated_times.csv".format(output_dir), index=False)
+    res.to_csv("{}/estimated_times.csv".format(config["output_dir"]), index=False)
 
 
 if __name__ == "__main__":
