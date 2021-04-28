@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 from datetime import datetime
+import shutil
 from utils import *
 
 def main(config_path):
@@ -16,6 +17,8 @@ def main(config_path):
                  str(datetime.now()).replace(" ", ".").replace(":", ".").replace("-", ".")
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
+    # save configuration for further analysis
+    shutil.copy(config_path, output_dir)
 
     # Build classifiers
     model = initialize_classification_model(output_dir, config, df, ann, n_k)
