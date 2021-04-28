@@ -3,20 +3,24 @@ import os
 
 import pandas as pd
 
+from datetime import datetime
 from utils import *
-
 
 def main(config_path):
     
     # Load config and input data
     config, df, ann, n_k = load_config_and_input_data(config_path)
-    
+
+    # common output directory
+    output_dir = config["output_dir"] + "_" + \
+                 str(datetime.now()).replace(" ", ".").replace(":", ".").replace("-", ".")
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
     # Build classifiers
-    model = initialize_classification_model(config, df, ann, n_k)
+    model = initialize_classification_model(output_dir, config, df, ann, n_k)
     res = model.exhaustive_run()
-    
-    output_dir = config["output_dir"]
-    
+
     # Summary table #2: for each feature calculate
     # percentage of reliable classifiers which use it
     feature_counts = {}

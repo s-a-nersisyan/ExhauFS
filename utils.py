@@ -67,12 +67,13 @@ def load_config_and_input_data(config_path, load_n_k=True):
     return config, df, ann, n_k
 
 
-def initialize_classification_model(config, df, ann, n_k):
+def initialize_classification_model(output_dir, config, df, ann, n_k):
     """Run the pipeline for classifier construction
     using exhaustive feature selection.
     
     Parameters
     ----------
+    output_dir: output directory
     config : dict
         Configuration dictionary.
     df : pandas.DataFrame
@@ -94,7 +95,7 @@ def initialize_classification_model(config, df, ann, n_k):
         Initialized classification model.
     """
     return classification.ExhaustiveClassification(
-        df, ann, n_k, config["output_dir"],
+        df, ann, n_k, output_dir,
         getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
         config.get("feature_pre_selector_kwargs", {}),
         getattr(feature_selectors, config.get("feature_selector") or "", None),
