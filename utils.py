@@ -10,7 +10,8 @@ from core import feature_selectors
 from core import preprocessors
 from core import classifiers
 from core import accuracy_scores
-
+from datetime import datetime
+import shutil
 
 def load_config_and_input_data(config_path, load_n_k=True):
     """Load configuration file and input data
@@ -66,14 +67,12 @@ def load_config_and_input_data(config_path, load_n_k=True):
 
     return config, df, ann, n_k
 
-
-def initialize_classification_model(output_dir, config, df, ann, n_k):
+def initialize_classification_model(config, df, ann, n_k):
     """Run the pipeline for classifier construction
     using exhaustive feature selection.
     
     Parameters
     ----------
-    output_dir: output directory
     config : dict
         Configuration dictionary.
     df : pandas.DataFrame
@@ -94,6 +93,13 @@ def initialize_classification_model(output_dir, config, df, ann, n_k):
     classification.ExhaustiveClassification
         Initialized classification model.
     """
+
+    # output directory
+    output_dir = config["output_dir"] + "_" + \
+                 str(datetime.now()).replace(" ", ".").replace(":", ".").replace("-", ".")
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
     return classification.ExhaustiveClassification(
         df, ann, n_k, output_dir,
         getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
@@ -115,4 +121,4 @@ def initialize_classification_model(output_dir, config, df, ann, n_k):
         n_processes=config.get("n_processes", 1),
         random_state=config["random_state"],
         verbose=config.get("verbose", True)
-    )
+    ), output_dir
