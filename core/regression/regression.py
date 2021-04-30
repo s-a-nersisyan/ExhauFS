@@ -16,21 +16,21 @@ from scipy.special import binom
 from sklearn.svm import SVC
 
 
-class ExhaustiveClassification:
+class ExhaustiveRegression:
     def __init__(
             self, df, ann, n_k, output_dir,
             feature_pre_selector, feature_pre_selector_kwargs,
             feature_selector, feature_selector_kwargs,
             preprocessor, preprocessor_kwargs,
-            classifier, classifier_kwargs,
-            classifier_CV_ranges, classifier_CV_folds,
+            regressor, regressor_kwargs,
+            regressor_CV_ranges, regressor_CV_folds,
             limit_feature_subsets, n_feature_subsets, shuffle_feature_subsets,
             max_n, max_estimated_time,
             scoring_functions, main_scoring_function, main_scoring_threshold,
-            n_processes=1, random_state=None, verbose=True
+            n_processes=1, random_state=None, verbose=True,
     ):
         """Class constructor
-        
+
         Parameters
         ----------
         df : pandas.DataFrame
@@ -38,7 +38,7 @@ class ExhaustiveClassification:
             and columns represent features.
         ann : pandas.DataFrame
             DataFrame with annotation of samples. Three columns are mandatory:
-            Class (binary labels), Dataset (dataset identifiers) and 
+            Class (binary labels), Dataset (dataset identifiers) and
             Dataset type (Training, Filtration, Validation).
         n_k : pandas.DataFrame
             DataFrame with columns n and k defining a grid
@@ -63,16 +63,16 @@ class ExhaustiveClassification:
             will be suitable.
         preprocessor_kwargs : dict
             Dict of keyword arguments for preprocessor initialization.
-        classifier : sklearn.classifier-like
-            Class for classification, should have fit and
-            predict methods. Any sklearn classifier will be suitable.
-        classifier_kwargs : dict
-            Dict of keyword arguments for classifier initialization.
-        classifier_CV_ranges : dict
-            Dict defining classifier parameters which should be
+        regressor : sklearn.regressor-like
+            Class for regression, should have fit and
+            predict methods. Any sklearn regressor will be suitable.
+        regressor_kwargs : dict
+            Dict of keyword arguments for regressor initialization.
+        regressor_CV_ranges : dict
+            Dict defining regressor parameters which should be
             cross-validated. Keys are parameter names, values are
             iterables for grid search.
-        classifier_CV_folds : int
+        regressor_CV_folds : int
             Number of fold for K-Folds cross-validation.
         limit_feature_subsets : bool
             If true, limit the number of processed feature subsets.
@@ -86,16 +86,16 @@ class ExhaustiveClassification:
             Maximal estimated time of pipeline running
         scoring_functions : dict
             Dict with scoring functions which will be calculated
-            for each classifier. Keys are names (arbitrary strings),
+            for each regressor. Keys are names (arbitrary strings),
             values are sklearn.metrics-like callables (should accept
             y_true, y_pred arguments and return a score).
         main_scoring_function : str
             Key from scoring_functions dict defining the "main" scoring
             function which will be optimized during cross-validation
-            and will be used for classifier filtering.
+            and will be used for regressor filtering.
         main_scoring_threshold : float
-            A number defining threshold for classifier filtering: 
-            classifiers with score below this threshold on 
+            A number defining threshold for regressor filtering:
+            regressors with score below this threshold on
             training/filtration sets will not be further evaluated.
         n_processes : int
             Number of processes.
@@ -123,10 +123,10 @@ class ExhaustiveClassification:
         self.preprocessor = preprocessor
         self.preprocessor_kwargs = preprocessor_kwargs
 
-        self.classifier = classifier
-        self.classifier_kwargs = classifier_kwargs
-        self.classifier_CV_ranges = classifier_CV_ranges
-        self.classifier_CV_folds = classifier_CV_folds
+        self.regressor = regressor
+        self.regressor_kwargs = regressor_kwargs
+        self.regressor_CV_ranges = regressor_CV_ranges
+        self.regressor_CV_folds = regressor_CV_folds
 
         self.limit_feature_subsets = limit_feature_subsets
         self.n_feature_subsets = n_feature_subsets
@@ -140,13 +140,13 @@ class ExhaustiveClassification:
         self.main_scoring_threshold = main_scoring_threshold
 
         # For ROC AUC and SVM we should pass probability=True argument
-        if "ROC_AUC" in self.scoring_functions and self.classifier == SVC:
-            self.classifier_kwargs["probability"] = True
+        if "ROC_AUC" in self.scoring_functions and self.regressor == SVC:
+            self.regressor_kwargs["probability"] = True
 
     @property
     def pre_selected_features(self):
         """Get pre-selected features.
-        
+
         Returns
         -------
         list
@@ -162,13 +162,13 @@ class ExhaustiveClassification:
             return self.df.columns.to_list()
 
     def exhaustive_run(self):
-        """Run the pipeline for classifier construction 
+        """Run the pipeline for regressor construction
         using exhaustive feature selection.
-        
+
         Returns
         -------
         pandas.DataFrame
-            DataFrame with constructed classifiers and their
+            DataFrame with constructed regressors and their
             quality scores.
         """
         # Pre-select features
@@ -180,27 +180,26 @@ class ExhaustiveClassification:
             "n", "k", "num_training_reliable", "num_validation_reliable", "percentage_reliable"
         ])
         for n, k in zip(self.n_k["n"], self.n_k["k"]):
-            print(n, k)
             df_n_k_results, _ = self.exhaustive_run_n_k(n, k, pre_selected_features)
             df_n_k_results["n"] = n
             df_n_k_results["k"] = k
             all_result_dfs.append(df_n_k_results)
 
-            # Save classifiers
+            # Save regressors
             res = pd.concat(all_result_dfs, axis=0)
             res.index.name = "features"
             res["n"] = res["n"].astype(int)
             res["k"] = res["k"].astype(int)
-            res.to_csv("{}/classifiers.csv".format(self.output_dir))
+            res.to_csv("{}/regressors.csv".format(self.output_dir))
 
-            # Summary table #1: number of classifiers which passed
+            # Summary table #1: number of regressors which passed
             # scoring threshold on training + filtration sets,
             # and training + filtration + validation sets
 
-            # All classifiers already passed filtration on training and filtration datasets
+            # All regressors already passed filtration on training and filtration datasets
             tf_num = len(df_n_k_results)
 
-            # Now do filtration on training, filtration and 
+            # Now do filtration on training, filtration and
             # validation datasets (i.e. all datasets)
             all_datasets = self.ann["Dataset"].unique()
             query_string = " & ".join([
@@ -228,11 +227,11 @@ class ExhaustiveClassification:
         return res
 
     def exhaustive_run_n_k(self, n, k, pre_selected_features):
-        """Run the pipeline for classifier construction 
+        """Run the pipeline for regressor construction
         using exhaustive feature selection over number of
         selected features, length of features subsets and
         pre-selected features.
-        
+
         Parameters
         ----------
         n : int
@@ -241,11 +240,11 @@ class ExhaustiveClassification:
             Length of features subsets.
         pre_selected_features : list
             List of pre-selected features.
-        
+
         Returns
         -------
         pandas.DataFrame, float
-            DataFrame with constructed classifiers and their
+            DataFrame with constructed regressors and their
             quality scores, spent time.
         """
 
@@ -254,7 +253,7 @@ class ExhaustiveClassification:
             self.df[pre_selected_features],
             self.ann,
             n,
-            **self.feature_selector_kwargs
+            **self.feature_selector_kwargs,
         )
 
         # Split feature subsets to chunks for multiprocessing
@@ -296,21 +295,21 @@ class ExhaustiveClassification:
         return df_n_k_results, spent_time
 
     def exhaustive_run_over_chunk(self, args):
-        """Run the pipeline for classifier construction
+        """Run the pipeline for regressor construction
         using exhaustive feature selection over chunk of
         feature subsets
-        
+
         Parameters
         ----------
         args : tuple
             Two-element tuple, containing DataFrame with
-            n features (i.e. after feature selection) and 
+            n features (i.e. after feature selection) and
             a list of feature subsets.
-        
+
         Returns
         -------
         pandas.DataFrame
-            DataFrame with constructed classifiers and their
+            DataFrame with constructed regressors and their
             quality scores.
         """
 
@@ -319,8 +318,8 @@ class ExhaustiveClassification:
         results = []
         for features_subset in feature_subsets:
             features_subset = list(features_subset)
-            classifier, best_params, preprocessor = self.fit_classifier(features_subset)
-            scores, filtration_passed = self.evaluate_classifier(classifier, preprocessor, features_subset)
+            regressor, best_params, preprocessor = self.fit_regressor(features_subset)
+            scores, filtration_passed = self.evaluate_regressor(regressor, preprocessor, features_subset)
 
             item = {"Features subset": features_subset, "Best parameters": best_params, "Scores": scores}
             if filtration_passed:
@@ -328,7 +327,7 @@ class ExhaustiveClassification:
 
         score_cols = ["{};{}".format(dataset, s) for dataset in np.unique(self.ann["Dataset"]) for s in
                       self.scoring_functions]
-        parameter_cols = list(self.classifier_CV_ranges)
+        parameter_cols = list(self.regressor_CV_ranges)
 
         df_results = pd.DataFrame(columns=score_cols + parameter_cols)
         for item in results:
@@ -342,24 +341,24 @@ class ExhaustiveClassification:
 
         return df_results
 
-    def fit_classifier(self, features_subset):
-        """Fit classifier given features subset
-        
+    def fit_regressor(self, features_subset):
+        """Fit regressor given features subset
+
         Parameters
         ----------
         features_subset : list
             list of features which should be used for
-            classifier fitting.
-        
+            regressor fitting.
+
         Returns
         -------
-        sklearn.classifier-like, sklearn.preprocessing-like
-            Classifier and preprocessor fitted on the
+        sklearn.regressor-like, sklearn.preprocessing-like
+            regressor and preprocessor fitted on the
             training set.
         """
         # Extract training set
-        X_train = self.df.loc[self.ann["Dataset type"] == "Training", features_subset].to_numpy()
-        y_train = self.ann.loc[self.ann["Dataset type"] == "Training", "Class"].to_numpy()
+        X_train = self.df.loc[self.ann["Dataset type"] == "Training", features_subset]
+        y_train = self.ann.loc[self.ann["Dataset type"] == "Training", ['Event', "Time to event"]]
 
         # Fit preprocessor and transform training set
         if self.preprocessor:
@@ -369,73 +368,77 @@ class ExhaustiveClassification:
         else:
             preprocessor = None
 
-        # Fit classifier with CV search of unknown parameters
-        classifier = self.classifier(random_state=self.random_state, **self.classifier_kwargs)
+        if self.regressor_CV_ranges:
+            # TODO: add optional random_state
+            regressor = self.regressor(**self.regressor_kwargs)
 
-        splitter = StratifiedKFold(
-            n_splits=self.classifier_CV_folds,
-            shuffle=True,
-            random_state=self.random_state
-        )
-        scoring = {
-            s: make_scorer(self.scoring_functions[s], needs_proba=True if s == "ROC_AUC" else False)
-            for s in self.scoring_functions
-        }
-        searcher = GridSearchCV(
-            classifier,
-            self.classifier_CV_ranges,
-            scoring=scoring,
-            cv=splitter,
-            refit=False
-        )
-        searcher.fit(X_train, y_train)
+            splitter = StratifiedKFold(
+                n_splits=self.regressor_CV_folds,
+                shuffle=True,
+                random_state=self.random_state,
+            )
+            scoring = {
+                s: make_scorer(self.scoring_functions[s], needs_proba=True if s == "ROC_AUC" else False)
+                for s in self.scoring_functions
+            }
+            searcher = GridSearchCV(
+                regressor,
+                self.regressor_CV_ranges,
+                scoring=scoring,
+                cv=splitter,
+                refit=False
+            )
+            searcher.fit(X_train, y_train)
 
-        all_params = searcher.cv_results_["params"]
-        mean_test_scorings = {s: searcher.cv_results_["mean_test_" + s] for s in self.scoring_functions}
-        best_ind = np.argmax(mean_test_scorings[self.main_scoring_function])
-        best_params = {param: all_params[best_ind][param] for param in all_params[best_ind]}
+            all_params = searcher.cv_results_["params"]
+            mean_test_scorings = {s: searcher.cv_results_["mean_test_" + s] for s in self.scoring_functions}
+            best_ind = np.argmax(mean_test_scorings[self.main_scoring_function])
+            best_params = {param: all_params[best_ind][param] for param in all_params[best_ind]}
+        else:
+            best_params = {}
 
-        # Refit classifier with best parameters
-        classifier = self.classifier(random_state=self.random_state, **self.classifier_kwargs, **best_params)
-        classifier.fit(X_train, y_train)
+        # Refit regressor with best parameters
+        # TODO: add optional random_state
+        regressor = self.regressor(**self.regressor_kwargs, **best_params)
+        regressor.fit(X_train, y_train)
 
-        return classifier, best_params, preprocessor
+        return regressor, best_params, preprocessor
 
-    def evaluate_classifier(self, classifier, preprocessor, features_subset):
-        """Evaluate classifier given features subset
-        
+    def evaluate_regressor(self, regressor, preprocessor, features_subset):
+        """Evaluate regressor given features subset
+
         Parameters
         ----------
-        classifier : sklearn.classifier-like
-            Fitted classifier object with a method predict(X).
+        regressor : sklearn.regressor-like
+            Fitted regressor object with a method predict(X).
         preprocessor : sklearn.preprocessing-like
             Fitted preprocessing object with a method transform(X) .
         features_subset : list
             list of features which should be used for
-            classifier evaluation.
-        
+            regressor evaluation.
+
         Returns
         -------
         dict, bool
             Dict with scores for each dataset and
-            boolean value indicating whether a 
-            classifier passed given threshold on
+            boolean value indicating whether a
+            regressor passed given threshold on
             training and filtration sets.
         """
         scores = {}
         filtration_passed = True
         for dataset, dataset_type in self.ann[["Dataset", "Dataset type"]].drop_duplicates().to_numpy():
             X_test = self.df.loc[self.ann["Dataset"] == dataset, features_subset].to_numpy()
-            y_test = self.ann.loc[self.ann["Dataset"] == dataset, "Class"].to_numpy()
+            y_test = self.ann.loc[self.ann["Dataset"] == dataset, ['Event', "Time to event"]].to_numpy()
 
             # Normalize dataset using preprocessor fitted on training set
             if preprocessor:
                 X_test = preprocessor.transform(X_test)
             # Make predictions
-            y_pred = classifier.predict(X_test)
+            y_pred = regressor.predict(X_test)
 
             if "ROC_AUC" in self.scoring_functions:
-                y_score = classifier.predict_proba(X_test)
+                y_score = regressor.predict_proba(X_test)
 
             scores[dataset] = {}
             for s in self.scoring_functions:
@@ -453,10 +456,10 @@ class ExhaustiveClassification:
         return scores, filtration_passed
 
     def estimate_run_n_k_time(self, n, k, time):
-        """Estimate run time of the pipeline for classifiers 
-        construction using exhaustive feature selection over 
+        """Estimate run time of the pipeline for regressors
+        construction using exhaustive feature selection over
         number of selected features and length of features subsets.
-        
+
         Parameters
         ----------
         n : int
@@ -465,9 +468,9 @@ class ExhaustiveClassification:
             Length of features subsets.
         time : float
             Time spent on running of the pipeline over n selected features
-            and k features subsets using only restricted number of processed 
+            and k features subsets using only restricted number of processed
             feature subsets (given by self.n_feature_subsets).
-        
+
         Returns
         -------
         float

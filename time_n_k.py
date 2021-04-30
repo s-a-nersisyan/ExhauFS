@@ -63,7 +63,7 @@ if __name__ == "__main__":
     
     # Load config and input data
     config_path = sys.argv[1] 
-    config, df, ann, _ = build_classifiers.load_config_and_input_data(config_path, load_n_k=False)
+    config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
     config["verbose"] = False
     
     # Values of n and k for warm-up
