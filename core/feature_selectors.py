@@ -16,8 +16,11 @@ import numpy as np
 
 from scipy.stats import spearmanr, ttest_ind
 
+from .regression.feature_selectors import *
+from .utils import get_datasets
 
-def t_test(df, ann, n, datasets=None):
+
+def t_test(df, ann, n, datasets=None, feature="Class"):
     """Select n features with the lowest p-values according to t-test
     
     Parameters
@@ -35,22 +38,21 @@ def t_test(df, ann, n, datasets=None):
         List of dataset identifiers which should be used to calculate
         test statistic. By default (None), union of all non-validation
         datasets will be used.
-
+    feature : str
+        Feature by witch to make hypothesis
     Returns
     -------
     list
         List of n features associated with the lowest p-values.
     """
 
-    # By default, consider all datasets except validation ones
-    if not datasets:
-        datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
+    datasets = get_datasets(ann, datasets)
     
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
     X = df_subset.to_numpy()
-    y = ann_subset["Class"].to_numpy()
+    y = ann_subset[feature].to_numpy()
 
     t_statistics, pvalues = ttest_ind(X[y == 0], X[y == 1], axis=0)
     features = df_subset.columns
@@ -58,7 +60,7 @@ def t_test(df, ann, n, datasets=None):
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
 
 
-def spearman_correlation(df, ann, n, datasets=None):
+def spearman_correlation(df, ann, n, datasets=None, feature="Class"):
     """Select n features with the highest correlation with target label
     
     Parameters
@@ -72,6 +74,8 @@ def spearman_correlation(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
+    feature : str
+        Feature by witch to make hypothesis
     datasets : array-like
         List of dataset identifiers which should be used to calculate
         correlation. By default (None), union of all non-validation
@@ -84,15 +88,13 @@ def spearman_correlation(df, ann, n, datasets=None):
         values of Spearman correlation.
     """
 
-    # By default, consider all datasets except validation ones
-    if not datasets:
-        datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
+    datasets = get_datasets(ann, datasets)
     
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
     X = df_subset.to_numpy()
-    y = ann_subset["Class"].to_numpy()
+    y = ann_subset[feature].to_numpy()
 
     pvalues = [spearmanr(X[:, j], y).pvalue for j in range(X.shape[1])]
     features = df_subset.columns

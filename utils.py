@@ -4,14 +4,16 @@ import json
 
 import pandas as pd
 
-from core import classification  
+from core import classification
+from core import regression
 from core import feature_pre_selectors
 from core import feature_selectors
 from core import preprocessors
 from core import classifiers
+from core import regressors
 from core import accuracy_scores
 from datetime import datetime
-import shutil
+
 
 def load_config_and_input_data(config_path, load_n_k=True):
     """Load configuration file and input data
@@ -66,6 +68,7 @@ def load_config_and_input_data(config_path, load_n_k=True):
         config["feature_selector_kwargs"]["path_to_file"] = correct_path
 
     return config, df, ann, n_k
+
 
 def initialize_classification_model(config, df, ann, n_k):
     """Run the pipeline for classifier construction
@@ -122,3 +125,53 @@ def initialize_classification_model(config, df, ann, n_k):
         random_state=config["random_state"],
         verbose=config.get("verbose", True)
     ), output_dir
+
+
+def initialize_regression_model(config, df, ann, n_k):
+    """Run the pipeline for regressor construction
+    using exhaustive feature selection.
+
+    Parameters
+    ----------
+    config : dict
+        Configuration dictionary.
+    df : pandas.DataFrame
+        A pandas DataFrame whose rows represent samples
+        and columns represent features.
+    ann : pandas.DataFrame
+        DataFrame with annotation of samples. Three columns are mandatory:
+        Class (binary labels), Dataset (dataset identifiers) and
+        Dataset type (Training, Filtration, Validation).
+    n_k : pandas.DataFrame
+        DataFrame with columns n and k defining a grid
+        for exhaustive feature selection: n is a number
+        of selected features, k is a length of each
+        features subset.
+
+    Returns
+    -------
+    regression.ExhaustiveRegression
+        Initialized regression model.
+    """
+    return regression.ExhaustiveRegression(
+        df, ann, n_k, config["output_dir"],
+        getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
+        config.get("feature_pre_selector_kwargs", {}),
+        getattr(feature_selectors, config.get("feature_selector") or "", None),
+        config.get("feature_selector_kwargs", {}),
+        getattr(preprocessors, config["preprocessor"] or "", None),
+        config["preprocessor_kwargs"],
+        getattr(regressors, config["regressor"]),
+        config["regressor_kwargs"],
+        config["regressor_CV_ranges"], config["regressor_CV_folds"],
+        config.get("limit_feature_subsets", False),
+        config.get("n_feature_subsets", 0),
+        config.get("shuffle_feature_subsets", False),
+        config.get("max_n", 100),
+        config.get("max_estimated_time", 720) * 3600,
+        {s: getattr(accuracy_scores, s) for s in config["scoring_functions"]},
+        config["main_scoring_function"], config.get("main_scoring_threshold", 0.5),
+        n_processes=config.get("n_processes", 1),
+        random_state=config["random_state"],
+        verbose=config.get("verbose", True)
+    )

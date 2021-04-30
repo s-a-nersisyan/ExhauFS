@@ -12,7 +12,7 @@ def score(y_true, y_pred):
 
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
-
+from sklearn.metrics import r2_score
 
 # Alias for sklearn ROC AUC function
 # This is an exception for general signature:
@@ -20,6 +20,9 @@ from sklearn.metrics import roc_auc_score
 # accepts y_true and y_score (see sklearn
 # documentation for more details).
 ROC_AUC = roc_auc_score
+
+# Alias for sklearn r2 score function
+R2 = r2_score
 
 
 def TPR(y_true, y_pred):
@@ -41,6 +44,7 @@ def TPR(y_true, y_pred):
     TN, FP, FN, TP = M[0, 0], M[0, 1], M[1, 0], M[1, 1]
     return TP / (TP + FN)
 
+
 def FPR(y_true, y_pred):
     """False positive rate
     
@@ -55,8 +59,9 @@ def FPR(y_true, y_pred):
     -------
     float
         False positive rate
-    """    
+    """
     return 1 - TNR(y_true, y_pred)
+
 
 def TNR(y_true, y_pred):
     """True negative rate (specificity)

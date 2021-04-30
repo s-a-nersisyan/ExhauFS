@@ -6,10 +6,10 @@ import sys
 import build_classifiers
 import estimator
 
+
 class EFS(object):
 
     def __init__(self):
-
         # Create new parser of script arguments
         parser = argparse.ArgumentParser(
             usage='efs [-h] <command> [<args>]',
@@ -24,25 +24,22 @@ The most commonly used efs commands are:
 
         # Read the first positional argument defining a command
         parser.add_argument('command', metavar='command',
-                            type=str, choices=['build','estimate','summary'],
-                            help='Subcommand to run') 
+                            type=str, choices=['build', 'estimate', 'summary'],
+                            help='Subcommand to run')
         args = parser.parse_args(sys.argv[1:2])
 
         # Read arguments for a given command
         getattr(self, args.command)()
 
     def common_args(self, parser):
-
         parser.add_argument('-c', '--config', metavar='path',
-                            type=str, default="./config.json", 
+                            type=str, default="./breast_classification.json",
                             help='Configuration file; Default: %(default)s')
 
-
     def build(self):
-        
         # Create new parser for build arguments
         parser = argparse.ArgumentParser(
-            prog = 'efs build',
+            prog='efs build',
             description='Build classifiers')
 
         # Add common options
@@ -57,10 +54,9 @@ The most commonly used efs commands are:
         build_classifiers.main(args.config)
 
     def estimate(self):
-        
         # Create new parser for estimate arguments
         parser = argparse.ArgumentParser(
-            prog = 'efs estimate',
+            prog='efs estimate',
             description='Estimate running time')
 
         # Add common options
@@ -75,10 +71,9 @@ The most commonly used efs commands are:
         estimator.main(args.config)
 
     def summary(self):
-        
         # Create new parser for summary arguments
         parser = argparse.ArgumentParser(
-            prog = 'efs summary',
+            prog='efs summary',
             description='Get summary')
 
         # Add common options

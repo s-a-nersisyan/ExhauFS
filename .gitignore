@@ -4,3 +4,5 @@ data.csv
 annotation.csv
 n_k.csv
 runs
+configs
+data
