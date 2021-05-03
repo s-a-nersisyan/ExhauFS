@@ -23,9 +23,6 @@ from .regression.accuracy_scores import *
 # documentation for more details).
 ROC_AUC = roc_auc_score
 
-# Alias for sklearn r2 score function
-R2 = r2_score
-
 
 def TPR(y_true, y_pred):
     """True positive rate (sensitivity)

@@ -33,7 +33,7 @@ The most commonly used efs commands are:
 
     def common_args(self, parser):
         parser.add_argument('-c', '--config', metavar='path',
-                            type=str, default="./breast_classification.json",
+                            type=str, default="./config.json",
                             help='Configuration file; Default: %(default)s')
 
     def build(self):
