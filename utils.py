@@ -5,12 +5,11 @@ import json
 import pandas as pd
 
 from core import classification
-from core import regression
+from core.regression import regression, regressors
 from core import feature_pre_selectors
 from core import feature_selectors
 from core import preprocessors
-from core import classifiers
-from core import regressors
+from core.classification import classifiers
 from core import accuracy_scores
 
 
@@ -146,23 +145,26 @@ def initialize_regression_model(config, df, ann, n_k):
         Initialized regression model.
     """
     return regression.ExhaustiveRegression(
-        df, ann, n_k, config["output_dir"],
-        getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
-        config.get("feature_pre_selector_kwargs", {}),
-        getattr(feature_selectors, config.get("feature_selector") or "", None),
-        config.get("feature_selector_kwargs", {}),
-        getattr(preprocessors, config["preprocessor"] or "", None),
-        config["preprocessor_kwargs"],
-        getattr(regressors, config["regressor"]),
-        config["regressor_kwargs"],
-        config["regressor_CV_ranges"], config["regressor_CV_folds"],
-        config.get("limit_feature_subsets", False),
-        config.get("n_feature_subsets", 0),
-        config.get("shuffle_feature_subsets", False),
-        config.get("max_n", 100),
-        config.get("max_estimated_time", 720) * 3600,
-        {s: getattr(accuracy_scores, s) for s in config["scoring_functions"]},
-        config["main_scoring_function"], config.get("main_scoring_threshold", 0.5),
+        df, ann,
+        n_k=n_k,
+        output_dir=config["output_dir"],
+        feature_pre_selector=getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
+        feature_pre_selector_kwargs=config.get("feature_pre_selector_kwargs", {}),
+        feature_selector=getattr(feature_selectors, config.get("feature_selector") or "", None),
+        feature_selector_kwargs=config.get("feature_selector_kwargs", {}),
+        preprocessor=getattr(preprocessors, config["preprocessor"] or "", None),
+        preprocessor_kwargs=config["preprocessor_kwargs"],
+        model=getattr(regressors, config["regressor"]),
+        model_kwargs=config["regressor_kwargs"],
+        model_cv_ranges=config["regressor_CV_ranges"], model_cv_folds=config["regressor_CV_folds"],
+        limit_feature_subsets=config.get("limit_feature_subsets", False),
+        n_feature_subsets=config.get("n_feature_subsets", 0),
+        shuffle_feature_subsets=config.get("shuffle_feature_subsets", False),
+        max_n=config.get("max_n", 100),
+        max_estimated_time=config.get("max_estimated_time", 720) * 3600,
+        scoring_functions={s: getattr(accuracy_scores, s) for s in config["scoring_functions"]},
+        main_scoring_function=config["main_scoring_function"],
+        main_scoring_threshold=config.get("main_scoring_threshold", 0.5),
         n_processes=config.get("n_processes", 1),
         random_state=config["random_state"],
         verbose=config.get("verbose", True)
