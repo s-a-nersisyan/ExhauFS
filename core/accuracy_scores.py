@@ -14,6 +14,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import r2_score
 
+from .regression.accuracy_scores import *
+
 # Alias for sklearn ROC AUC function
 # This is an exception for general signature:
 # instead of y_true and y_pred, this function

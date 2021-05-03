@@ -8,6 +8,7 @@ def main(config_path):
     # Build regressors
     model = initialize_regression_model(config, df, ann, n_k)
     res = model.exhaustive_run()
+    print(res)
 
     output_dir = config["output_dir"]
 

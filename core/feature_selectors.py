@@ -11,16 +11,14 @@ def feature_selector(df, ann, n, **kwargs):
     return n_element_list_of_features
 """
 
-
-import numpy as np
-
 from scipy.stats import spearmanr, ttest_ind
 
-from .regression.feature_selectors import *
 from .utils import get_datasets
 
+from .regression.feature_selectors import *
 
-def t_test(df, ann, n, datasets=None, feature="Class"):
+
+def t_test(df, ann, n, datasets=None):
     """Select n features with the lowest p-values according to t-test
     
     Parameters
@@ -52,7 +50,7 @@ def t_test(df, ann, n, datasets=None, feature="Class"):
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
     X = df_subset.to_numpy()
-    y = ann_subset[feature].to_numpy()
+    y = ann_subset["Class"].to_numpy()
 
     t_statistics, pvalues = ttest_ind(X[y == 0], X[y == 1], axis=0)
     features = df_subset.columns
@@ -60,7 +58,7 @@ def t_test(df, ann, n, datasets=None, feature="Class"):
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
 
 
-def spearman_correlation(df, ann, n, datasets=None, feature="Class"):
+def spearman_correlation(df, ann, n, datasets=None):
     """Select n features with the highest correlation with target label
     
     Parameters
@@ -94,7 +92,7 @@ def spearman_correlation(df, ann, n, datasets=None, feature="Class"):
     df_subset = df.loc[samples]
     ann_subset = ann.loc[samples]
     X = df_subset.to_numpy()
-    y = ann_subset[feature].to_numpy()
+    y = ann_subset["Class"].to_numpy()
 
     pvalues = [spearmanr(X[:, j], y).pvalue for j in range(X.shape[1])]
     features = df_subset.columns
@@ -133,3 +131,14 @@ def from_file(df, ann, n, path_to_file, sep=None):
         features_from_file = [line.split(sep)[0] for line in f]
     
     return [feature for feature in features_from_file if feature in df.columns][:n]
+
+
+def entity(df, ann, n, datasets=None):
+    """Select first n features from a given DataFrame
+    Returns
+    -------
+    list
+        List of first n columns from a given DataFrame.
+    """
+
+    return list(df.columns)[:n]
