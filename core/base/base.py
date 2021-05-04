@@ -112,10 +112,25 @@ class ExhaustiveBase(
              If True, print running time for each pair of n, k.
          """
 
-        super().__init__(df, ann, preselector_function=feature_pre_selector, kwargs=feature_pre_selector_kwargs)
-        super().__init__(df, ann, selector_function=feature_selector, kwargs=feature_selector_kwargs)
-        super().__init__(df, ann, preprocessor_model=preprocessor, kwargs=preprocessor_kwargs)
-        super().__init__(model=model, kwargs=model_kwargs, random_state=random_state)
+        FeaturePreSelector.__init__(
+            self,
+            df, ann,
+            preselector_function=feature_pre_selector, kwargs=feature_pre_selector_kwargs,
+        )
+        FeatureSelector.__init__(
+            self,
+            df, ann,
+            selector_function=feature_selector, kwargs=feature_selector_kwargs,
+        )
+        Preprocessor.__init__(
+            self,
+            df, ann,
+            preprocessor_model=preprocessor, kwargs=preprocessor_kwargs,
+        )
+        Model.__init__(
+            self,
+            model=model, kwargs=model_kwargs, random_state=random_state,
+        )
 
         self.model_cv_ranges = model_cv_ranges
         self.model_cv_folds = model_cv_folds

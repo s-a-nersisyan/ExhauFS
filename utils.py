@@ -53,7 +53,7 @@ def load_config_and_input_data(config_path, load_n_k=True):
         n_k = pd.DataFrame()
     output_dir = os.path.join(config_dirname, config["output_dir"])
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir)
     config["output_dir"] = output_dir
     
     # Ensure paths in config are relative to config directory
