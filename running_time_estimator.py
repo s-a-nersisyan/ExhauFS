@@ -18,7 +18,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets):
     model = initialize_classification_model(config, df, ann, n_k)
 
     res = pd.DataFrame(columns=["n", "k", "Estimated time"])
-    for k in range(21, max_k + 1):
+    for k in range(1, max_k + 1):
         for n in range(k, df.shape[1] + 1):
             _, time = model.exhaustive_run_n_k(n, k, model.pre_selected_features)
             time = model.estimate_run_n_k_time(n, k, time)

@@ -89,6 +89,6 @@ if __name__ == "__main__":
     config_dirname = os.path.dirname(config_path)
     output_dir = os.path.join(config_dirname, config["output_dir"])
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir)
     
     res.to_csv("{}/time_estimates.csv".format(output_dir), index=None)

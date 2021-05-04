@@ -46,7 +46,7 @@ if __name__ == "__main__":
     config_dirname = os.path.dirname(config_path)
     output_dir = os.path.join(config_dirname, config["output_dir"]).replace("\\","/")
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir)
 
     # Generate report and roc_auc pdfs
     report = []
