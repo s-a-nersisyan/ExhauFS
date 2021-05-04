@@ -14,7 +14,6 @@ def main(config_path):
     # Build regressors
     model = initialize_regression_model(config, df, ann, n_k)
     res = model.exhaustive_run()
-    print(res)
 
     # Summary table #2: for each feature calculate
     # percentage of reliable regressors which use it

@@ -6,6 +6,8 @@ from sklearn.model_selection import \
 from sklearn.metrics import make_scorer
 from sklearn.svm import SVC
 
+from core.utils import check_if_func_accepts_arg
+
 
 class Model:
     def __init__(self, model, kwargs, random_state):
@@ -23,6 +25,8 @@ class Model:
         """
         self.model = model
         self.model_kwargs = kwargs
+        if check_if_func_accepts_arg(self.model.__init__, 'random_state'):
+            self.model_kwargs['random_state'] = random_state
 
         self.random_state = random_state
 
@@ -47,7 +51,6 @@ class Model:
             self.model_kwargs['probability'] = True
 
         if cv_ranges:
-            # TODO: add random state (not all models accept it)
             model = self.model(**self.model_kwargs)
 
             splitter = StratifiedKFold(

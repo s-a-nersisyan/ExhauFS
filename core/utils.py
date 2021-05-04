@@ -2,6 +2,7 @@
 Commonly used utils
 """
 
+import inspect
 import numpy as np
 
 
@@ -27,3 +28,11 @@ def get_datasets(ann, datasets=None):
         datasets = np.unique(ann.loc[ann['Dataset type'] != 'Validation', 'Dataset'])
 
     return datasets
+
+
+def check_if_func_accepts_arg(func, arg):
+    for param in inspect.signature(func).parameters:
+        if param == arg:
+            return True
+
+    return False
