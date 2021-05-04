@@ -124,7 +124,6 @@ class ExhaustiveBase(
         )
         Preprocessor.__init__(
             self,
-            df, ann,
             preprocessor_model=preprocessor, kwargs=preprocessor_kwargs,
         )
         Model.__init__(
@@ -315,12 +314,8 @@ class ExhaustiveBase(
         for features_subset in feature_subsets:
             features_subset = list(features_subset)
 
-            model, best_params, preprocessor = self.fit_model(features_subset)
-            scores, filtration_passed = self.evaluate_model(
-                model,
-                preprocessor,
-                features_subset,
-            )
+            model, best_params = self.fit_model(features_subset)
+            scores, filtration_passed = self.evaluate_model(model, features_subset)
 
             item = {
                 'Features subset': features_subset,
@@ -370,7 +365,8 @@ class ExhaustiveBase(
         x_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
         y_train = self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features]
 
-        x_train, preprocessor = self.preprocess(x_train)
+        x_train = self.preprocess(x_train, is_fit=True)
+
         model, best_params = self.get_best_cv_model(
             x_train,
             y_train,
@@ -382,17 +378,15 @@ class ExhaustiveBase(
 
         model.fit(x_train, y_train)
 
-        return model, best_params, preprocessor
+        return model, best_params
 
-    def evaluate_model(self, model, preprocessor, features_subset):
+    def evaluate_model(self, model, features_subset):
         """Evaluate classifier given features subset
 
         Parameters
         ----------
         model : sklearn.model-like
             Fitted model object with a method predict(X).
-        preprocessor : sklearn.preprocessing-like
-            Fitted preprocessing object with a method transform(X) .
         features_subset : list
             list of features which should be used for
             classifier evaluation.
@@ -412,9 +406,7 @@ class ExhaustiveBase(
             x_test = self.df.loc[self.ann['Dataset'] == dataset, features_subset]
             y_test = self.ann.loc[self.ann['Dataset'] == dataset, self.y_features]
 
-            # Normalize dataset using preprocessor fitted on training set
-            if preprocessor:
-                x_test, _ = self.preprocess(x_test, preprocessor)
+            x_test = self.preprocess(x_test)
 
             # Make predictions
             y_pred = model.predict(x_test)

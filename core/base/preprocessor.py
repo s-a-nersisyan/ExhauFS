@@ -2,38 +2,24 @@ import pandas as pd
 
 
 class Preprocessor:
-    def __init__(self, df, ann, preprocessor_model, kwargs):
-        self.df = df
-        self.ann = ann
+    def __init__(self, preprocessor_model, kwargs):
+        self.preprocessor = preprocessor_model(**kwargs) if preprocessor_model else None
 
-        self.preprocessor = preprocessor_model
-        self.preprocessor_kwargs = kwargs
-
-    def preprocess(self, df, preprocessor=None):
-        """Transform input data by passed preprocessor.
+    def preprocess(self, df, is_fit=False):
+        """Transform input data.
 
         Returns
         -------
         tuple
-            Transformed DataFrame and its preprocessor model.
+            Transformed DataFrame.
         """
-        if preprocessor:
-            index = df.index
-            columns = df.columns
+        if self.preprocessor:
+            if is_fit:
+                self.preprocessor.fit(df)
             df = pd.DataFrame(
-                preprocessor.transform(df),
-                index=index,
-                columns=columns,
-            )
-        elif self.preprocessor:
-            index = df.index
-            columns = df.columns
-            preprocessor = self.preprocessor(**self.preprocessor_kwargs)
-            preprocessor.fit(df)
-            df = pd.DataFrame(
-                preprocessor.transform(df),
-                index=index,
-                columns=columns,
+                self.preprocessor.transform(df),
+                index=df.index,
+                columns=df.columns,
             )
 
-        return df, preprocessor
+        return df
