@@ -6,6 +6,7 @@ from sklearn.model_selection import \
 from sklearn.metrics import make_scorer
 from sklearn.svm import SVC
 
+from core.regression.regressors import CoxRegression
 from core.utils import check_if_func_accepts_arg
 
 
@@ -102,3 +103,12 @@ class Model:
         bool
         """
         return method in ['ROC_AUC']
+
+    def check_if_model_needs_numpy(self):
+        """Check if model fit accepts numpy instead of DataFrame.
+
+        Returns
+        -------
+        bool
+        """
+        return not isinstance(self.model, (CoxRegression,))

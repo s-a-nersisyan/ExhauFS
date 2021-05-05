@@ -222,7 +222,6 @@ class ExhaustiveBase(
     def get_feature_subsets(self, n, k):
         # Do feature selection
         features = self.select_features(n)
-        print(features)
 
         # Split feature subsets to chunks for multiprocessing
         feature_subsets = list(itertools.combinations(features, k))
@@ -364,6 +363,8 @@ class ExhaustiveBase(
         # Extract training set
         x_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
         y_train = self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features]
+        if self.check_if_model_needs_numpy():
+            x_train, y_train = x_train.to_numpy(), y_train.to_numpy()
 
         x_train = self.preprocess(x_train, is_fit=True)
 
@@ -405,6 +406,8 @@ class ExhaustiveBase(
         for dataset, dataset_type in self.ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy():
             x_test = self.df.loc[self.ann['Dataset'] == dataset, features_subset]
             y_test = self.ann.loc[self.ann['Dataset'] == dataset, self.y_features]
+            if self.check_if_model_needs_numpy():
+                x_test, y_test = x_test.to_numpy(), y_test.to_numpy()
 
             x_test = self.preprocess(x_test)
 
