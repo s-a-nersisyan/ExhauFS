@@ -5,7 +5,7 @@ class Preprocessor:
     def __init__(self, preprocessor_model, kwargs):
         self.preprocessor = preprocessor_model(**kwargs) if preprocessor_model else None
 
-    def preprocess(self, df, is_fit=False):
+    def preprocess(self, data, is_fit=False):
         """Transform input data.
 
         Returns
@@ -15,11 +15,14 @@ class Preprocessor:
         """
         if self.preprocessor:
             if is_fit:
-                self.preprocessor.fit(df)
-            df = pd.DataFrame(
-                self.preprocessor.transform(df),
-                index=df.index,
-                columns=df.columns,
-            )
+                self.preprocessor.fit(data)
+            if isinstance(data, pd.DataFrame):
+                data = pd.DataFrame(
+                    self.preprocessor.transform(data),
+                    index=data.index,
+                    columns=data.columns,
+                )
+            else:
+                data = self.preprocessor.transform(data)
 
-        return df
+        return data
