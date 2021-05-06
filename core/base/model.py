@@ -89,7 +89,6 @@ class Model:
             best_params = {}
 
         # Refit model with best parameters
-        # TODO: add random state (not all models accept it)
         model = self.model(**self.model_kwargs, **best_params)
 
         return model, best_params
@@ -111,4 +110,5 @@ class Model:
         -------
         bool
         """
-        return not isinstance(self.model, (CoxRegression,))
+
+        return self.model not in [CoxRegression]
