@@ -39,14 +39,11 @@ if __name__ == "__main__":
 
     # Fit classifier
     model = initialize_classification_model(config, df, ann, None)
-    classifier, best_params, preprocessor = model.fit_classifier(config["features_subset"])
-    scores, _ = model.evaluate_classifier(classifier, preprocessor, config["features_subset"])
+    classifier, best_params = model.fit_model(config["features_subset"])
+    scores, _ = model.evaluate_model(classifier, config["features_subset"])
 
     # 1. Short summary on classifiers accuracy on datasets
-    config_dirname = os.path.dirname(config_path)
-    output_dir = os.path.join(config_dirname, config["output_dir"]).replace("\\","/")
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    output_dir = config["output_dir"]
 
     # Generate report and roc_auc pdfs
     report = []
@@ -57,45 +54,45 @@ if __name__ == "__main__":
         report.append("{} ({} set)".format(dataset, dataset_type))
         for metr, val in scores[dataset].items():
             report.append("\t{:12s}: {:.4f}".format(metr, val))
-            
+
             # Plot ROC curve
             if metr == "ROC_AUC":
                 X = df.loc[ann["Dataset"] == dataset, config["features_subset"]].to_numpy()
                 y = ann.loc[ann["Dataset"] == dataset, "Class"].to_numpy()
-                
-                if preprocessor:
-                    X = preprocessor.transform(X)
-                
+
+                if model.preprocessor:
+                    X = model.preprocessor.transform(X)
+
                 y_score = classifier.predict_proba(X)
                 fpr, tpr, thresholds = roc_curve(y, y_score[:, 1])
-                
+
                 y_pred = classifier.predict(X)
                 tpr_def = TPR(y, y_pred)
                 fpr_def = FPR(y, y_pred)
-                
+
                 plt.figure(figsize=(6, 6))
                 plt.title("ROC curve, {} ({} set)".format(dataset, dataset_type))
 
                 plt.plot(fpr, tpr)
                 plt.plot([0, 1], [0, 1], "--", c="grey")
-                
+
                 # Plot actual FPR and TPR of classifier as a dot on ROC curve
                 plt.plot(fpr_def, tpr_def, "o", color="red")
                 # TODO: maybe need to add some test nearby
-                
+
                 plt.xticks(np.arange(0, 1.1, 0.1))
                 plt.yticks(np.arange(0, 1.1, 0.1))
-                
+
                 plt.xlim([-0.01, 1.01])
                 plt.ylim([-0.01, 1.01])
 
                 plt.xlabel("1 - Specificity")
                 plt.ylabel("Sensitivity")
-                
+
                 plot_fname = os.path.join(
                     output_dir,
                     "ROC_{}.pdf".format(dataset)
-                ).replace("\\","/")
+                ).replace("\\", "/")
                 plt.savefig(plot_fname)
                 plt.close()
 
@@ -103,17 +100,17 @@ if __name__ == "__main__":
 
     # Save feature importances report
     if config["classifier"] == "SVC":
-        fi_fname=os.path.join(output_dir,"feature_importances.pdf").replace("\\","/")
+        fi_fname = os.path.join(output_dir, "feature_importances.pdf").replace("\\", "/")
         save_SVM_feature_importances(classifier, fi_fname)
 
     # Save report in file
-    rep_fname=os.path.join(output_dir,"report.txt").replace("\\","/")
+    rep_fname = os.path.join(output_dir, "report.txt").replace("\\", "/")
     with open(rep_fname, "w") as f:
         for item in report:
             f.write("%s\n" % item)
             print("%s" % item)
 
     # Save (classifier, preprocessor) in file
-    model_fname = os.path.join(output_dir, "model.pkl").replace("\\","/")
+    model_fname = os.path.join(output_dir, "model.pkl").replace("\\", "/")
     with open(model_fname, "wb") as f:
-        pickle.dump((classifier, preprocessor), f)
+        pickle.dump((classifier, model.preprocessor), f)

@@ -11,10 +11,11 @@ def feature_selector(df, ann, n, **kwargs):
     return n_element_list_of_features
 """
 
-
-import numpy as np
-
 from scipy.stats import spearmanr, ttest_ind
+
+from .utils import get_datasets
+
+from .regression.feature_selectors import *
 
 
 def t_test(df, ann, n, datasets=None):
@@ -35,16 +36,15 @@ def t_test(df, ann, n, datasets=None):
         List of dataset identifiers which should be used to calculate
         test statistic. By default (None), union of all non-validation
         datasets will be used.
-
+    feature : str
+        Feature by witch to make hypothesis
     Returns
     -------
     list
         List of n features associated with the lowest p-values.
     """
 
-    # By default, consider all datasets except validation ones
-    if not datasets:
-        datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
+    datasets = get_datasets(ann, datasets)
     
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
@@ -72,6 +72,8 @@ def spearman_correlation(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
+    feature : str
+        Feature by witch to make hypothesis
     datasets : array-like
         List of dataset identifiers which should be used to calculate
         correlation. By default (None), union of all non-validation
@@ -84,9 +86,7 @@ def spearman_correlation(df, ann, n, datasets=None):
         values of Spearman correlation.
     """
 
-    # By default, consider all datasets except validation ones
-    if not datasets:
-        datasets = np.unique(ann.loc[ann["Dataset type"] != "Validation", "Dataset"])
+    datasets = get_datasets(ann, datasets)
     
     samples = ann.loc[ann["Dataset"].isin(datasets)].index
     df_subset = df.loc[samples]
@@ -131,3 +131,14 @@ def from_file(df, ann, n, path_to_file, sep=None):
         features_from_file = [line.split(sep)[0] for line in f]
     
     return [feature for feature in features_from_file if feature in df.columns][:n]
+
+
+def entity(df, ann, n, datasets=None):
+    """Select first n features from a given DataFrame
+    Returns
+    -------
+    list
+        List of first n columns from a given DataFrame.
+    """
+
+    return list(df.columns)[:n]
