@@ -6,3 +6,4 @@ configs
 data
 *.csv
 test.py
+output

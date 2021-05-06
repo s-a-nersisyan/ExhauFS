@@ -9,11 +9,11 @@ import itertools
 from sklearn.utils import shuffle
 from scipy.special import binom
 
+from core.utils import seconds_to_hours
 from .feature_pre_selector import FeaturePreSelector
 from .feature_selector import FeatureSelector
 from .preprocessor import Preprocessor
 from .model import Model
-from ..utils import seconds_to_hours
 
 
 class ExhaustiveBase(
@@ -452,7 +452,6 @@ class ExhaustiveBase(
         """
         if self.limit_feature_subsets:
             coef = binom(n, k)
-            print(self.limit_feature_subsets, self.n_feature_subsets, coef)
             if coef > self.n_feature_subsets:
                 return coef * time_per_iteration / self.n_feature_subsets
 
