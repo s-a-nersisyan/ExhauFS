@@ -262,16 +262,22 @@ class ExhaustiveBase(
 
         feature_subsets = self.get_feature_subsets(n, k)
 
-        start_time = time.time()
         if self.n_processes > 1:
             # Run exhaustive search in multiple processes
             process_args = self.get_process_args(feature_subsets)
 
             with Pool(self.n_processes) as p:
-                process_results = p.map(self.exhaustive_run_over_chunk, process_args, chunksize=1)
+                process_results = p.map( self.exhaustive_run_over_chunk, 
+                                         process_args, 
+                                         chunksize=1)
         else:
-            process_results = self.exhaustive_run_over_chunk(feature_subsets)
-        spent_time = time.time() - start_time
+            process_results = [self.exhaustive_run_over_chunk(feature_subsets)]
+
+        # Unpack processes results
+        df_results, spent_times = zip(*process_results)
+
+        # Spent time of exhaustive search is max spent time of all processes
+        spent_time = max(spent_times)
 
         if self.verbose:
             main_info = f'Pipeline iteration finished in {spent_time} seconds for n={n}, k={k}'
@@ -282,7 +288,7 @@ class ExhaustiveBase(
             print(f'{main_info} ({tail_info})')
 
         # Merge results
-        df_n_k_results = pd.concat(process_results, axis=0)
+        df_n_k_results = pd.concat(df_results, axis=0)
 
         if self.limit_feature_subsets and self.shuffle_feature_subsets:
             df_n_k_results.sort_index()
@@ -301,10 +307,13 @@ class ExhaustiveBase(
 
         Returns
         -------
-        pandas.DataFrame
-            DataFrame with constructed classifiers and their
-            quality scores.
+        pandas.DataFrame, float
+            Pair of dataFrame of constructed classifiers 
+            with their quality scores and spent time.
         """
+
+        # Fix the start time of process
+        start_time = time.time()
 
         results = []
         for features_subset in feature_subsets:
@@ -339,7 +348,10 @@ class ExhaustiveBase(
             for parameter in parameter_cols:
                 df_results.loc[index, parameter] = item['Best parameters'][parameter]
 
-        return df_results
+        # Calculate spent time of process
+        spent_time = time.time() - start_time
+
+        return df_results, spent_time
 
     def fit_model(self, features_subset):
         """Fit classifier given features subset
