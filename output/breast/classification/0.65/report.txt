@@ -1,0 +1,32 @@
+Accuracy metrics:
+//--------------------------------------------
+GSE1456 (validation set)
+	TPR         : 0.7083
+	TNR         : 0.7639
+	min_TPR_TNR : 0.7083
+	ROC_AUC     : 0.7188
+
+GSE3494 (training set)
+	TPR         : 0.6970
+	TNR         : 0.6905
+	min_TPR_TNR : 0.6905
+	ROC_AUC     : 0.7017
+
+GSE6532 (training set)
+	TPR         : 0.7667
+	TNR         : 0.6939
+	min_TPR_TNR : 0.6939
+	ROC_AUC     : 0.8612
+
+GSE12093 (filtration set)
+	TPR         : 0.6667
+	TNR         : 0.6970
+	min_TPR_TNR : 0.6667
+	ROC_AUC     : 0.7304
+
+GSE17705 (filtration set)
+	TPR         : 0.6538
+	TNR         : 0.7250
+	min_TPR_TNR : 0.6538
+	ROC_AUC     : 0.7083
+

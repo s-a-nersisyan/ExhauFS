@@ -13,6 +13,7 @@ from .feature_pre_selector import FeaturePreSelector
 from .feature_selector import FeatureSelector
 from .preprocessor import Preprocessor
 from .model import Model
+from ..utils import seconds_to_hours
 
 
 class ExhaustiveBase(
@@ -32,7 +33,6 @@ class ExhaustiveBase(
             model, model_kwargs,
             model_cv_ranges, model_cv_folds,
             limit_feature_subsets, n_feature_subsets, shuffle_feature_subsets,
-            max_n, max_estimated_time,
             scoring_functions, main_scoring_function, main_scoring_threshold,
             n_processes=1, random_state=None, verbose=True,
     ):
@@ -144,9 +144,6 @@ class ExhaustiveBase(
         self.limit_feature_subsets = limit_feature_subsets
         self.n_feature_subsets = n_feature_subsets
         self.shuffle_feature_subsets = shuffle_feature_subsets
-
-        self.max_n = max_n
-        self.max_estimated_time = max_estimated_time
 
         self.scoring_functions = scoring_functions
         self.main_scoring_function = main_scoring_function
@@ -260,7 +257,7 @@ class ExhaustiveBase(
         -------
         pandas.DataFrame, float
             DataFrame with constructed classifiers and their
-            quality scores, spent time.
+            quality scores, spent time in hours.
         """
 
         feature_subsets = self.get_feature_subsets(n, k)
@@ -290,7 +287,7 @@ class ExhaustiveBase(
         if self.limit_feature_subsets and self.shuffle_feature_subsets:
             df_n_k_results.sort_index()
 
-        return df_n_k_results, spent_time
+        return df_n_k_results, seconds_to_hours(spent_time)
 
     def exhaustive_run_over_chunk(self, feature_subsets):
         """Run the pipeline for classifier construction
@@ -455,6 +452,7 @@ class ExhaustiveBase(
         """
         if self.limit_feature_subsets:
             coef = binom(n, k)
+            print(self.limit_feature_subsets, self.n_feature_subsets, coef)
             if coef > self.n_feature_subsets:
                 return coef * time_per_iteration / self.n_feature_subsets
 
