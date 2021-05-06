@@ -36,3 +36,7 @@ def check_if_func_accepts_arg(func, arg):
             return True
 
     return False
+
+
+def seconds_to_hours(seconds):
+    return seconds / 3600
