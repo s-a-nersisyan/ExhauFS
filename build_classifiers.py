@@ -6,13 +6,10 @@ def main(config_path):
     config, df, ann, n_k = load_config_and_input_data(config_path)
 
     # Build classifiers
-    model, output_dir = initialize_classification_model(config, df, ann, n_k)
-    # save configuration for further analysis
-    shutil.copy(config_path, output_dir)
+    model = initialize_classification_model(config, df, ann, n_k)
     res = model.exhaustive_run()
 
     output_dir = config["output_dir"]
-
 
     # Summary table #2: for each feature calculate
     # percentage of reliable classifiers which use it

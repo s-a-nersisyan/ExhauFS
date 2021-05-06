@@ -17,7 +17,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets):
 
     res = pd.DataFrame(columns=["n", "k", "Estimated time"])
     for k in range(1, max_k + 1):
-        for n in range(k, df.shape[1] + 1):
+        for n in range(k, 3):#df.shape[1] + 1):
             _, time = model.exhaustive_run_n_k(n, k)
             time = model.estimate_run_n_k_time(n, k, time)
             if time > max_estimated_time:

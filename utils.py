@@ -1,7 +1,7 @@
 import sys
 import os
 import json
-
+from shutil import copyfile
 import pandas as pd
 
 from core import classification
@@ -53,15 +53,19 @@ def load_config_and_input_data(config_path, load_n_k=True):
     else:
         n_k = pd.DataFrame()
     output_dir = os.path.join(config_dirname, config["output_dir"])
-    if not os.path.exists(output_dir):
+    # output directory
+    output_dir = f"{output_dir}_{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}"
+    if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     config["output_dir"] = output_dir
-    
+    # save config for further analysis
+    copyfile(config_path, os.path.join(output_dir, 'config.json'))
+
     # Ensure paths in config are relative to config directory
     if "path_to_file" in config.get("feature_pre_selector_kwargs", {}):
         correct_path = os.path.join(config_dirname, config["feature_pre_selector_kwargs"]["path_to_file"]).replace("\\","/")
         config["feature_pre_selector_kwargs"]["path_to_file"] = correct_path
-    
+
     if "path_to_file" in config.get("feature_selector_kwargs", {}):
         correct_path = os.path.join(config_dirname, config["feature_selector_kwargs"]["path_to_file"]).replace("\\","/")
         config["feature_selector_kwargs"]["path_to_file"] = correct_path
@@ -96,21 +100,15 @@ def initialize_classification_model(config, df, ann, n_k):
         Initialized classification model.
     """
 
-    # output directory
-    output_dir = config["output_dir"] + "_" + \
-                 str(datetime.now()).replace(" ", ".").replace(":", ".").replace("-", ".")
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
     return classification.ExhaustiveClassification(
-        df, ann, n_k, output_dir,
+        df, ann, n_k, config["output_dir"],
         getattr(feature_pre_selectors, config.get("feature_pre_selector") or "", None),
         config.get("feature_pre_selector_kwargs", {}),
         getattr(feature_selectors, config.get("feature_selector") or "", None),
         config.get("feature_selector_kwargs", {}),
         getattr(preprocessors, config["preprocessor"] or "", None),
         config["preprocessor_kwargs"],
-        getattr(classifiers, config["classifier"]), 
+        getattr(classifiers, config["classifier"]),
         config["classifier_kwargs"],
         config["classifier_CV_ranges"], config["classifier_CV_folds"],
         config.get("limit_feature_subsets", False),
@@ -121,7 +119,7 @@ def initialize_classification_model(config, df, ann, n_k):
         n_processes=config.get("n_processes", 1),
         random_state=config["random_state"],
         verbose=config.get("verbose", True)
-    ), output_dir
+    )
 
 
 def initialize_regression_model(config, df, ann, n_k):

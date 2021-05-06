@@ -8,8 +8,6 @@ def main(config_path):
     config, df, ann, n_k = load_config_and_input_data(config_path)
 
     output_dir = config["output_dir"]
-    # to not forget the settings for the results
-    copyfile(config_path, os.path.join(output_dir, 'config.json'))
 
     # Build regressors
     model = initialize_regression_model(config, df, ann, n_k)
