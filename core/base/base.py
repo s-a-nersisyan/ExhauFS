@@ -308,8 +308,8 @@ class ExhaustiveBase(
         Returns
         -------
         pandas.DataFrame, float
-            Pair of dataFrame of constructed classifiers 
-            with their quality scores and spent time.
+            DataFrame with constructed classifiers and their
+            quality scores, spent time in seconds.
         """
 
         # Fix the start time of process
