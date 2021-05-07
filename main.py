@@ -3,9 +3,6 @@ import argparse
 import sys
 
 # Internal imports
-import build_classifiers
-import estimator
-
 
 class EFS(object):
 
@@ -51,6 +48,7 @@ The most commonly used efs commands are:
         args = parser.parse_args(sys.argv[2:])
 
         # Run builder
+        import build_classifiers
         build_classifiers.main(args.config)
 
     def estimate(self):
@@ -63,12 +61,25 @@ The most commonly used efs commands are:
         self.common_args(parser)
 
         # Add estimate options
+        parser.add_argument('max_k', type=int,
+                            help='Maximal length of features subset.')
+        parser.add_argument('max_estimated_time', type=float,
+                            help='Maximal estimated time of ' \
+                                 'single pipeline running in hours.')
+        parser.add_argument('n_feature_subsets', type=int,
+                            help='Number of processed feature subsets ' \
+                                 '(100 is pretty good).')
+        parser.add_argument('--search_max_n', action='store_true',
+                            help='Search max n for which estimated run time of ' \
+                                 'the pipeline is less than max_estimated_time.')
 
         # Parser estimate options
         args = parser.parse_args(sys.argv[2:])
 
         # Run estimator
-        estimator.main(args.config)
+        import running_time_estimator
+        running_time_estimator.main(args.config, args.max_k, args.max_estimated_time,
+            args.n_feature_subsets, args.search_max_n)
 
     def summary(self):
         # Create new parser for summary arguments
