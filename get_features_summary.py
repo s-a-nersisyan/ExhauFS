@@ -36,8 +36,6 @@ def main(output_dir):
             percentage_classifiers = feature_counts[feature] * 100 / cl_cnt if cl_cnt else 1
             data.append([k, cl_cnt, feature, percentage_classifiers])
 
-        aaa =  111
-
     summary_features = pd.DataFrame(data, columns=["k", "classifiers_cnt_for_k", "gene", "percentage_classifiers"])
     summary_features.to_csv("{}/summary_features.csv".format(output_dir))
 
