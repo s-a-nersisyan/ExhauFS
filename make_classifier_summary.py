@@ -23,14 +23,9 @@ def save_SVM_feature_importances(classifier, fname):
     plt.savefig(fname)
     plt.close()
 
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please specify configuration file", file=sys.stderr)
-        sys.exit(1)
+def main(config_path):
 
     # Load config and input data
-    config_path = sys.argv[1]
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
 
     # If necessary, add ROC AUC metric
@@ -114,3 +109,11 @@ if __name__ == "__main__":
     model_fname = os.path.join(output_dir, "model.pkl").replace("\\", "/")
     with open(model_fname, "wb") as f:
         pickle.dump((classifier, model.preprocessor), f)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please specify configuration file", file=sys.stderr)
+        sys.exit(1)
+
+    main(sys.argv[1])

@@ -56,20 +56,13 @@ def predict_running_time(warm_up_n, warm_up_k, warm_up_time, grid_size, config):
     return res
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please specify configuration file", file=sys.stderr)
-        sys.exit(1)
+def main(config_path, warm_up_n, warm_up_k, grid_size):
     
     # Load config and input data
-    config_path = sys.argv[1] 
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
     config["verbose"] = False
     
     # Values of n and k for warm-up
-    # TODO: allow to pass this values from command line (default: 50 and 2)
-    warm_up_n = 50
-    warm_up_k = 2
     warm_up_n_k = pd.DataFrame({"n": [warm_up_n], "k": [warm_up_k]})
 
     # Do warm-up run and measure the running time
@@ -80,9 +73,6 @@ if __name__ == "__main__":
     warm_up_time = end_time - start_time
     
     # Extrapolate warm-up running time to (n, k) grid
-    # Upper bound for n
-    # TODO: allow to pass this value from command line
-    grid_size = 100
     res = predict_running_time(warm_up_n, warm_up_k, warm_up_time, grid_size, config)
     
     # Save the results
@@ -92,3 +82,22 @@ if __name__ == "__main__":
         os.makedirs(output_dir)
     
     res.to_csv("{}/time_estimates.csv".format(output_dir), index=None)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Please specify configuration file", file=sys.stderr)
+        sys.exit(1)
+    
+    config_path = sys.argv[1] 
+    
+    # Values of n and k for warm-up
+    # TODO: allow to pass this values from command line (default: 50 and 2)
+    warm_up_n = 50
+    warm_up_k = 2
+
+    # Upper bound for n
+    # TODO: allow to pass this value from command line
+    grid_size = 100
+
+    main(config_path, warm_up_n, warm_up_k, grid_size)
