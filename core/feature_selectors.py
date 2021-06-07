@@ -19,7 +19,7 @@ from .regression.feature_selectors import *
 
 
 def t_test(df, ann, n, datasets=None):
-    """Select n features with the lowest p-values according to t-test
+    """Select n features with the lowest p-values according to t-local
     
     Parameters
     ----------
@@ -34,7 +34,7 @@ def t_test(df, ann, n, datasets=None):
         Number of features to select.
     datasets : array-like
         List of dataset identifiers which should be used to calculate
-        test statistic. By default (None), union of all non-validation
+        local statistic. By default (None), union of all non-validation
         datasets will be used.
     feature : str
         Feature by witch to make hypothesis

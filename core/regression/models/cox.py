@@ -13,3 +13,7 @@ class CoxRegression(CoxPHFitter):
 
     def predict(self, df):
         return self.predict_partial_hazard(df)
+
+    @property
+    def coefs(self):
+        return self.params_

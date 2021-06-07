@@ -5,5 +5,5 @@ runs
 configs
 data
 *.csv
-test.py
+local
 output

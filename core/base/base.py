@@ -9,6 +9,10 @@ import itertools
 from sklearn.utils import shuffle
 from scipy.special import binom
 
+from core.regression.accuracy_scores import \
+    hazard_ratio, \
+    dynamic_auc, \
+    concordance_ipcw
 from core.utils import seconds_to_hours
 from .feature_pre_selector import FeaturePreSelector
 from .feature_selector import FeatureSelector
@@ -432,16 +436,29 @@ class ExhaustiveBase(
             scores[dataset] = {}
             for s in self.scoring_functions:
                 if self.check_if_method_needs_proba(s):
-                    y_score = model.predict_proba(X_test)
-                    scores[dataset][s] = self.scoring_functions[s](y_test, y_score[:, 1])
+                    y_pred = model.predict_proba(X_test)[:, 1]
+
+                if self.scoring_functions[s] == hazard_ratio:
+                    score = hazard_ratio(y_test, X_test, model.coefs)
+                elif self.scoring_functions[s] in [dynamic_auc, concordance_ipcw]:
+                    score = self.scoring_functions[s](
+                        self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
+                        y_test,
+                        y_pred,
+                    )
                 else:
-                    scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)
+                    score = self.scoring_functions[s](y_test, y_pred)
+
+                scores[dataset][s] = score
 
             if (
                 dataset_type in ['Training', 'Filtration']
                 and scores[dataset][self.main_scoring_function] < self.main_scoring_threshold
             ):
                 filtration_passed = False
+
+            print('EVALUATING', features_subset, dataset, dataset_type)
+            print(scores[dataset][self.main_scoring_function])
 
         return scores, filtration_passed
 

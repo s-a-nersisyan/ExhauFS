@@ -23,12 +23,13 @@ def cox_feature_selection(df, ann, n, datasets=None):
             print(time.time() - start, j, len(columns))
         df_j = df_subset[[column]]
         model.fit(df_j, ann_subset)
+
         scores.append(model.concordance_index_)
 
     print(f'Took {time.time() - start} seconds for {len(columns)} columns')
-    _, sorted_columns = zip(*sorted(zip(scores, columns), key=lambda x: x[0], reverse=True))
+    scores, features = zip(*sorted(zip(scores, columns), key=lambda x: x[0], reverse=True))
     with open('sorted_features.txt', 'w') as f:
-        for feature in sorted_columns:
-            f.write(str(feature) + '\n')
+        for score, feature in zip(scores, features):
+            f.write(f'{feature} {score}\n')
 
-    return sorted_columns[:n]
+    return features[:n]
