@@ -12,7 +12,8 @@ from scipy.special import binom
 from core.regression.accuracy_scores import \
     hazard_ratio, \
     dynamic_auc, \
-    concordance_ipcw
+    concordance_ipcw, \
+    logrank
 from core.utils import seconds_to_hours
 from .feature_pre_selector import FeaturePreSelector
 from .feature_selector import FeatureSelector
@@ -121,14 +122,14 @@ class ExhaustiveBase(
             df, ann,
             preselector_function=feature_pre_selector, kwargs=feature_pre_selector_kwargs,
         )
-        FeatureSelector.__init__(
-            self,
-            df, ann,
-            selector_function=feature_selector, kwargs=feature_selector_kwargs,
-        )
         Preprocessor.__init__(
             self,
             preprocessor_model=preprocessor, kwargs=preprocessor_kwargs,
+        )
+        FeatureSelector.__init__(
+            self,
+            self.df, self.ann,
+            selector_function=feature_selector, kwargs=feature_selector_kwargs,
         )
         Model.__init__(
             self,
@@ -438,8 +439,8 @@ class ExhaustiveBase(
                 if self.check_if_method_needs_proba(s):
                     y_pred = model.predict_proba(X_test)[:, 1]
 
-                if self.scoring_functions[s] == hazard_ratio:
-                    score = hazard_ratio(y_test, X_test, model.coefs)
+                if self.scoring_functions[s] in [hazard_ratio, logrank]:
+                    score = self.scoring_functions[s](y_test, X_test, model.coefs)
                 elif self.scoring_functions[s] in [dynamic_auc, concordance_ipcw]:
                     score = self.scoring_functions[s](
                         self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
@@ -456,9 +457,6 @@ class ExhaustiveBase(
                 and scores[dataset][self.main_scoring_function] < self.main_scoring_threshold
             ):
                 filtration_passed = False
-
-            print('EVALUATING', features_subset, dataset, dataset_type)
-            print(scores[dataset][self.main_scoring_function])
 
         return scores, filtration_passed
 

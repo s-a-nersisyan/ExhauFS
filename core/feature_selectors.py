@@ -142,3 +142,7 @@ def entity(df, ann, n, datasets=None):
     """
 
     return list(df.columns)[:n]
+
+
+def median(df, ann, n, datasets=None):
+    return list(df.median().sort_values().index)[:n]

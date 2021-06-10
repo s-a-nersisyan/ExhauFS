@@ -5,7 +5,7 @@ import pandas as pd
 BASE_DIR = 'data/colorectal-miRNK'
 
 # DATA
-data = pd.read_csv(f'{BASE_DIR}/secondary/isomiR_CPM.tsv', index_col=0, sep='\t').transpose()
+data = pd.read_csv(f'{BASE_DIR}/secondary/isomiR_5prime_CPM.tsv', index_col=0, sep='\t').transpose()
 samples = pd.read_csv(f'{BASE_DIR}/secondary/tumor_samples.tsv', index_col=False, sep='\t')
 
 #  оставляем только данные, которые есть в samples
@@ -85,7 +85,7 @@ data = data.sort_index()
 
 # неотфильтрованные данные
 print(data)
-data.to_csv(f'{BASE_DIR}/data.csv')
+data.to_csv(f'{BASE_DIR}/5prime_data.csv')
 
 # фильтрация: оставляем только микроРНК с "большой"(топ 20%) медианой
 data = data.drop(
@@ -93,4 +93,4 @@ data = data.drop(
     axis=1,
 )
 print(data)
-data.to_csv(f'{BASE_DIR}/data_filtered.csv')
+data.to_csv(f'{BASE_DIR}/5prime_data_filtered.csv')
