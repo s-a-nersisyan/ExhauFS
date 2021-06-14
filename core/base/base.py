@@ -1,14 +1,18 @@
 import pandas as pd
 import numpy as np
+import random
 
 from multiprocessing import Pool
 import time
 import math
 import itertools
 
-from sklearn.utils import shuffle
 from scipy.special import binom
 
+from core.regression.accuracy_scores import \
+    hazard_ratio, \
+    dynamic_auc, \
+    logrank
 from core.utils import seconds_to_hours
 from .feature_pre_selector import FeaturePreSelector
 from .feature_selector import FeatureSelector
@@ -117,14 +121,14 @@ class ExhaustiveBase(
             df, ann,
             preselector_function=feature_pre_selector, kwargs=feature_pre_selector_kwargs,
         )
-        FeatureSelector.__init__(
-            self,
-            df, ann,
-            selector_function=feature_selector, kwargs=feature_selector_kwargs,
-        )
         Preprocessor.__init__(
             self,
             preprocessor_model=preprocessor, kwargs=preprocessor_kwargs,
+        )
+        FeatureSelector.__init__(
+            self,
+            self.df, self.ann,
+            selector_function=feature_selector, kwargs=feature_selector_kwargs,
         )
         Model.__init__(
             self,
@@ -220,13 +224,12 @@ class ExhaustiveBase(
         # Do feature selection
         features = self.select_features(n)
 
-        # Split feature subsets to chunks for multiprocessing
-        feature_subsets = list(itertools.combinations(features, k))
-
         if self.limit_feature_subsets:
-            if self.shuffle_feature_subsets:
-                shuffle(feature_subsets, random_state=self.random_state)
-            feature_subsets = feature_subsets[:self.n_feature_subsets]
+            # Generate random subsets, fix for large C_{n}^{k}
+            feature_subsets = [random.sample(features, k) for _ in range(self.n_feature_subsets)]
+        else:
+            # Split feature subsets to chunks for multiprocessing
+            feature_subsets = list(itertools.combinations(features, k))
 
         return feature_subsets
 
@@ -370,15 +373,15 @@ class ExhaustiveBase(
         """
 
         # Extract training set
-        x_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
+        X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
         y_train = self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features]
         if self.check_if_model_needs_numpy():
-            x_train, y_train = x_train.to_numpy(), y_train.to_numpy()
+            X_train, y_train = X_train.to_numpy(), y_train.to_numpy()
 
-        x_train = self.preprocess(x_train, is_fit=True)
+        X_train = self.preprocess(X_train, is_fit=True)
 
         model, best_params = self.get_best_cv_model(
-            x_train,
+            X_train,
             y_train,
             scoring_functions=self.scoring_functions,
             main_scoring_function=self.main_scoring_function,
@@ -386,7 +389,7 @@ class ExhaustiveBase(
             cv_folds=self.model_cv_folds,
         )
 
-        model.fit(x_train, y_train)
+        model.fit(X_train, y_train)
 
         return model, best_params
 
@@ -413,23 +416,39 @@ class ExhaustiveBase(
         scores = {}
         filtration_passed = True
         for dataset, dataset_type in self.ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy():
-            x_test = self.df.loc[self.ann['Dataset'] == dataset, features_subset]
-            y_test = self.ann.loc[self.ann['Dataset'] == dataset, self.y_features]
+            X_test = self.df.loc[
+                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                features_subset,
+            ]
+            y_test = self.ann.loc[
+                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                self.y_features,
+            ]
             if self.check_if_model_needs_numpy():
-                x_test, y_test = x_test.to_numpy(), y_test.to_numpy()
+                X_test, y_test = X_test.to_numpy(), y_test.to_numpy()
 
-            x_test = self.preprocess(x_test)
+            X_test = self.preprocess(X_test)
 
             # Make predictions
-            y_pred = model.predict(x_test)
+            y_pred = model.predict(X_test)
 
             scores[dataset] = {}
             for s in self.scoring_functions:
                 if self.check_if_method_needs_proba(s):
-                    y_score = model.predict_proba(x_test)
-                    scores[dataset][s] = self.scoring_functions[s](y_test, y_score[:, 1])
+                    y_pred = model.predict_proba(X_test)[:, 1]
+
+                if self.scoring_functions[s] in [hazard_ratio, logrank]:
+                    score = self.scoring_functions[s](y_test, X_test, model.coefs)
+                elif self.scoring_functions[s] in [dynamic_auc]:
+                    score = self.scoring_functions[s](
+                        self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
+                        y_test,
+                        y_pred,
+                    )
                 else:
-                    scores[dataset][s] = self.scoring_functions[s](y_test, y_pred)
+                    score = self.scoring_functions[s](y_test, y_pred)
+
+                scores[dataset][s] = score
 
             if (
                 dataset_type in ['Training', 'Filtration']
