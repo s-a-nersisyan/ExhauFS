@@ -39,15 +39,15 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                 else:
                     while start < end:  # binary search
                         n = (start + end) // 2
-                        time = get_running_time(end, k)
+                        time = get_running_time(n, k)
                         print(start, n, end, time)
                         if time <= max_estimated_time:
                             start = n + 1
                         else:
                             end = n
 
-            print('end: ', start, end, n, (start + end) // 2, time)
-            res.loc[len(res)] = [(start + end) // 2 if time < max_estimated_time else n, k, time]
+            print('end: ', start, end, n, time)
+            res.loc[len(res)] = [n, k, time]
 
         else:
             # Calculate estimated run time of the pipeline for classifiers
@@ -55,6 +55,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
             for n in range(k, df.shape[1] + 1):
                 _, time = model.exhaustive_run_n_k(n, k)
                 time = model.estimate_run_n_k_time(n, k, time)
+                print(k, n, time)
                 if time > max_estimated_time:
                     break
 

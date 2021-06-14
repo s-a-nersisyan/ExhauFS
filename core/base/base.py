@@ -225,10 +225,8 @@ class ExhaustiveBase(
         features = self.select_features(n)
 
         if self.limit_feature_subsets:
-            start = time.time()
             # Generate random subsets, fix for large C_{n}^{k}
             feature_subsets = [random.sample(features, k) for _ in range(self.n_feature_subsets)]
-            print('subsets took ', time.time() - start)
         else:
             # Split feature subsets to chunks for multiprocessing
             feature_subsets = list(itertools.combinations(features, k))
