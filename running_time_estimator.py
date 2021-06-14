@@ -29,11 +29,12 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                 _, time = model.exhaustive_run_n_k(n, k)
                 time = model.estimate_run_n_k_time(n, k, time)
                 if time <= max_estimated_time:
-                    start = n
+                    start = n + 1
                 else:
-                    end = n
+                    end = n - 1
                 print(start, end, n, time)
 
+            print('end: ', (start + end) // 2, time)
             res.loc[len(res)] = [(start + end) // 2, k, time]
 
         else:
