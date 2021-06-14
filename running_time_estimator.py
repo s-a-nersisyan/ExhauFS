@@ -1,6 +1,7 @@
 # External imports
 import sys
 import os
+import math
 import pandas as pd
 
 # Internal imports
@@ -22,18 +23,17 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
             # Search max n for which estimated run time of the pipeline for classifiers
             # construction is less than max estimated time.
             start = k
-            end = df.shape[1] + 1
+            end = df.shape[1]
             is_continue_search = True
             while is_continue_search:  # binary search
-                n = (start + end) // 2
-                if n == df.shape[1]:
-                    break
+                n = math.ceil((start + end) / 2)
                 _, time = model.exhaustive_run_n_k(n, k)
                 time = model.estimate_run_n_k_time(n, k, time)
                 if time < max_estimated_time:
                     start = n
                 else:
                     end = n
+
                 is_continue_search = True if start < end else False
             res.loc[len(res)] = [n, k, time]
 
