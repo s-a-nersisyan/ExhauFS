@@ -29,7 +29,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                 n = math.ceil((start + end) / 2)
                 _, time = model.exhaustive_run_n_k(n, k)
                 time = model.estimate_run_n_k_time(n, k, time)
-                if time < max_estimated_time:
+                if time <= max_estimated_time:
                     start = n
                 else:
                     end = n
