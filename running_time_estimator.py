@@ -38,7 +38,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                     n = end
                 else:
                     while start < end:  # binary search
-                        n = (start + end) // 2
+                        n = math.ceil((start + end) // 2)
                         time = get_running_time(n, k)
                         print(start, n, end, time)
                         if time <= max_estimated_time:
