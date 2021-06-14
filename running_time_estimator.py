@@ -34,7 +34,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                 else:
                     end = n
 
-                is_continue_search = True if start + 1 < end else False
+                is_continue_search = True if start + 1 <= end else False
             res.loc[len(res)] = [n, k, time]
 
         else:
