@@ -22,9 +22,3 @@ for split_way in dataset_type_split_ways:
     ann['Dataset type'] = dataset_types
 
     ann.sort_index().to_csv(f'{BASE_DIR}/annotation_{json.dumps(split_way)}.csv')
-    print('Training 0', len(ann[(ann['Dataset type'] == 'Training') & (ann['Event'] == 0)]))
-    print('Training 1', len(ann[(ann['Dataset type'] == 'Training') & (ann['Event'] == 1)]))
-    print('Validation 0', len(ann[(ann['Dataset type'] == 'Validation') & (ann['Event'] == 0)]))
-    print('Validation 1', len(ann[(ann['Dataset type'] == 'Validation') & (ann['Event'] == 1)]))
-    print('Filtration 0', len(ann[(ann['Dataset type'] == 'Filtration') & (ann['Event'] == 0)]))
-    print('Filtration 1', len(ann[(ann['Dataset type'] == 'Filtration') & (ann['Event'] == 1)]))

@@ -20,7 +20,7 @@ def cox_hazard_ratio(df, ann, n, datasets=None, is_save=True):
         Number of features to select.
     datasets : array-like
         List of dataset identifiers which should be used to calculate
-        local statistic. By default (None), union of all non-validation
+        test statistic. By default (None), union of all non-validation
         datasets will be used.
     Returns
     -------

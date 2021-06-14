@@ -6,8 +6,6 @@ from utils import *
 def main(config_path):
     # Load config and input data
     config, df, ann, n_k = load_config_and_input_data(config_path)
-    print(ann)
-    print(df)
 
     output_dir = config["output_dir"]
 
