@@ -17,6 +17,10 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
     # model = initialize_classification_model(config, df, ann, n_k)
     model = initialize_regression_model(config, df, ann, n_k)
 
+    def get_running_time(n, k):
+        _, time = model.exhaustive_run_n_k(n, k)
+        return model.estimate_run_n_k_time(n, k, time)
+
     res = pd.DataFrame(columns=["n", "k", "Estimated time"])
     for k in range(1, max_k + 1):
         if search_max_n:
@@ -24,15 +28,23 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
             # construction is less than max estimated time.
             start = k
             end = df.shape[1]
-            while start < end:  # binary search
-                n = (start + end) // 2
-                _, time = model.exhaustive_run_n_k(n, k)
-                time = model.estimate_run_n_k_time(n, k, time)
-                print(start, n, end, time)
+
+            time = get_running_time(start, k)
+            if time >= max_estimated_time:
+                n = start
+            else:
+                time = get_running_time(end, k)
                 if time <= max_estimated_time:
-                    start = n + 1
+                    n = end
                 else:
-                    end = n
+                    while start < end:  # binary search
+                        n = (start + end) // 2
+
+                        print(start, n, end, time)
+                        if time <= max_estimated_time:
+                            start = n + 1
+                        else:
+                            end = n
 
             print('end: ', start, end, n, (start + end) // 2, time)
             res.loc[len(res)] = [(start + end) // 2 if time < max_estimated_time else n, k, time]
