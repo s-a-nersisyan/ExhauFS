@@ -145,4 +145,10 @@ def entity(df, ann, n, datasets=None):
 
 
 def median(df, ann, n, datasets=None):
+    """Select n features with the highest median value
+    Returns
+    -------
+    list
+        List of n columns with highest median value.
+    """
     return list(df.median().sort_values().index)[:n]
