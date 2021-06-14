@@ -40,7 +40,6 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                     while start < end:  # binary search
                         n = (start + end) // 2
                         time = get_running_time(n, k)
-                        print(start, n, end, time)
                         if n == start or n == end:
                             break
                         if time <= max_estimated_time:
@@ -48,7 +47,6 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                         else:
                             end = n
 
-            print('end: ', start, end, n, time)
             res.loc[len(res)] = [n, k, time]
 
         else:
