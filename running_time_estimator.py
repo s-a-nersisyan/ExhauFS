@@ -24,9 +24,8 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
             # construction is less than max estimated time.
             start = k
             end = df.shape[1]
-            is_continue_search = True
-            while is_continue_search:  # binary search
-                n = math.ceil((start + end) // 2)
+            while start < end:  # binary search
+                n = (start + end) // 2
                 _, time = model.exhaustive_run_n_k(n, k)
                 time = model.estimate_run_n_k_time(n, k, time)
                 if time <= max_estimated_time:
@@ -35,8 +34,7 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                     end = n - 1
                 print(start, end, n)
 
-                is_continue_search = True if start < end else False
-            res.loc[len(res)] = [n, k, time]
+            res.loc[len(res)] = [(start + end) // 2, k, time]
 
         else:
             # Calculate estimated run time of the pipeline for classifiers
