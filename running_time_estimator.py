@@ -34,8 +34,8 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, search_max_n
                 else:
                     end = n - 1
 
-            print('end: ', (start + end) // 2, time)
-            res.loc[len(res)] = [(start + end) // 2, k, time]
+            print('end: ', start, end, n, (start + end) // 2, time)
+            res.loc[len(res)] = [(start + end) // 2 if time < max_estimated_time else n, k, time]
 
         else:
             # Calculate estimated run time of the pipeline for classifiers
