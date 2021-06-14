@@ -1,29 +1,26 @@
-import numpy as np
-
 from lifelines.utils import concordance_index as lifelines_concordance_index
-from sksurv.metrics import concordance_index_ipcw
 
 
 def concordance_index(y_true, y_pred):
+    """Concordance index
+     is the average of how often a model says X is greater than Y when,
+     in the observed data, X is indeed greater than Y
+    https://lifelines.readthedocs.io/en/latest/lifelines.utils.html#lifelines.utils.concordance_index
+
+    Parameters
+    ----------
+    y_true :  pandas.DataFrame
+        DataFrame with annotation of samples. Two columns are mandatory:
+        Event (binary labels), Time to event (float time to event).
+    y_pred : array-like
+        List of predicted risk scores.
+    Returns
+    -------
+    float [0, 1]
+        concordance_index
+    """
     return lifelines_concordance_index(
         event_times=y_true['Time to event'],
         predicted_scores=-y_pred,
         event_observed=y_true['Event'],
     )
-
-
-def concordance_ipcw(y_train, y_test, y_pred):
-    structured_y_train = np.array(
-        [(bool(a[0]), a[1]) for a in y_train[['Event', 'Time to event']].to_numpy()],
-        dtype=[('event', '?'), ('time', '<f8')],
-    )
-    structured_y_test = np.array(
-        [(bool(a[0]), a[1]) for a in y_test[['Event', 'Time to event']].to_numpy()],
-        dtype=[('event', '?'), ('time', '<f8')],
-    )
-
-    return concordance_index_ipcw(
-        structured_y_train,
-        structured_y_test,
-        y_pred,
-    )[0]

@@ -1,16 +1,24 @@
 import numpy as np
-import pandas as pd
-
-
-def print_table(sorted_times, i_a, i_b, o_a, o_b, e_a, e_b):
-    pd.set_option('display.max_rows', None)
-    print(pd.DataFrame(
-        np.array([sorted_times, i_a[:-1], i_b[:-1], o_a, o_b, e_a, e_b]).T,
-        columns=['time', 'i_a', 'i_b', 'o_a', 'o_b', 'e_a', 'e_b'],
-    ))
 
 
 def hazard_ratio(y_true, x, model_coefs):
+    """Hazard ratio can be interpreted as the chance of an event occurring
+    in the group A divided by the chance of the event occurring in the group B
+    Parameters
+    ----------
+    y_true :  pandas.DataFrame
+        DataFrame with annotation of samples. Two columns are mandatory:
+        Event (binary labels), Time to event (float time to event).
+    x : pandas.DataFrame
+        A pandas DataFrame whose rows represent samples
+        and columns represent features.
+    model_coefs: array-like
+        Cox model parameters after fitting
+    Returns
+    -------
+    float
+        hazard_ratio
+    """
     risk_scores = x.to_numpy().dot(model_coefs.to_numpy())
     group_indicators = risk_scores >= np.median(risk_scores)
     grouped_y = y_true.copy()
@@ -39,6 +47,4 @@ def hazard_ratio(y_true, x, model_coefs):
         i_a.append(i_a[-1] - o_a[-1])
         i_b.append(i_b[-1] - o_b[-1])
 
-    hazard_ratio = (sum(o_a) / sum(e_a)) / (sum(o_b) / sum(e_b))
-
-    return hazard_ratio
+    return (sum(o_a) / sum(e_a)) / (sum(o_b) / sum(e_b))

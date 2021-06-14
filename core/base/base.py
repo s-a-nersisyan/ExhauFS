@@ -1,18 +1,17 @@
 import pandas as pd
 import numpy as np
+import random
 
 from multiprocessing import Pool
 import time
 import math
 import itertools
 
-from sklearn.utils import shuffle
 from scipy.special import binom
 
 from core.regression.accuracy_scores import \
     hazard_ratio, \
     dynamic_auc, \
-    concordance_ipcw, \
     logrank
 from core.utils import seconds_to_hours
 from .feature_pre_selector import FeaturePreSelector
@@ -225,13 +224,12 @@ class ExhaustiveBase(
         # Do feature selection
         features = self.select_features(n)
 
-        # Split feature subsets to chunks for multiprocessing
-        feature_subsets = list(itertools.combinations(features, k))
-
         if self.limit_feature_subsets:
-            if self.shuffle_feature_subsets:
-                shuffle(feature_subsets, random_state=self.random_state)
-            feature_subsets = feature_subsets[:self.n_feature_subsets]
+            # Generate random subsets, fix for large C_{n}^{k}
+            feature_subsets = [random.sample(features, k) for _ in range(self.n_feature_subsets)]
+        else:
+            # Split feature subsets to chunks for multiprocessing
+            feature_subsets = list(itertools.combinations(features, k))
 
         return feature_subsets
 
@@ -441,7 +439,7 @@ class ExhaustiveBase(
 
                 if self.scoring_functions[s] in [hazard_ratio, logrank]:
                     score = self.scoring_functions[s](y_test, X_test, model.coefs)
-                elif self.scoring_functions[s] in [dynamic_auc, concordance_ipcw]:
+                elif self.scoring_functions[s] in [dynamic_auc]:
                     score = self.scoring_functions[s](
                         self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
                         y_test,
