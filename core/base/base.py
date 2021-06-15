@@ -270,9 +270,9 @@ class ExhaustiveBase(
             process_args = self.get_process_args(feature_subsets)
 
             with Pool(self.n_processes) as p:
-                process_results = p.map( self.exhaustive_run_over_chunk, 
-                                         process_args, 
-                                         chunksize=1)
+                process_results = p.map(self.exhaustive_run_over_chunk,
+                                        process_args,
+                                        chunksize=1)
         else:
             process_results = [self.exhaustive_run_over_chunk(feature_subsets)]
 
@@ -322,16 +322,19 @@ class ExhaustiveBase(
         for features_subset in feature_subsets:
             features_subset = list(features_subset)
 
-            model, best_params = self.fit_model(features_subset)
-            scores, filtration_passed = self.evaluate_model(model, features_subset)
+            try:
+                model, best_params = self.fit_model(features_subset)
+                scores, filtration_passed = self.evaluate_model(model, features_subset)
 
-            item = {
-                'Features subset': features_subset,
-                'Best parameters': best_params,
-                'Scores': scores,
-            }
-            if filtration_passed:
-                results.append(item)
+                item = {
+                    'Features subset': features_subset,
+                    'Best parameters': best_params,
+                    'Scores': scores,
+                }
+                if filtration_passed:
+                    results.append(item)
+            except Exception:
+                print('Excepted ', features_subset)
 
         score_cols = [
             '{};{}'.format(dataset, s) for dataset in np.unique(self.ann['Dataset'])
@@ -451,8 +454,8 @@ class ExhaustiveBase(
                 scores[dataset][s] = score
 
             if (
-                dataset_type in ['Training', 'Filtration']
-                and scores[dataset][self.main_scoring_function] < self.main_scoring_threshold
+                    dataset_type in ['Training', 'Filtration']
+                    and scores[dataset][self.main_scoring_function] < self.main_scoring_threshold
             ):
                 filtration_passed = False
 
