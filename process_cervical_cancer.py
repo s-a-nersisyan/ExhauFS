@@ -1,25 +1,22 @@
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.impute import SimpleImputer, KNNImputer
-from sklearn.inspection import permutation_importance
+from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import make_scorer, roc_auc_score, accuracy_score, recall_score, balanced_accuracy_score, \
-    confusion_matrix
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, GridSearchCV, \
-    RepeatedStratifiedKFold
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import cross_val_score, RepeatedStratifiedKFold
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 from core.accuracy_scores import min_TPR_TNR
 
 
-def create_model(name, imputer, classifier):
-    return name, make_pipeline(imputer, classifier)
+def create_model(name, scaler, imputer, classifier):
+    return name, make_pipeline(scaler, imputer, classifier)
 
 
 def main():
@@ -38,18 +35,21 @@ def main():
 
     scorer = make_scorer(min_TPR_TNR)
     #scorer = make_scorer(accuracy_score)
-    imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+    #imputer = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+    imputer = SimpleImputer(missing_values=np.nan, strategy='median')
+    #imputer = KNNImputer(n_neighbors=3, weights="distance")
+    scaler = StandardScaler()
     n_repeats = 5
 
     # # create list of models
     models = []
-    models.append( create_model('KNN', imputer, KNeighborsClassifier()) )
-    models.append( create_model('SVC', imputer, SVC()))
-    models.append( create_model('LR', imputer, LogisticRegression(max_iter=10000)))
-    models.append( create_model('DT', imputer, DecisionTreeClassifier()))
-    models.append( create_model('GNB', imputer, GaussianNB()))
-    models.append( create_model('RF', imputer, RandomForestClassifier(max_depth=6, n_estimators=300)))
-    models.append( create_model('GB', imputer, GradientBoostingClassifier()))
+    models.append( create_model('KNN', scaler, imputer, KNeighborsClassifier()) )
+    models.append( create_model('SVC', scaler, imputer, SVC()))
+    models.append( create_model('LR', scaler, imputer, LogisticRegression(max_iter=10000)))
+    models.append( create_model('DT', scaler, imputer, DecisionTreeClassifier()))
+    models.append( create_model('GNB', scaler, imputer, GaussianNB()))
+    models.append( create_model('RF', scaler, imputer, RandomForestClassifier()))
+    models.append( create_model('GB', scaler, imputer, GradientBoostingClassifier()))
 
     # get CV performance
     names = []
