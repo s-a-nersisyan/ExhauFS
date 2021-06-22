@@ -262,160 +262,150 @@ To get detailed report on the specific model (== specific set of features):
 * Check the detailed report in `output_dir`
 
 # Functions ans classes
-
 <details>
-  Start
-  <details>
-    Nested <em>details</em>
-  </details>
-  End
-</details>
-
-<details>
-  <summary>Feature pre-selectors</summary> 
+  <h3>Feature pre-selectors</h3> 
   
   <details>
-    <summary>from_file</summary> 
+  <summary>from_file</summary> 
     
-    Pre-select features from a given file
+  Pre-select features from a given file
     
-    __name: from_file__  
-    __kwargs:__ 
-    ```json
-    {
-      "sep": " "
-    }
-    ```
+  __name: from_file__  
+  __kwargs:__ 
+  ```json
+  {
+    "sep": " "
+  }
+  ```
   </details>
 </details>
 <details>
-  <summary>Feature selectors</summary> 
+  <h3>Feature selectors</h3> 
   
   <details>
-    <summary>t_test</summary> 
+  <summary>t_test</summary> 
     
-    Select n features with the lowest p-values according to t-test
+  Select n features with the lowest p-values according to t-test
     
-    __name: t_test__  
-    __kwargs:__ 
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  __name: t_test__  
+  __kwargs:__ 
+  ```json
+  {
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
   <details>
-    <summary>spearman_correlation</summary> 
+  <summary>spearman_correlation</summary> 
     
-    Select n features with the highest correlation with target label
+  Select n features with the highest correlation with target label
     
-    __name: spearman_correlation__  
-    __kwargs:__ 
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  __name: spearman_correlation__  
+  __kwargs:__ 
+  ```json
+  {
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
   <details>
-    <summary>from_file</summary> 
+  <summary>from_file</summary> 
     
-    Select first n features from a given file
+  Select first n features from a given file
     
-    __name: spearman_correlation__  
-    __kwargs:__ 
-    ```json
-    {
-      "sep": " "
-    }
-    ```
+  __name: spearman_correlation__  
+  __kwargs:__ 
+  ```json
+  {
+    "sep": " "
+  }
+  ```
   </details>
   <details>
-    <summary>median</summary> 
+  <summary>median</summary> 
     
-    Select n features with the highest median value
-    
-    __name: spearman_correlation__  
-    __kwargs:__ 
-    ```json
-    {}
-    ```
+  Select n features with the highest median value
+  __name: spearman_correlation__
+  __kwargs:__ 
+  ```json
+  {}
+  ```
   </details>
     
   ### Regression specific selectors:
   <details>
-    <summary>cox_concordance</summary> 
+  <summary>cox_concordance</summary> 
     
-    Select n features with the highest concordance index on one-factor Cox regression.
+  Select n features with the highest concordance index on one-factor Cox regression.
     
-    __name: cox_concordance__  
-    __kwargs:__ 
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  __name: cox_concordance__  
+  __kwargs:__ 
+  ```json
+  {
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
   <details>
-    <summary>cox_dynamic_auc</summary> 
+  <summary>cox_dynamic_auc</summary> 
     
-    Select n features with the highest time-dependent auc on one-factor Cox regression.
-    
-    __name: cox_dynamic_auc__  
-    __kwargs:__ 
-    ```json
-    {
-      "year": 3, // time at which to calculate auc
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  Select n features with the highest time-dependent auc on one-factor Cox regression.
+  
+  __name: cox_dynamic_auc__  
+  __kwargs:__ 
+  ```json
+  {
+    "year": 3, // time at which to calculate auc
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
   <details>
-    <summary>cox_hazard_ratio</summary> 
+  <summary>cox_hazard_ratio</summary> 
     
-    Select n features with the highest hazard ratio on one-factor Cox regression.
+  Select n features with the highest hazard ratio on one-factor Cox regression.
     
-    __name: cox_hazard_ratio__  
-    __kwargs:__ 
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  __name: cox_hazard_ratio__  
+  __kwargs:__ 
+  ```json
+  {
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
   <details>
-    <summary>cox_likelihood</summary> 
+  <summary>cox_likelihood</summary> 
     
-    Select n features with the highest log-likelihood on one-factor Cox regression.
+  Select n features with the highest log-likelihood on one-factor Cox regression.
     
-    __name: cox_likelihood__  
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
+  __name: cox_likelihood__  
+  ```json
+  {
+    "datasets": ["Training", "Filtration"]
+  }
+  ```
   </details>
 </details>
 <details>
-  <summary>Classifiers</summary>
+  <h3>Classifiers</h3>
   
   - SVC
   - KNeighborsClassifier
   - RandomForestClassifier
   - XGBClassifier
   
-  ### Accuracy scores
+  #### Accuracy scores
   - TPR
   - FPR
   - TNR
   - min_TPR_TNR
 </details>
 <details>
-  <summary>Regressors</summary> 
+  <h3>Regressors</h3> 
   
   - CoxRegression
   
-  ### Accuracy scores
+  #### Accuracy scores
   - concordance_index
   - dynamic_auc
   - hazard_ratio
