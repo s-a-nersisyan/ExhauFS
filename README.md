@@ -27,17 +27,16 @@ Input data can consist from different batches (datasets), and each dataset shoul
 <a name="requirements"></a>
 # Requirements
 
-List of requirements (they are also listed in `requirements.txt` file):
 <details>
-  <summary>Requirements</summary>
-  
-    - scipy  
-    - scikit-learn  
-    - numpy  
-    - pandas  
-    - lifelines  
-    - scikit-survival  
-    - xgboost  
+  <summary>List of requirements</summary>
+
+  - scipy  
+  - scikit-learn  
+  - numpy  
+  - pandas  
+  - lifelines  
+  - scikit-survival  
+  - xgboost  
 </details>  
 
 
@@ -51,16 +50,21 @@ You can install them via:
 
 Before running the tool, you should prepare three csv tables containing actual data, its annotation and *n* \ *k* grid. Both for classification and survival analysis data table should contain numerical values associated with samples (rows) and features (columns):
 
-|            | Feature 1 | Feature 2 |
-| ---------- | --------- | --------- |
-| Sample 1   | 17.17     | 365.1     |
-| Sample 2   | 56.99     | 123.9     |
-| ...        |           |           |
-| Sample 98  | 22.22     | 123.4     |
-| Sample 99  | 23.23     | 567.8     |
-| ...        |           |           |
-| Sample 511 | 10.82     | 665.8     |
-| Sample 512 | 11.11     | 200.2     |
+<details>
+  <summary>Example</summary>
+  
+  |            | Feature 1 | Feature 2 |
+  | ---------- | --------- | --------- |
+  | Sample 1   | 17.17     | 365.1     |
+  | Sample 2   | 56.99     | 123.9     |
+  | ...        |           |           |
+  | Sample 98  | 22.22     | 123.4     |
+  | Sample 99  | 23.23     | 567.8     |
+  | ...        |           |           |
+  | Sample 511 | 10.82     | 665.8     |
+  | Sample 512 | 11.11     | 200.2     |
+</details>
+
 
 Sample annotation table formats are different for classification and survival analysis. For classification it should contain binary indicator of sample class (e.g., 1 for recurrent tumor and 0 for non-recurrent), dataset (batch) label and dataset type (Training/Filtration/Validation). Note that annotation should be present for each sample listed in the data table in the same order:
 
