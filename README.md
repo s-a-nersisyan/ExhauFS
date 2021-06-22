@@ -29,6 +29,8 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 List of requirements (they are also listed in `requirements.txt` file):
 <details>
+  <summary>Requirements</summary>
+  
     - scipy  
     - scikit-learn  
     - numpy  
