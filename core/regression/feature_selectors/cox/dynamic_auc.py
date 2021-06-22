@@ -1,12 +1,11 @@
 from sksurv.metrics import cumulative_dynamic_auc
 
-from core.regression.feature_selectors.utils import save_sorted_features
 from core.regression.models import CoxRegression
 from core.regression.utils import structure_y_to_sksurv
 from core.utils import get_datasets
 
 
-def cox_dynamic_auc(df, ann, n, datasets=None, year=3, is_save=True):
+def cox_dynamic_auc(df, ann, n, datasets=None, year=3):
     """Select n features with the highest time-dependent auc on one-factor Cox regression.
 
     Parameters
@@ -51,8 +50,5 @@ def cox_dynamic_auc(df, ann, n, datasets=None, year=3, is_save=True):
         scores.append(score)
 
     scores, features = zip(*sorted(zip(scores, columns), key=lambda x: x[0], reverse=True))
-
-    if is_save:
-        save_sorted_features(scores, features)
 
     return features[:n]

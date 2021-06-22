@@ -274,7 +274,7 @@ To get detailed report on the specific model (== specific set of features):
     __kwargs:__ 
     ```json
     {
-      "sep": ","
+      "sep": " "
     }
     ```
     </details>
@@ -282,16 +282,136 @@ To get detailed report on the specific model (== specific set of features):
 </details>
 <details>
   <summary>Feature selectors</summary> 
+  
+  - <details>
+    <summary>t_test</summary> 
+    
+    Select n features with the lowest p-values according to t-test
+    
+    __name: t_test__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
+  - <details>
+    <summary>spearman_correlation</summary> 
+    
+    Select n features with the highest correlation with target label
+    
+    __name: spearman_correlation__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
+  - <details>
+    <summary>from_file</summary> 
+    
+    Select first n features from a given file
+    
+    __name: spearman_correlation__  
+    __kwargs:__ 
+    ```json
+    {
+      "sep": " "
+    }
+    ```
+    </details>
+  - <details>
+    <summary>median</summary> 
+    
+    Select n features with the highest median value
+    
+    __name: spearman_correlation__  
+    __kwargs:__ 
+    ```json
+    {}
+    ```
+    </details>
+    
+  ### Regression specific selectors:
+  - <details>
+    <summary>cox_concordance</summary> 
+    
+    Select n features with the highest concordance index on one-factor Cox regression.
+    
+    __name: cox_concordance__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
+    - <details>
+    <summary>cox_dynamic_auc</summary> 
+    
+    Select n features with the highest time-dependent auc on one-factor Cox regression.
+    
+    __name: cox_dynamic_auc__  
+    __kwargs:__ 
+    ```json
+    {
+      "year": 3, // time at which to calculate auc
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
+    - <details>
+    <summary>cox_hazard_ratio</summary> 
+    
+    Select n features with the highest hazard ratio on one-factor Cox regression.
+    
+    __name: cox_hazard_ratio__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
+    - <details>
+    <summary>cox_likelihood</summary> 
+    
+    Select n features with the highest log-likelihood on one-factor Cox regression.
+    
+    __name: cox_likelihood__  
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
 </details>
 <details>
   <summary>Classifiers</summary>
   
+  - SVC
+  - KNeighborsClassifier
+  - RandomForestClassifier
+  - XGBClassifier
+  
   ### Accuracy scores
+  - TPR
+  - FPR
+  - TNR
+  - min_TPR_TNR
 </details>
 <details>
   <summary>Regressors</summary> 
   
+  - CoxRegression
+  
   ### Accuracy scores
+  - concordance_index
+  - dynamic_auc
+  - hazard_ratio
+  - logrank
 </details>
 
 

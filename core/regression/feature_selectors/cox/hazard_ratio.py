@@ -1,10 +1,9 @@
 from core.regression.accuracy_scores import hazard_ratio
-from core.regression.feature_selectors.utils import save_sorted_features
 from core.regression.models import CoxRegression
 from core.utils import get_datasets
 
 
-def cox_hazard_ratio(df, ann, n, datasets=None, is_save=True):
+def cox_hazard_ratio(df, ann, n, datasets=None):
     """Select n features with the highest hazard ratio on one-factor Cox regression.
 
     Parameters
@@ -44,8 +43,5 @@ def cox_hazard_ratio(df, ann, n, datasets=None, is_save=True):
         scores.append(score)
 
     scores, features = zip(*sorted(zip(scores, columns), key=lambda x: x[0], reverse=True))
-
-    if is_save:
-        save_sorted_features(scores, features)
 
     return features[:n]

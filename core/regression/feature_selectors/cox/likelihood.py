@@ -1,9 +1,8 @@
-from core.regression.feature_selectors.utils import save_sorted_features
 from core.regression.models import CoxRegression
 from core.utils import get_datasets
 
 
-def cox_likelihood(df, ann, n, datasets=None, is_save=True):
+def cox_likelihood(df, ann, n, datasets=None):
     """Select n features with the highest log-likelihood on one-factor Cox regression.
 
     Parameters
@@ -43,8 +42,5 @@ def cox_likelihood(df, ann, n, datasets=None, is_save=True):
         scores.append(score)
 
     scores, features = zip(*sorted(zip(scores, columns), key=lambda x: x[0], reverse=True))
-
-    if is_save:
-        save_sorted_features(scores, features)
 
     return features[:n]
