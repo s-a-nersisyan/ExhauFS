@@ -8,7 +8,6 @@ Exhaustive feature selection for classification and survival analysis.
 [Functions and classes](#functions-and-classes)  
 [etc](#etc)  
 
-<a name="introduction"></a>
 # Introduction
 The main idea underlying ExhaustiveFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
 1. **Feature pre-selection:** select fixed number of features for the next steps.
@@ -24,7 +23,6 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 **TODO:** add flowchart.
 
-<a name="requirements"></a>
 # Requirements
 
 <details>
@@ -43,7 +41,6 @@ Input data can consist from different batches (datasets), and each dataset shoul
 You can install them via:  
 `pip3 install -r requirements.txt`  
 
-<a name="running-exhaustivefs"></a>
 # Running ExhaustiveFS
 
 ## Step 1: data preparation
@@ -103,6 +100,8 @@ For survival analysis, annotation table should contain binary event indicator an
 
 Table with *n* and *k* grid for exhaustive feature selection:  
 *n* is a number of selected features, *k* is a length of each features subset.  
+
+If you are not sure what values for *n* *k* to use, see [Step 3: defining a *n*, *k* grid](#step-3-defining-a-n-k-grid)  
 
 <details>
   <summary>Example</summary> 
@@ -166,7 +165,7 @@ Configuration file is a json file containing all customizable parameters for the
       Name of class for classification / survival analysis from `./core/classifiers.py`.
 
   * `model_kwargs`
-      Object/Dictionary of keyword arguments for classifier initialization.
+      Object/Dictionary of keyword arguments for model initialization.
 
   * `model_CV_ranges`
       Object/Dictionary defining model parameters which should be cross-validated. Keys are parameter names, values are lists for grid search.
@@ -262,8 +261,6 @@ To get detailed report on the specific model (== specific set of features):
   * For regressor run `python3 make_regressor_summary.py <config_file>`    
 * Check the detailed report in `output_dir`
 
-
-<a name="functions-and-classes"></a>
 # Functions ans classes
 <details>
   <summary>Feature pre-selectors</summary> 
@@ -298,6 +295,5 @@ To get detailed report on the specific model (== specific set of features):
 </details>
 
 
-<a name="etc"></a>
 # etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).
