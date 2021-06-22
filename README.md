@@ -262,10 +262,19 @@ To get detailed report on the specific model (== specific set of features):
 * Check the detailed report in `output_dir`
 
 # Functions ans classes
+
+<details>
+  Start
+  <details>
+    Nested <em>details</em>
+  </details>
+  End
+</details>
+
 <details>
   <summary>Feature pre-selectors</summary> 
   
-  - <details>
+  <details>
     <summary>from_file</summary> 
     
     Pre-select features from a given file
@@ -277,13 +286,12 @@ To get detailed report on the specific model (== specific set of features):
       "sep": " "
     }
     ```
-    </details>
-
+  </details>
 </details>
 <details>
   <summary>Feature selectors</summary> 
   
-  - <details>
+  <details>
     <summary>t_test</summary> 
     
     Select n features with the lowest p-values according to t-test
@@ -295,8 +303,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
-  - <details>
+  </details>
+  <details>
     <summary>spearman_correlation</summary> 
     
     Select n features with the highest correlation with target label
@@ -308,8 +316,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
-  - <details>
+  </details>
+  <details>
     <summary>from_file</summary> 
     
     Select first n features from a given file
@@ -321,8 +329,8 @@ To get detailed report on the specific model (== specific set of features):
       "sep": " "
     }
     ```
-    </details>
-  - <details>
+  </details>
+  <details>
     <summary>median</summary> 
     
     Select n features with the highest median value
@@ -332,10 +340,10 @@ To get detailed report on the specific model (== specific set of features):
     ```json
     {}
     ```
-    </details>
+  </details>
     
   ### Regression specific selectors:
-  - <details>
+  <details>
     <summary>cox_concordance</summary> 
     
     Select n features with the highest concordance index on one-factor Cox regression.
@@ -347,8 +355,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
-    - <details>
+  </details>
+  <details>
     <summary>cox_dynamic_auc</summary> 
     
     Select n features with the highest time-dependent auc on one-factor Cox regression.
@@ -361,8 +369,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
-    - <details>
+  </details>
+  <details>
     <summary>cox_hazard_ratio</summary> 
     
     Select n features with the highest hazard ratio on one-factor Cox regression.
@@ -374,8 +382,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
-    - <details>
+  </details>
+  <details>
     <summary>cox_likelihood</summary> 
     
     Select n features with the highest log-likelihood on one-factor Cox regression.
@@ -386,7 +394,7 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
+  </details>
 </details>
 <details>
   <summary>Classifiers</summary>
