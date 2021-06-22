@@ -273,7 +273,7 @@ To get detailed report on the specific model (== specific set of features):
     
     Pre-select features from a given file
     
-    __name: from_file__
+    __name: from_file__  
     __kwargs:__ 
     ```json
     {
