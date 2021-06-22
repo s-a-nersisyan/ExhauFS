@@ -263,7 +263,7 @@ To get detailed report on the specific model (== specific set of features):
 
 # Functions ans classes
 <details>
-  <h3>Feature pre-selectors</h3> 
+  <summary><h3>Feature pre-selectors</h3></summary>
   
   <details>
   <summary>from_file</summary> 
@@ -280,7 +280,7 @@ To get detailed report on the specific model (== specific set of features):
   </details>
 </details>
 <details>
-  <h3>Feature selectors</h3> 
+  <summary><h3>Feature selectors</h3></summary>
   
   <details>
   <summary>t_test</summary> 
@@ -387,7 +387,7 @@ To get detailed report on the specific model (== specific set of features):
   </details>
 </details>
 <details>
-  <h3>Classifiers</h3>
+  <summary><h3>Classifiers</h3></summary>
   
   - SVC
   - KNeighborsClassifier
@@ -401,7 +401,7 @@ To get detailed report on the specific model (== specific set of features):
   - min_TPR_TNR
 </details>
 <details>
-  <h3>Regressors</h3> 
+  <summary><h3>Regressors</h3></summary>
   
   - CoxRegression
   
