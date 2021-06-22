@@ -128,6 +128,7 @@ class ExhaustiveBase(
         FeatureSelector.__init__(
             self,
             self.df, self.ann,
+            output_dir,
             selector_function=feature_selector, kwargs=feature_selector_kwargs,
         )
         Model.__init__(
@@ -177,6 +178,11 @@ class ExhaustiveBase(
             df_n_k_results, _ = self.exhaustive_run_n_k(n, k)
             df_n_k_results['n'] = n
             df_n_k_results['k'] = k
+            df_n_k_results.sort_values(
+                by=f'Training;{self.main_scoring_function}',
+                ascending=False,
+                inplace=True,
+            )
             all_result_dfs.append(df_n_k_results)
 
             # Save models

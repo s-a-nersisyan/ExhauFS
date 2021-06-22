@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 
-BASE_DIR = 'data/colorectal-miRNK'
+BASE_DIR = 'data/colorectal-isomiR'
 
 ann = pd.read_csv(f'{BASE_DIR}/annotation.csv', index_col=0)
 

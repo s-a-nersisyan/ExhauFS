@@ -1,8 +1,13 @@
 # ExhaustiveFS
-Exhaustive feature selection for classication and survival analysis.
+Exhaustive feature selection for classification and survival analysis.
 
-**TODO:** add table of contents.
+## Table of Contents  
+[Introduction](#introduction)  
+[Requirements](#requirements)  
+[Running ExhaustiveFS](#running-exhaustivefs)  
+[ETC](#etc)  
 
+<a name="introduction"></a>
 # Introduction
 The main idea underlying ExhaustiveFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
 1. **Feature pre-selection:** select fixed number of features for the next steps.
@@ -18,15 +23,27 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 **TODO:** add flowchart.
 
+<a name="requirements"></a>
 # Requirements
 
-**TODO:** list of requirements + how to install.
+List of requirements (they are also in `requirements.txt` file):
+- scipy
+- scikit-learn
+- numpy
+- pandas
+- lifelines
+- scikit-survival
+- xgboost
 
+You can also install them via:  
+`pip3 install -r requirements.txt`  
+
+<a name="running-exhaustivefs"></a>
 # Running ExhaustiveFS
 
 ## Step 1: data preparation
 
-Before running the tool, you should prepare two csv tables containing actual data and its annotation. Both for classification and survival analysis data table should contain numerical values associated with samples (rows) and features (columns):
+Before running the tool, you should prepare three csv tables containing actual data, its annotation and *n* \ *k* grid. Both for classification and survival analysis data table should contain numerical values associated with samples (rows) and features (columns):
 
 |            | Feature 1 | Feature 2 |
 | ---------- | --------- | --------- |
@@ -65,77 +82,89 @@ For survival analysis, annotation table should contain binary event indicator an
 | Sample 511 | 1     | 40.5          | GSE1456  | Validation   |
 | Sample 512 | 1     | 66.7          | GSE1456  | Validation   |
 
+
+Table with *n* and *k* grid for exhaustive feature selection:  
+*n* is a number of selected features, *k* is a length of each features subset.  
+
+| n   | k   |  
+| --- | --- |  
+| 100 | 1   |  
+| 100 | 2   |  
+| ... | ... |  
+| 20  | 5   |  
+| 20  | 10  |  
+| 20  | 15  |  
+
+
 **TODO:** add real example to examples/ and write about it here.
 
 ## Step 2: creating configuration file
 
-**TODO:** config format for regression.
-Configuration file should contain the dictionary parameter:value in json format:
+Configuration file is a json file containing all customizable parameters for the model (classification and survival analysis)  
 
-    {
-        "parametor_1" : value_1,
-        "parametor_2" : value_2,
-        ...
-        "parametor_N" : value_N
-    }
+Available parameters are:  
 
-For classification task, you can set values for the following parameters:
+🔴!NOTE! - All paths to files / directories should be relative to the configuration file  
 * `data_path`
-    Path (absolute or relative to configuration file) to csv table of the data.
+    Path to csv table of the data.
 
 * `annotation_path`
-    Path (absolute or relative to configuration file) to csv table of the data annotation.
+    Path to csv table of the data annotation.
 
 * `n_k_path`
-    Path (absolute or relative to configuration file) to a file with columns *n* and *k* defining a grid for exhaustive feature selection: *n* is a number of selected features, *k* is a length of each features subset.
+    Path to a *n*/*k* grid file.
 
 * `output_dir`
-    Dir for output files. If not exist, will be create.
+    Path to directory for output files. If not exist, it will be created.
 
-* `feature_pre_selector`
+* `feature_pre_selector`  
+    TODO: add link and table of possible choices below
     Name of feature pre-selection function from `./core/feature_pre_selectors.py`.
 
-* `feature_pre_selector_kwargs`
-    Dict of keyword arguments for feature pre-selector.
+* `feature_pre_selector_kwargs`  
+    Object/Dictionary of keyword arguments for feature pre-selector function.
 
-* `feature_selector`
+* `feature_selector`  
+    TODO: add link and table of possible choices below
     Name of feature selection function from `./core/feature_selectors.py`.
 
-* `feature_selector_kwargs`
-    Dict of keyword arguments for feature selector.
+* `feature_selector_kwargs`  
+    TODO: add link and table of possible choices below
+    Object/Dictionary of keyword arguments for feature selector function.
 
 * `preprocessor`
     Name of class for data preprocessing from `sklearn.preprocessing`.
 
 * `preprocessor_kwargs`
-    Dict of keyword arguments for preprocessor initialization.
+    Object/Dictionary of keyword arguments for preprocessor class initialization.
 
-* `classifier`
-    Name of class for classification from `./core/classifiers.py`.
+* `model`  
+    TODO: add link and table of possible choices below
+    Name of class for classification / survival analysis from `./core/classifiers.py`.
 
-* `classifier_kwargs`
-    Dict of keyword arguments for classifier initialization.
+* `model_kwargs`
+    Object/Dictionary of keyword arguments for classifier initialization.
 
-* `classifier_CV_ranges`
-    Dict defining classifier parameters which should be cross-validated. Keys are parameter names, values are iterables for grid search.
+* `model_CV_ranges`
+    Object/Dictionary defining model parameters which should be cross-validated. Keys are parameter names, values are lists for grid search.
 
-* `classifier_CV_folds`
-    Number of fold for K-Folds cross-validation.
+* `model_CV_folds`
+    Number of folds for K-Folds cross-validation.
 
 * `limit_feature_subsets`
-    If true, limit the number of processed feature subsets.
+    If *true*, limit the number of processed feature subsets.
 
 * `n_feature_subsets`
     Number of processed feature subsets.
 
 * `shuffle_feature_subsets`
-    If true, processed feature subsets are selected randomly.
+    If *true*, processed feature subsets are selected randomly instead of alphabetical order.
 
 * `max_n`
     Maximal number of selected features.
 
 * `max_estimated_time`
-    Maximal estimated time of pipeline running.
+    Maximal estimated pipeline running time.
 
 * `scoring_functions`
     List with names for scoring functions (from `accuracy_scores.py`) which will be calculated for each classifier.
@@ -147,57 +176,69 @@ For classification task, you can set values for the following parameters:
     A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
 
 * `n_processes`
-    Number of processes.
+    Number of processes / threads to run on.
 
 * `random_state`
     Random seed (set to an arbitrary integer for reproducibility).
 
 * `verbose`
-    If True, print running time for each pair of n, k.
+    If *true*, print running time for each pair of *n*, *k*.
 
 
 ## Step 3: defining a *n*, *k* grid
 
-To estimate running time of the exhaustive pipeline and define run
-
+To estimate running time of the exhaustive pipeline and define adequate *n* / *k* values you can run:  
 ```bash
-python3 running_time_estimator.py /path/to/config.json max_k max_estimated_time n_feature_subsets search_max_n
+python3 running_time_estimator.py <config_file> <max_k> <max_estimated_time> <n_feature_subsets> <search_max_n> <is_regressor>
 ```
 where
+* `config_file` is the path to json configuration file.
 * `max_k` is the maximal length of each features subset.
 * `max_estimated_time` is the maximal estimated time (in hours) of single running of the exhaustive pipeline.
-* `n_feature_subsets` is the number of feature subsets processed by the exhaustive pipeline (*100* is pretty good).
+* `n_feature_subsets` is the number of feature subsets processed by the exhaustive pipeline (*100* is usually enough).
 * `search_max_n` is *1* if you need to find the maximal number of selected features for which estimated run time of the exhaustive pipeline is less than `max_estimated_time`, and *0* otherwise.
+* `is_regressor` is *1* if you the estimation is for the regression.
+
+Above script calculates maximum possible values *n* / *k* for each *k*=`1...max_n` such that pipeline running time for each pair (*n*, *k*) is less then `max_estimated_time`
 
 ## Step 4: running the exhaustive pipeline
 
 When input data, configuration file and *n*, *k* grid are ready,
-the exhaustive pipeline could be executed:
+the exhaustive pipeline could be executed -  
+* __Classifiers__:
 ```bash
-python3 build_classifiers.py /path/to/config.json
+python3 build_classifiers.py <config_file>
 ```
-This will generate three files in the specified output folder:
-* classifiers.csv: this file contains all classifiers which passed the filtration together with their quality metrics.
-* summary_n_k.csv: for each pair of *n*, *k* three numbers are given: number of classifiers which passed the filtration,
-number of classifiers which showed reliable performance (i.e., passed quality thresholds) on the validation set and
-their ratio (in %). Low percentage of validation-reliable classifiers together with high number of 
-filtration-reliable classifiers is usually associated with overfitting.
-* summary_features.csv: for each feature percentage of classifiers carrying this feature 
-is listed (classifiers which passed the filtration are considered).
+* __Regressions__:
+```bash
+python3 build_regressors.py <config_file>
+```
+
+This will generate multiple files in the specified output folder:
+* models.csv: this file contains all models (classifiers or regressors) which passed the filtration together with their quality metrics.
+* summary_n_k.csv: for each pair of *n*, *k* three numbers are given: number of models which passed the filtration,
+number of models which showed reliable performance (i.e., passed quality thresholds) on the validation set and
+their ratio (in %). Low percentage of validation-reliable models together with high number of 
+filtration-reliable models is usually associated with overfitting.
+* summary_features.csv: for each feature percentage of models carrying this feature 
+is listed (models which passed the filtration are considered).
 
 ## Step 5: generating report for a single model
-To get detailed report on the specific classifier (set of features): 
-* Create configuration file (use ./examples/make_classifier_summary/config.json as
+To get detailed report on the specific model (== specific set of features): 
+* Create configuration file (use ./examples/make_<u>(classifier | regressor)</u>_summary/config.json as
    template) and set following key parameters:
-    * "data_path" - path to dataset used for search of classifiers
+    * `data_path` - path to dataset used for search of classifiers
   (relative to directory with configuration file);
     * "annotation_path" - path to annotation file (relative to directory 
       with configuration file);
-    * "output_dir" - path to output directory for detailed report 
+    * `output_dir` - path to output directory for detailed report 
       (relative to directory with configuration file);
-    * "features_subset" - set of features belonging to the classifier of interest;
-* run "python3 make_classifier_summary.py <configuration file name>"    
-* check the detailed report in "output_dir"
+    * `features_subset` - set of features belonging to the classifier of interest;
+* * For classifier run `python3 make_classifier_summary.py <config_file>`   
+* * For regressor run `python3 make_regressor_summary.py <config_file>`    
+* Check the detailed report in `output_dir`
 
+
+<a name="etc"></a>
 # etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).

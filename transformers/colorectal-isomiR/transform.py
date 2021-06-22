@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-BASE_DIR = 'data/colorectal-miRNK'
+BASE_DIR = 'data/colorectal-isomiR'
 
 # DATA
 data = pd.read_csv(f'{BASE_DIR}/secondary/isomiR_5prime_CPM.tsv', index_col=0, sep='\t').transpose()

@@ -1,6 +1,10 @@
 import pandas as pd
+import warnings
 
 from lifelines import CoxPHFitter
+
+warnings.filterwarnings('ignore', message='.*ConvergenceWarning.*')
+warnings.filterwarnings('ignore', message='.*Ill-conditioned matrix.*')
 
 
 class CoxRegression(CoxPHFitter):

@@ -4,27 +4,29 @@
 	"n_k_path": "n_k.csv",
 	"output_dir": "example_output_dir",
 
-	"feature_pre_selector": null,
-	"feature_pre_selector_kwargs": {},
+    "feature_pre_selector": "",
+    "feature_pre_selector_kwargs": {
+    },
 
-	"feature_selector": "t_test",
-	"feature_selector_kwargs": {},
+    "feature_selector": "cox_concordance",
+    "feature_selector_kwargs": {
+        "datasets": ["Training"]
+    },
 
-	"preprocessor": "KBinsDiscretizer",
+
+	"preprocessor": "",
 	"preprocessor_kwargs": {
-		"n_bins": 2,
-		"encode": "ordinal"
 	},
 	
-	"regressor": "LinearRegression",
+	"regressor": "CoxRegression",
 	"regressor_kwargs": {},
 	"regressor_CV_ranges": {},
-	"regressor_CV_folds": 1,
+	"regressor_CV_folds": 0,
 	
-	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
-	"main_scoring_function": "min_TPR_TNR",
+    "scoring_functions": ["concordance_index", "dynamic_auc", "hazard_ratio", "logrank"],
+    "main_scoring_function": "concordance_index",
 	"main_scoring_threshold": 0.65,
-	
+
 	"n_processes": 4,
 	"random_state": 17,
 	"verbose": true
