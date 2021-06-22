@@ -124,87 +124,89 @@ Table with *n* and *k* grid for exhaustive feature selection:
 
 Configuration file is a json file containing all customizable parameters for the model (classification and survival analysis)  
 
-Available parameters are:  
+<details>
+  <summary>Available parameters</summary> 
 
-🔴!NOTE! - All paths to files / directories should be relative to the configuration file directory  
-* `data_path`
-    Path to csv table of the data.
+  🔴!NOTE! - All paths to files / directories should be relative to the configuration file directory  
+  * `data_path`
+      Path to csv table of the data.
 
-* `annotation_path`
-    Path to csv table of the data annotation.
+  * `annotation_path`
+      Path to csv table of the data annotation.
 
-* `n_k_path`
-    Path to a *n*/*k* grid file.
+  * `n_k_path`
+      Path to a *n*/*k* grid file.
 
-* `output_dir`
-    Path to directory for output files. If not exist, it will be created.
+  * `output_dir`
+      Path to directory for output files. If not exist, it will be created.
 
-* `feature_pre_selector`  
+  * `feature_pre_selector`  
+      TODO: add link and table of possible choices below  
+      Name of feature pre-selection function from `./core/feature_pre_selectors.py`.
+
+  * `feature_pre_selector_kwargs`  
+      Object/Dictionary of keyword arguments for feature pre-selector function.
+
+  * `feature_selector`  
+      TODO: add link and table of possible choices below  
+      Name of feature selection function from `./core/feature_selectors.py`.
+
+  * `feature_selector_kwargs`  
+      TODO: add link and table of possible choices below  
+      Object/Dictionary of keyword arguments for feature selector function.
+
+  * `preprocessor`
+      Name of class for data preprocessing from `sklearn.preprocessing`.
+
+  * `preprocessor_kwargs`
+      Object/Dictionary of keyword arguments for preprocessor class initialization.
+
+  * `model`  
     TODO: add link and table of possible choices below  
-    Name of feature pre-selection function from `./core/feature_pre_selectors.py`.
+      Name of class for classification / survival analysis from `./core/classifiers.py`.
 
-* `feature_pre_selector_kwargs`  
-    Object/Dictionary of keyword arguments for feature pre-selector function.
+  * `model_kwargs`
+      Object/Dictionary of keyword arguments for classifier initialization.
 
-* `feature_selector`  
-    TODO: add link and table of possible choices below  
-    Name of feature selection function from `./core/feature_selectors.py`.
+  * `model_CV_ranges`
+      Object/Dictionary defining model parameters which should be cross-validated. Keys are parameter names, values are lists for grid search.
 
-* `feature_selector_kwargs`  
-    TODO: add link and table of possible choices below  
-    Object/Dictionary of keyword arguments for feature selector function.
+  * `model_CV_folds`
+      Number of folds for K-Folds cross-validation.
 
-* `preprocessor`
-    Name of class for data preprocessing from `sklearn.preprocessing`.
+  * `limit_feature_subsets`
+      If *true*, limit the number of processed feature subsets.
 
-* `preprocessor_kwargs`
-    Object/Dictionary of keyword arguments for preprocessor class initialization.
+  * `n_feature_subsets`
+      Number of processed feature subsets.
 
-* `model`  
-    TODO: add link and table of possible choices below  
-    Name of class for classification / survival analysis from `./core/classifiers.py`.
+  * `shuffle_feature_subsets`
+      If *true*, processed feature subsets are selected randomly instead of alphabetical order.
 
-* `model_kwargs`
-    Object/Dictionary of keyword arguments for classifier initialization.
+  * `max_n`
+      Maximal number of selected features.
 
-* `model_CV_ranges`
-    Object/Dictionary defining model parameters which should be cross-validated. Keys are parameter names, values are lists for grid search.
+  * `max_estimated_time`
+      Maximal estimated pipeline running time.
 
-* `model_CV_folds`
-    Number of folds for K-Folds cross-validation.
+  * `scoring_functions`
+      List with names for scoring functions (from `accuracy_scores.py`) which will be calculated for each classifier.
 
-* `limit_feature_subsets`
-    If *true*, limit the number of processed feature subsets.
+  * `main_scoring_function`
+      Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for classifier filtering.
 
-* `n_feature_subsets`
-    Number of processed feature subsets.
+  * `main_scoring_threshold`
+      A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
 
-* `shuffle_feature_subsets`
-    If *true*, processed feature subsets are selected randomly instead of alphabetical order.
+    * `n_processes`
+      Number of processes / threads to run on.
+  
+  * `random_state`
+      Random seed (set to an arbitrary integer for reproducibility).
 
-* `max_n`
-    Maximal number of selected features.
-
-* `max_estimated_time`
-    Maximal estimated pipeline running time.
-
-* `scoring_functions`
-    List with names for scoring functions (from `accuracy_scores.py`) which will be calculated for each classifier.
-
-* `main_scoring_function`
-    Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for classifier filtering.
-
-* `main_scoring_threshold`
-    A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
-
-* `n_processes`
-    Number of processes / threads to run on.
-
-* `random_state`
-    Random seed (set to an arbitrary integer for reproducibility).
-
-* `verbose`
-    If *true*, print running time for each pair of *n*, *k*.
+  * `verbose`
+      If *true*, print running time for each pair of *n*, *k*.
+</details>
 
 
 ## Step 3: defining a *n*, *k* grid
@@ -261,14 +263,39 @@ To get detailed report on the specific model (== specific set of features):
 * Check the detailed report in `output_dir`
 
 
-<a name="etc"></a>
-# Functions and classes
-## Feature pre-selectors
-## Feature selectors
-## Classifiers
-### Accuracy scores
-## Regressors
-### Accuracy scores
+<a name="functions-and-classes"></a>
+# Functions ans classes
+<details>
+  <summary>Feature pre-selectors</summary> 
+  
+  - <details>
+    <summary>from_file</summary> 
+    
+    Pre-select features from a given file
+    
+    __name: from_file__
+    __kwargs:__ 
+    ```json
+    {
+      "sep": ","
+    }
+    ```
+    </details>
+
+</details>
+<details>
+  <summary>Feature selectors</summary> 
+</details>
+<details>
+  <summary>Classifiers</summary>
+  
+  ### Accuracy scores
+</details>
+<details>
+  <summary>Regressors</summary> 
+  
+  ### Accuracy scores
+</details>
 
 
 <a name="etc"></a>
