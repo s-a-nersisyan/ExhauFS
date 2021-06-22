@@ -5,7 +5,8 @@ Exhaustive feature selection for classification and survival analysis.
 [Introduction](#introduction)  
 [Requirements](#requirements)  
 [Running ExhaustiveFS](#running-exhaustivefs)  
-[ETC](#etc)  
+[Functions and classes](#functions-and-classes)  
+[etc](#etc)  
 
 <a name="introduction"></a>
 # Introduction
@@ -26,16 +27,19 @@ Input data can consist from different batches (datasets), and each dataset shoul
 <a name="requirements"></a>
 # Requirements
 
-List of requirements (they are also in `requirements.txt` file):
-- scipy
-- scikit-learn
-- numpy
-- pandas
-- lifelines
-- scikit-survival
-- xgboost
+List of requirements (they are also listed in `requirements.txt` file):
+<details>
+    - scipy  
+    - scikit-learn  
+    - numpy  
+    - pandas  
+    - lifelines  
+    - scikit-survival  
+    - xgboost  
+</details>  
 
-You can also install them via:  
+
+You can install them via:  
 `pip3 install -r requirements.txt`  
 
 <a name="running-exhaustivefs"></a>
@@ -104,7 +108,7 @@ Configuration file is a json file containing all customizable parameters for the
 
 Available parameters are:  
 
-🔴!NOTE! - All paths to files / directories should be relative to the configuration file  
+🔴!NOTE! - All paths to files / directories should be relative to the configuration file directory  
 * `data_path`
     Path to csv table of the data.
 
@@ -118,18 +122,18 @@ Available parameters are:
     Path to directory for output files. If not exist, it will be created.
 
 * `feature_pre_selector`  
-    TODO: add link and table of possible choices below
+    TODO: add link and table of possible choices below  
     Name of feature pre-selection function from `./core/feature_pre_selectors.py`.
 
 * `feature_pre_selector_kwargs`  
     Object/Dictionary of keyword arguments for feature pre-selector function.
 
 * `feature_selector`  
-    TODO: add link and table of possible choices below
+    TODO: add link and table of possible choices below  
     Name of feature selection function from `./core/feature_selectors.py`.
 
 * `feature_selector_kwargs`  
-    TODO: add link and table of possible choices below
+    TODO: add link and table of possible choices below  
     Object/Dictionary of keyword arguments for feature selector function.
 
 * `preprocessor`
@@ -139,7 +143,7 @@ Available parameters are:
     Object/Dictionary of keyword arguments for preprocessor class initialization.
 
 * `model`  
-    TODO: add link and table of possible choices below
+    TODO: add link and table of possible choices below  
     Name of class for classification / survival analysis from `./core/classifiers.py`.
 
 * `model_kwargs`
@@ -235,8 +239,18 @@ To get detailed report on the specific model (== specific set of features):
       (relative to directory with configuration file);
     * `features_subset` - set of features belonging to the classifier of interest;
 * * For classifier run `python3 make_classifier_summary.py <config_file>`   
-* * For regressor run `python3 make_regressor_summary.py <config_file>`    
+  * For regressor run `python3 make_regressor_summary.py <config_file>`    
 * Check the detailed report in `output_dir`
+
+
+<a name="etc"></a>
+# Functions and classes
+## Feature pre-selectors
+## Feature selectors
+## Classifiers
+### Accuracy scores
+## Regressors
+### Accuracy scores
 
 
 <a name="etc"></a>
