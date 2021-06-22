@@ -68,42 +68,54 @@ Before running the tool, you should prepare three csv tables containing actual d
 
 Sample annotation table formats are different for classification and survival analysis. For classification it should contain binary indicator of sample class (e.g., 1 for recurrent tumor and 0 for non-recurrent), dataset (batch) label and dataset type (Training/Filtration/Validation). Note that annotation should be present for each sample listed in the data table in the same order:
 
-|            | Class | Dataset  | Dataset type |
-| ---------- | ----- | -------- | ------------ |
-| Sample 1   | 1     | GSE3494  | Training     |
-| Sample 2   | 0     | GSE3494  | Training     |
-| ...        |       |          |              |
-| Sample 98  | 0     | GSE12093 | Filtration   |
-| Sample 99  | 0     | GSE12093 | Filtration   |
-| ...        |       |          |              |
-| Sample 511 | 1     | GSE1456  | Validation   |
-| Sample 512 | 1     | GSE1456  | Validation   |
+<details>
+  <summary>Example</summary>
+  
+  |            | Class | Dataset  | Dataset type |
+  | ---------- | ----- | -------- | ------------ |
+  | Sample 1   | 1     | GSE3494  | Training     |
+  | Sample 2   | 0     | GSE3494  | Training     |
+  | ...        |       |          |              |
+  | Sample 98  | 0     | GSE12093 | Filtration   |
+  | Sample 99  | 0     | GSE12093 | Filtration   |
+  | ...        |       |          |              |
+  | Sample 511 | 1     | GSE1456  | Validation   |
+  | Sample 512 | 1     | GSE1456  | Validation   |
+</details>
+
 
 For survival analysis, annotation table should contain binary event indicator and time to event:
-
-|            | Event | Time to event | Dataset  | Dataset type |
-| ---------- | ----- | ------------- | -------- | ------------ |
-| Sample 1   | 1     | 100.1         | GSE3494  | Training     |
-| Sample 2   | 0     | 500.2         | GSE3494  | Training     |
-| ...        |       |               |          |              |
-| Sample 98  | 0     | 623.9         | GSE12093 | Filtration   |
-| Sample 99  | 0     | 717.1         | GSE12093 | Filtration   |
-| ...        |       |               |          |              |
-| Sample 511 | 1     | 40.5          | GSE1456  | Validation   |
-| Sample 512 | 1     | 66.7          | GSE1456  | Validation   |
+<details>
+  <summary>Example</summary>
+  
+  |            | Event | Time to event | Dataset  | Dataset type |
+  | ---------- | ----- | ------------- | -------- | ------------ |
+  | Sample 1   | 1     | 100.1         | GSE3494  | Training     |
+  | Sample 2   | 0     | 500.2         | GSE3494  | Training     |
+  | ...        |       |               |          |              |
+  | Sample 98  | 0     | 623.9         | GSE12093 | Filtration   |
+  | Sample 99  | 0     | 717.1         | GSE12093 | Filtration   |
+  | ...        |       |               |          |              |
+  | Sample 511 | 1     | 40.5          | GSE1456  | Validation   |
+  | Sample 512 | 1     | 66.7          | GSE1456  | Validation   |
+</details>
 
 
 Table with *n* and *k* grid for exhaustive feature selection:  
 *n* is a number of selected features, *k* is a length of each features subset.  
 
-| n   | k   |  
-| --- | --- |  
-| 100 | 1   |  
-| 100 | 2   |  
-| ... | ... |  
-| 20  | 5   |  
-| 20  | 10  |  
-| 20  | 15  |  
+<details>
+  <summary>Example</summary> 
+   
+  | n   | k   |  
+  | --- | --- |  
+  | 100 | 1   |  
+  | 100 | 2   |  
+  | ... | ... |  
+  | 20  | 5   |  
+  | 20  | 10  |  
+  | 20  | 15  |  
+</details>
 
 
 **TODO:** add real example to examples/ and write about it here.
