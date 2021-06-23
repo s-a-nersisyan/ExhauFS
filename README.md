@@ -266,18 +266,18 @@ To get detailed report on the specific model (== specific set of features):
   <summary>Feature pre-selectors</summary>
   
   - <details>
-  <summary>from_file</summary> 
+    <summary>from_file</summary> 
     
-  Pre-select features from a given file
+    Pre-select features from a given file
     
-  __name: from_file__  
-  __kwargs:__ 
-  ```json
-  {
-    "sep": " "
-  }
-  ```
-  </details>
+    __name: from_file__  
+    __kwargs:__ 
+    ```json
+    {
+      "sep": " "
+    }
+    ```
+    </details>
 </details>
 - <details>
   <summary>Feature selectors</summary>
