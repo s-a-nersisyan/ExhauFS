@@ -283,83 +283,83 @@ To get detailed report on the specific model (== specific set of features):
   <summary>Feature selectors</summary>
   
   - <details>
-  <summary>t_test</summary> 
+    <summary>t_test</summary> 
     
-  Select n features with the lowest p-values according to t-test
+    Select n features with the lowest p-values according to t-test
     
-  __name: t_test__  
-  __kwargs:__ 
-  ```json
-  {
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
-  </details>
+    __name: t_test__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   - <details>
-  <summary>spearman_correlation</summary> 
+    <summary>spearman_correlation</summary> 
     
-  Select n features with the highest correlation with target label
+    Select n features with the highest correlation with target label
     
-  __name: spearman_correlation__  
-  __kwargs:__ 
-  ```json
-  {
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
-  </details>
+    __name: spearman_correlation__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   - <details>
-  <summary>from_file</summary> 
+    <summary>from_file</summary> 
+     
+    Select first n features from a given file
     
-  Select first n features from a given file
-    
-  __name: spearman_correlation__  
-  __kwargs:__ 
-  ```json
-  {
-    "sep": " "
-  }
-  ```
-  </details>
+    __name: spearman_correlation__  
+    __kwargs:__ 
+    ```json
+    {
+      "sep": " "
+    }
+    ```
+    </details>
   - <details>
-  <summary>median</summary> 
+    <summary>median</summary> 
     
-  Select n features with the highest median value
-  __name: spearman_correlation__
-  __kwargs:__ 
-  ```json
-  {}
-  ```
-  </details>
+    Select n features with the highest median value
+    __name: spearman_correlation__
+    __kwargs:__ 
+    ```json
+    {}
+    ```
+    </details>
     
   ### Regression specific selectors:
   - <details>
-  <summary>cox_concordance</summary> 
+    <summary>cox_concordance</summary> 
+       
+    Select n features with the highest concordance index on one-factor Cox regression.
     
-  Select n features with the highest concordance index on one-factor Cox regression.
-    
-  __name: cox_concordance__  
-  __kwargs:__ 
-  ```json
-  {
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
-  </details>
+    __name: cox_concordance__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   - <details>
-  <summary>cox_dynamic_auc</summary> 
+    <summary>cox_dynamic_auc</summary> 
     
-  Select n features with the highest time-dependent auc on one-factor Cox regression.
+    Select n features with the highest time-dependent auc on one-factor Cox regression.
   
-  __name: cox_dynamic_auc__  
-  __kwargs:__ 
-  ```json
-  {
-    "year": 3, // time at which to calculate auc
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
-  </details>
+    __name: cox_dynamic_auc__  
+    __kwargs:__ 
+    ```json
+    {
+      "year": 3, // time at which to calculate auc
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   - <details>
   <summary>cox_hazard_ratio</summary> 
     
