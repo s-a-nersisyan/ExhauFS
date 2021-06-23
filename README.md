@@ -270,8 +270,8 @@ To get detailed report on the specific model (== specific set of features):
     
     Pre-select features from a given file
     
-    __name: from_file__  
-    __kwargs:__ 
+    __name__: from_file     
+    __kwargs__:   
     ```json
     {
       "sep": " "
@@ -288,8 +288,8 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the lowest p-values according to t-test
     
-    __name: t_test__  
-    __kwargs:__ 
+    __name__: t_test    
+    __kwargs__:   
     ```json
     {
       "datasets": ["Training", "Filtration"]
@@ -301,8 +301,8 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the highest correlation with target label
     
-    __name: spearman_correlation__  
-    __kwargs:__ 
+    __name__: spearman_correlation   
+    __kwargs__:   
     ```json
     {
       "datasets": ["Training", "Filtration"]
@@ -314,8 +314,8 @@ To get detailed report on the specific model (== specific set of features):
      
     Select first n features from a given file
     
-    __name: spearman_correlation__  
-    __kwargs:__ 
+    __name__: spearman_correlation   
+    __kwargs__:   
     ```json
     {
       "sep": " "
@@ -326,8 +326,8 @@ To get detailed report on the specific model (== specific set of features):
     <summary>median</summary> 
     
     Select n features with the highest median value
-    __name: spearman_correlation__
-    __kwargs:__ 
+    __name__: spearman_correlation  
+    __kwargs__:   
     ```json
     {}
     ```
@@ -339,8 +339,8 @@ To get detailed report on the specific model (== specific set of features):
        
     Select n features with the highest concordance index on one-factor Cox regression.
     
-    __name: cox_concordance__  
-    __kwargs:__ 
+    __name__: cox_concordance  
+    __kwargs__:  
     ```json
     {
       "datasets": ["Training", "Filtration"]
@@ -352,8 +352,8 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the highest time-dependent auc on one-factor Cox regression.
   
-    __name: cox_dynamic_auc__  
-    __kwargs:__ 
+    __name__: cox_dynamic_auc   
+    __kwargs__: 
     ```json
     {
       "year": 3, // time at which to calculate auc
@@ -366,8 +366,8 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the highest hazard ratio on one-factor Cox regression.
     
-    __name: cox_hazard_ratio__  
-    __kwargs:__ 
+    __name__: cox_hazard_ratio   
+    __kwargs__:   
     ```json
     {
       "datasets": ["Training", "Filtration"]
@@ -379,9 +379,10 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the highest log-likelihood on one-factor Cox regression.
     
-    __name: cox_likelihood__  
+    __name__: cox_likelihood  
+    __kwargs__:  
     ```json
-   {
+    {
       "datasets": ["Training", "Filtration"]
     }
     ```
