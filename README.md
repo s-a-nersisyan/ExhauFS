@@ -278,7 +278,8 @@ To get detailed report on the specific model (== specific set of features):
     }
     ```
     </details>
-</details>
+  </details>
+  
 - <details>
   <summary>Feature selectors</summary>
   
@@ -332,7 +333,7 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
     
-  ### Regression specific selectors:
+  ##### Regression specific selectors:
   - <details>
     <summary>cox_concordance</summary> 
        
@@ -361,31 +362,31 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
   - <details>
-  <summary>cox_hazard_ratio</summary> 
+    <summary>cox_hazard_ratio</summary> 
     
-  Select n features with the highest hazard ratio on one-factor Cox regression.
+    Select n features with the highest hazard ratio on one-factor Cox regression.
     
-  __name: cox_hazard_ratio__  
-  __kwargs:__ 
-  ```json
-  {
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
-  </details>
+    __name: cox_hazard_ratio__  
+    __kwargs:__ 
+    ```json
+    {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   - <details>
-  <summary>cox_likelihood</summary> 
+    <summary>cox_likelihood</summary> 
     
-  Select n features with the highest log-likelihood on one-factor Cox regression.
+    Select n features with the highest log-likelihood on one-factor Cox regression.
     
-  __name: cox_likelihood__  
-  ```json
-  {
-    "datasets": ["Training", "Filtration"]
-  }
-  ```
+    __name: cox_likelihood__  
+    ```json
+   {
+      "datasets": ["Training", "Filtration"]
+    }
+    ```
+    </details>
   </details>
-</details>
 - <details>
   <summary>Classifiers</summary>
   
@@ -399,7 +400,7 @@ To get detailed report on the specific model (== specific set of features):
   - FPR
   - TNR
   - min_TPR_TNR
-</details>
+  </details>
 - <details>
   <summary>Regressors</summary>
   
@@ -410,7 +411,7 @@ To get detailed report on the specific model (== specific set of features):
   - dynamic_auc
   - hazard_ratio
   - logrank
-</details>
+  </details>
 
 
 # etc
