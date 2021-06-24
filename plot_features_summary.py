@@ -58,7 +58,7 @@ def main(fname, min_participation_ratio):
             labels.append(feature)
 
     #plt.legend(labels)
-    plt.legend(labels, ncol=4, loc='lower right',
+    plt.legend(labels, ncol=3, loc='lower right',
                fancybox=True, shadow=True)
 
     plot_fname = fname + str(".pdf")

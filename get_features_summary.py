@@ -50,7 +50,7 @@ def main(fname):
             data.append([k, cl_cnt, feature, percentage_classifiers])
 
     summary_features = pd.DataFrame(data, columns=["k", "classifiers_cnt_for_k", "feature", "percentage_classifiers"])
-    summary_features.to_csv("{}/summary_features.csv".format(output_dir))
+    summary_features.to_csv("{}/summary_features_by_nk.csv".format(output_dir))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
