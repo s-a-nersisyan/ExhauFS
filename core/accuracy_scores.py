@@ -13,6 +13,7 @@ def score(y_true, y_pred):
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import r2_score
+from sklearn.metrics import matthews_corrcoef
 
 from .regression.accuracy_scores import *
 
@@ -22,7 +23,6 @@ from .regression.accuracy_scores import *
 # accepts y_true and y_score (see sklearn
 # documentation for more details).
 ROC_AUC = roc_auc_score
-
 
 def TPR(y_true, y_pred):
     """True positive rate (sensitivity)
