@@ -24,6 +24,9 @@ from .regression.accuracy_scores import *
 # documentation for more details).
 ROC_AUC = roc_auc_score
 
+# Alias for sklearn matthews_corrcoef
+MCC = matthews_corrcoef
+
 def TPR(y_true, y_pred):
     """True positive rate (sensitivity)
     
