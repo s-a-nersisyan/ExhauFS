@@ -325,8 +325,8 @@ To get detailed report on the specific model (== specific set of features):
   - <details>
     <summary>median</summary> 
     
-    Select n features with the highest median value
-    __name__: spearman_correlation  
+    Select n features with the highest median value  
+    __name__: median  
     __kwargs__:   
     ```json
     {}

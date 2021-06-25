@@ -160,7 +160,7 @@ def initialize_regression_model(config, df, ann, n_k):
         preprocessor_kwargs=config["preprocessor_kwargs"],
         model=getattr(regressors, config["model"]),
         model_kwargs=config["model_kwargs"],
-        model_cv_ranges=config["model_CV_ranges"], model_cv_folds=config["rmodel_CV_folds"],
+        model_cv_ranges=config["model_CV_ranges"], model_cv_folds=config["model_CV_folds"],
         limit_feature_subsets=config.get("limit_feature_subsets", False),
         n_feature_subsets=config.get("n_feature_subsets", 0),
         shuffle_feature_subsets=config.get("shuffle_feature_subsets", False),

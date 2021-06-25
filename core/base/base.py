@@ -444,18 +444,19 @@ class ExhaustiveBase(
             scores[dataset] = {}
             for s in self.scoring_functions:
                 if self.check_if_method_needs_proba(s):
-                    y_pred = model.predict_proba(X_test)[:, 1]
-
-                if self.scoring_functions[s] in [hazard_ratio, logrank]:
-                    score = self.scoring_functions[s](y_test, X_test, model.coefs)
-                elif self.scoring_functions[s] in [dynamic_auc]:
-                    score = self.scoring_functions[s](
-                        self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
-                        y_test,
-                        y_pred,
-                    )
+                    y_proba = model.predict_proba(X_test)[:, 1]
+                    score = self.scoring_functions[s](y_test, y_proba)
                 else:
-                    score = self.scoring_functions[s](y_test, y_pred)
+                    if self.scoring_functions[s] in [hazard_ratio, logrank]:
+                        score = self.scoring_functions[s](y_test, X_test, model.coefs)
+                    elif self.scoring_functions[s] in [dynamic_auc]:
+                        score = self.scoring_functions[s](
+                            self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
+                            y_test,
+                            y_pred,
+                        )
+                    else:
+                        score = self.scoring_functions[s](y_test, y_pred)
 
                 scores[dataset][s] = score
 
