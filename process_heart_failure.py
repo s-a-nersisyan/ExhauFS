@@ -1,22 +1,10 @@
-import os
-
 import numpy as np
 import pandas as pd
-from random import randint
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.impute import SimpleImputer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import make_scorer, accuracy_score, roc_auc_score, matthews_corrcoef
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import make_scorer, matthews_corrcoef
 from sklearn.model_selection import cross_val_score, RepeatedStratifiedKFold
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-
-from core.accuracy_scores import min_TPR_TNR
-
 
 def create_model(name, scaler, classifier):
     return name, make_pipeline(scaler, classifier)
@@ -44,7 +32,7 @@ def convert_to_our_format(df, fname):
     data_df.to_csv("{}.data.csv".format(fname))
 
 def main():
-    n_repeats = 100
+    n_repeats = 10
 
     # load data
     fname = "data/heart_failure/heart_failure_clinical_records_dataset.csv"
@@ -60,10 +48,10 @@ def main():
     y = df['DEATH_EVENT']
 
     datas = {
-        "all features": df[df.columns.difference(["DEATH_EVENT", "time"])],
-        "top 2 features from orig paper": df[["ejection_fraction", "serum_creatinine"]],
+        #"all features": df[df.columns.difference(["DEATH_EVENT", "time"])],
+        #"top 2 features from orig paper": df[["ejection_fraction", "serum_creatinine"]],
         "top 3 features from orig paper": df[["ejection_fraction", "serum_creatinine", "age"]],
-        "top 3 features from our ranking": df[["ejection_fraction","serum_creatinine","high_blood_pressure"]]
+        "top 3 features from our ranking": df[["ejection_fraction","serum_creatinine", "diabetes"]],
     }
 
     scorer = make_scorer(matthews_corrcoef)
@@ -75,13 +63,13 @@ def main():
 
     # # create list of models
     models = []
-    models.append( create_model('KNN', scaler, KNeighborsClassifier()) )
-    models.append( create_model('SVC', scaler, SVC()))
-    models.append( create_model('LR', scaler, LogisticRegression()))
-    models.append( create_model('DT', scaler, DecisionTreeClassifier()))
-    models.append( create_model('GNB', scaler, GaussianNB()))
+    #models.append( create_model('KNN', scaler, KNeighborsClassifier()) )
+    #models.append( create_model('SVC', scaler, SVC()))
+    #models.append( create_model('LR', scaler, LogisticRegression()))
+    #models.append( create_model('DT', scaler, DecisionTreeClassifier()))
+    #models.append( create_model('GNB', scaler, GaussianNB()))
     models.append( create_model('RF', scaler, RandomForestClassifier()))
-    models.append( create_model('GB', scaler, GradientBoostingClassifier()))
+    #models.append( create_model('GB', scaler, GradientBoostingClassifier()))
 
     # get CV performance
     i = 0
