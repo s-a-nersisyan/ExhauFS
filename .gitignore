@@ -7,3 +7,6 @@ data
 *.csv
 local
 output
+build
+dist
+ExhauFS.egg-info

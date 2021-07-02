@@ -1,0 +1,217 @@
+#!/usr/local/bin/python3
+
+# External imports
+import argparse
+import os
+import sys
+
+
+# Internal imports
+
+def dir(dir_name):
+    dir_name = dir_name.strip('"')
+    if not os.path.isdir(dir_name):
+        raise ValueError(f"Directory {dir_name} does not exist.")
+    return os.path.abspath(dir_name)
+
+
+def file(file_name):
+    file_name = file_name.strip('"')
+    if not os.path.isfile(file_name):
+        raise ValueError(f"File {file_name} does not exist.")
+    return os.path.abspath(file_name)
+
+
+class ExhauFS(object):
+    def __init__(self):
+        # Create new parser of script arguments
+        parser = argparse.ArgumentParser(
+            usage='exhaufs [-h] <command> [<args>]',
+            description="""
+            Exhaustive features selector
+            
+            Available exhaufs commands are:
+              build       Build feature selector pipeline
+              estimate    Estimate running time of a pipeline
+              summary     Get summary of a model
+            """,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+
+        # Read the first positional argument defining a command
+        parser.add_argument('command', metavar='command',
+                            type=str, choices=['build', 'estimate', 'summary'],
+                            help='Subcommand to run')
+        args = parser.parse_args(sys.argv[1:2])
+
+        # Read arguments for a given command
+        getattr(self, args.command)()
+
+    def common_args(self, parser):
+        parser.add_argument('-c', '--config', metavar='path',
+                            type=file, default="./config.json",
+                            help='Configuration file; Default: %(default)s.')
+
+        # Example of bool option
+        # parser.add_argument('--opt', action='store_true', help='Option description.')
+
+    def build(self):
+        # Create new parser for build arguments
+        parser = argparse.ArgumentParser(
+            prog='exhaufs build',
+            description="""
+            Build feature selectors
+
+            Available building modes are:
+              classifiers    Build tuples of features using predictive classification model
+              regressors     Build tuples of features using predictive regression model
+            """,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+
+        # Add common options
+        self.common_args(parser)
+
+        # Add build options
+        parser.add_argument('mode', metavar='mode',
+                            type=str, choices=['classifiers', 'regressors'],
+                            help='Building mode')
+
+        # Parser build options
+        args = parser.parse_args(sys.argv[2:])
+
+        # Run builder
+        if args.mode == 'classifiers':
+            from src import build_classifiers
+            build_classifiers.main(args.config)
+
+        elif args.mode == 'regressors':
+            from src import build_regressors
+            build_regressors.main(args.config)
+
+    def estimate(self):
+        # TODO: add regressors to time esimators
+        # Create new parser for estimate arguments
+        parser = argparse.ArgumentParser(
+            prog='exhaufs estimate',
+            description="""
+            Estimate pipeline running time
+
+            Available estimating modes are:
+              grid     Estimate pipeline running time for all values of n and k 
+                       on the grid of given size using data from a warm-up run 
+                       defined by values of warm_up_n and warm_up_k.
+              max      Search the maximal number of selected features for which 
+                       estimated pipeline running time is less than max_estimated_time.
+                       Pipeline running time is calculated using bounded number of
+                       feature subsets.
+              until    Calculate estimated pipeline running time using bounded
+                       number of feature subsets while pipeline running time 
+                       is less than max_estimated_time. 
+            """,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+
+        # Add common options
+        self.common_args(parser)
+
+        # Add estimate options
+        parser.add_argument('mode', metavar='mode',
+                            type=str, choices=['grid', 'max', 'until'],
+                            help='Estimating mode')
+        parser.add_argument('--grid_size', metavar='<num>',
+                            type=int, default=100,
+                            help='Size of grid for values n and k; Default: %(default)s.')
+        parser.add_argument('--warm_up_n', metavar='<num>',
+                            type=int, default=50,
+                            help='Values of n for warm-up; Default: %(default)s.')
+        parser.add_argument('--warm_up_k', metavar='<num>',
+                            type=int, default=2,
+                            help='Values of k for warm-up; Default: %(default)s.')
+        parser.add_argument('--max_k', metavar='<num>',
+                            type=int, default=100,
+                            help='Maximal length of features subset; Default: %(default)s.')
+        parser.add_argument('--max_estimated_time', metavar='<time>',
+                            type=float, default=24,
+                            help='Maximal estimated time of single pipeline running in hours; ' \
+                                 'Default: %(default)s.')
+        parser.add_argument('--n_feature_subsets', metavar='<num>',
+                            type=int, default=100,
+                            help='Number of processed feature subsets; Default: %(default)s.')
+
+        # Parser estimate options
+        args = parser.parse_args(sys.argv[2:])
+
+        # Run estimator
+        if args.mode == 'grid':
+            from src import time_n_k
+            time_n_k.main(
+                args.config,
+                args.warm_up_n,
+                args.warm_up_k,
+                args.grid_size)
+
+        elif args.mode == 'max' or args.mode == 'until':
+            from src import running_time_estimator
+            running_time_estimator.main(
+                args.config,
+                args.max_k,
+                args.max_estimated_time,
+                args.n_feature_subsets,
+                args.mode == 'max')
+
+    def summary(self):
+        # Create new parser for summary arguments
+        parser = argparse.ArgumentParser(
+            prog='exhaufs summary',
+            description="""
+            Get summary
+
+            Available summary modes are:
+              classifiers    Fit and evaluate classifier, generate report of its accuracy 
+                             metrics for datasets, plot its features importances (only for 
+                             SVM or RF classifier), and save trained model to file.
+              regressors     Fit and evaluate regressor, generate report of its accuracy 
+                             metrics for datasets, plot Kaplan-Meier curves, and save trained model to file. 
+              features       Read classifiers.csv from output directory and generate table 
+                             that for each feature contains percentage of reliable classifiers 
+                             which use it.
+            """,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+
+        # Add common options
+        self.common_args(parser)
+
+        # Add summary options
+        parser.add_argument('mode', metavar='mode',
+                            type=str, choices=['classifiers', 'regressors', 'features'],
+                            help='Summary mode')
+        parser.add_argument('--output_dir', metavar='<dir>',
+                            type=dir, default=os.path.abspath(os.getcwd()),
+                            help='Directory with output files; Default: %(default)s.')
+        parser.add_argument('--plot', metavar='<file>',
+                            type=file,
+                            help='Plot classifier-participation-curves for features.')
+
+        # Parser summary options
+        args = parser.parse_args(sys.argv[2:])
+
+        # Get summary
+        if args.mode == 'classifiers':
+            from src import make_classifier_summary
+            make_classifier_summary.main(args.config)
+        elif args.mode == 'regressors':
+            from src import make_regressor_summary
+            make_regressor_summary.main(args.config)
+        elif args.mode == 'features':
+
+            # Gererate table that for each feature contains percentage 
+            # of reliable classifiers which use it.
+            from src import get_features_summary
+            get_features_summary.main(args.output_dir)
+
+            # Plot classifier-participation-curves for features
+            if args.plot is not None:
+                from src import plot_features_summary
+                plot_features_summary.main(args.plot)
+
+
+if __name__ == '__main__':
+    ExhauFS()
