@@ -372,10 +372,8 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-</details>
-</a>
-
-<details>
+    </details>
+    <details>
     <summary>cox_likelihood</summary> 
     
     Select n features with the highest log-likelihood on one-factor Cox regression.
@@ -389,6 +387,8 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
 </details>
+</a>
+
 <details>
   <summary>Classifiers</summary>
   
