@@ -137,14 +137,14 @@ Configuration file is a json file containing all customizable parameters for the
       Path to directory for output files. If not exist, it will be created.
 
   * `feature_pre_selector`  
-      Name of feature pre-selection function from [feature pre-selectors section](#feature-pre-selectors).
+      Name of feature pre-selection function from [feature pre-selectors section](#functions-and-classes).
 
   * `feature_pre_selector_kwargs`  
       Object/Dictionary of keyword arguments for feature pre-selector function.
 
   * `feature_selector`  
       TODO: add link and table of possible choices below  
-      Name of feature selection function from [feature selectors section](#feature-selectors).
+      Name of feature selection function from [feature selectors section](#functions-and-classes).
 
   * `feature_selector_kwargs`  
       TODO: add link and table of possible choices below  
@@ -158,7 +158,7 @@ Configuration file is a json file containing all customizable parameters for the
 
   * `model`  
     TODO: add link and table of possible choices below  
-      Name of class for classification / survival analysis from `./core/classifiers.py`.
+      Name of class for classification / survival analysis from [Classifiers/Regressors section](#functions-and-classes).
 
   * `model_kwargs`
       Object/Dictionary of keyword arguments for model initialization.
@@ -185,13 +185,13 @@ Configuration file is a json file containing all customizable parameters for the
       Maximal estimated pipeline running time.
 
   * `scoring_functions`
-      List with names for scoring functions (from `accuracy_scores.py`) which will be calculated for each classifier.
+      List with names for scoring functions (from [Accuracy scores section](#functions-and-classes)) which will be calculated for each model.
 
   * `main_scoring_function`
-      Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for classifier filtering.
+      Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for model filtering.
 
   * `main_scoring_threshold`
-      A number defining threshold for classifier filtering: classifiers with score below this threshold on training/filtration sets will not be further evaluated.
+      A number defining threshold for model filtering: models with score below this threshold on training/filtration sets will not be further evaluated.
 
     * `n_processes`
       Number of processes / threads to run on.
@@ -208,7 +208,7 @@ Configuration file is a json file containing all customizable parameters for the
 
 To estimate running time of the exhaustive pipeline and define adequate *n* / *k* values you can run:  
 ```bash
-python3 running_time_estimator.py <config_file> <max_k> <max_estimated_time> <n_feature_subsets> <search_max_n> <is_regressor>
+exaufs running_time_estimator -c <config_file> <max_k> <max_estimated_time> <n_feature_subsets> <search_max_n> <is_regressor>
 ```
 where
 * `config_file` is the path to json configuration file.
@@ -226,11 +226,11 @@ When input data, configuration file and *n*, *k* grid are ready,
 the exhaustive pipeline could be executed -  
 * __Classifiers__:
 ```bash
-python3 build_classifiers.py <config_file>
+exhaufs build classifiers -c <config_file>
 ```
 * __Regressions__:
 ```bash
-python3 build_regressors.py <config_file>
+exhaufs build regressors -c <config_file>
 ```
 
 This will generate multiple files in the specified output folder:
@@ -253,12 +253,11 @@ To get detailed report on the specific model (== specific set of features):
     * `output_dir` - path to output directory for detailed report 
       (relative to directory with configuration file);
     * `features_subset` - set of features belonging to the classifier of interest;
-* * For classifier run `python3 make_classifier_summary.py <config_file>`   
-  * For regressor run `python3 make_regressor_summary.py <config_file>`    
+* * For classifier run `exhaufs make_classifier_summary -c <config_file>`   
+  * For regressor run `exhaufs make_regressor_summary -c <config_file>`    
 * Check the detailed report in `output_dir`
 
 # Functions ans classes
-<a name="feature-pre-selectors">
 <details>
   <summary>Feature pre-selectors</summary>
   
@@ -278,7 +277,6 @@ To get detailed report on the specific model (== specific set of features):
 </details>
 </a> 
  
-<a name="feature-selectors">  
 <details>
   <summary>Feature selectors</summary>
   
@@ -387,7 +385,6 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
 </details>
-</a>
 
 <details>
   <summary>Classifiers</summary>
