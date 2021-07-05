@@ -4,7 +4,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='ExhauFS',
+    name='exhaufs',
     version='0.01',
     scripts=[
         'exhaufs',
@@ -16,6 +16,14 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/s-a-nersisyan/ExhaustiveFS',
     packages=setuptools.find_packages(),
+    install_requires=[
+        'scipy',
+        'scikit-learn',
+        'numpy',
+        'pandas',
+        'lifelines',
+        'scikit-survival',
+    ],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',

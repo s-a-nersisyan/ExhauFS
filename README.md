@@ -3,7 +3,7 @@ Exhaustive feature selection for classification and survival analysis.
 
 ## Table of Contents  
 [Introduction](#introduction)  
-[Requirements](#requirements)  
+[Installation](#installation)  
 [Running ExhaustiveFS](#running-exhaustivefs)  
 [Functions and classes](#functions-and-classes)  
 [etc](#etc)  
@@ -23,23 +23,18 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 **TODO:** add flowchart.
 
-# Requirements
+# Installation
 
 <details>
   <summary>List of requirements</summary>
 
-  - scipy  
-  - scikit-learn  
-  - numpy  
-  - pandas  
-  - lifelines  
-  - scikit-survival  
-  - xgboost  
+  - python3.6+  
+  - pip3
 </details>  
 
 
-You can install them via:  
-`pip3 install -r requirements.txt`  
+You can install the package via:  
+`pip3 install exhaufs`  
 
 # Running ExhaustiveFS
 
@@ -142,15 +137,14 @@ Configuration file is a json file containing all customizable parameters for the
       Path to directory for output files. If not exist, it will be created.
 
   * `feature_pre_selector`  
-      TODO: add link and table of possible choices below  
-      Name of feature pre-selection function from `./core/feature_pre_selectors.py`.
+      Name of feature pre-selection function from [feature pre-selectors section](#feature-pre-selectors).
 
   * `feature_pre_selector_kwargs`  
       Object/Dictionary of keyword arguments for feature pre-selector function.
 
   * `feature_selector`  
       TODO: add link and table of possible choices below  
-      Name of feature selection function from `./core/feature_selectors.py`.
+      Name of feature selection function from [feature selectors section](#feature-selectors).
 
   * `feature_selector_kwargs`  
       TODO: add link and table of possible choices below  
@@ -264,6 +258,7 @@ To get detailed report on the specific model (== specific set of features):
 * Check the detailed report in `output_dir`
 
 # Functions ans classes
+<a name="feature-pre-selectors">
 - <details>
   <summary>Feature pre-selectors</summary>
   
@@ -281,7 +276,8 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
   </details>
-  
+</a>  
+<a name="feature-selectors">  
 - <details>
   <summary>Feature selectors</summary>
   
@@ -376,6 +372,7 @@ To get detailed report on the specific model (== specific set of features):
     }
     ```
     </details>
+</a>
   - <details>
     <summary>cox_likelihood</summary> 
     
