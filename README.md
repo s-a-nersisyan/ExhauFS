@@ -253,8 +253,8 @@ To get detailed report on the specific model (== specific set of features):
     * `output_dir` - path to output directory for detailed report 
       (relative to directory with configuration file);
     * `features_subset` - set of features belonging to the classifier of interest;
-* * For classifier run `exhaufs make_classifier_summary -c <config_file>`   
-  * For regressor run `exhaufs make_regressor_summary -c <config_file>`    
+* * For classifier run `exhaufs summary classifiers -c <config_file>`   
+  * For regressor run `exhaufs summary regressors -c <config_file>`    
 * Check the detailed report in `output_dir`
 
 # Functions ans classes

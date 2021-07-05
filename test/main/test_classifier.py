@@ -10,6 +10,7 @@ from src.core.classification.classification import ExhaustiveClassification
 
 random.seed(0)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TMP_DIR = f'{BASE_DIR}/tmp'
 
 
 class TestClassifier(unittest.TestCase):
@@ -34,7 +35,7 @@ class TestClassifier(unittest.TestCase):
             df=self.data,
             ann=self.ann,
             n_k=self.n_k_grid,
-            output_dir='./',
+            output_dir=TMP_DIR,
             feature_pre_selector=None,
             feature_pre_selector_kwargs={},
             feature_selector=feature_selectors.t_test,
@@ -61,14 +62,13 @@ class TestClassifier(unittest.TestCase):
 
     def test_run(self):
         lhs = self.model.exhaustive_run().astype(float).round(10)
-        # lhs.to_csv(f'{BASE_DIR}/classifier_result.csv')
 
-        rhs = pd.read_csv(f'{BASE_DIR}/classifier_result.csv', index_col=0).round(10)
+        rhs = pd.read_csv(f'{BASE_DIR}/classifier_result.test', index_col=0).round(10)
 
-        self.assertTrue(
-            lhs.equals(rhs),
-        )
+        self.assertTrue(lhs.equals(rhs))
 
 
 if __name__ == '__main__':
+    if not os.path.isdir(TMP_DIR):
+        os.makedirs(TMP_DIR)
     unittest.main()

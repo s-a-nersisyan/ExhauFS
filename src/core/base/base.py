@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import random
 
 from multiprocessing import Pool
@@ -344,6 +343,8 @@ class ExhaustiveBase(
                 if filtration_passed:
                     results.append(item)
             except Exception:
+                import traceback
+                traceback.print_exc()
                 print('Excepted ', features_subset)
 
         score_cols = [

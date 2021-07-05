@@ -9,6 +9,7 @@ local
 output
 build
 dist
-ExhauFS.egg-info
+exhaufs.egg-info
 Makefile
 .pytest_cache
+test/main/tmp
