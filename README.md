@@ -208,7 +208,7 @@ Configuration file is a json file containing all customizable parameters for the
 
 To estimate running time of the exhaustive pipeline and define adequate *n* / *k* values you can run:  
 ```bash
-exaufs running_time_estimator -c <config_file> <max_k> <max_estimated_time> <n_feature_subsets> <search_max_n> <is_regressor>
+exaufs estimate regressors|classifiers -c <config_file> --max_k <max_k> --max_estimated_time <max_estimated_time>
 ```
 where
 * `config_file` is the path to json configuration file.

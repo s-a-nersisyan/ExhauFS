@@ -9,6 +9,7 @@ from src.core.regression.regressors import *
 from src.core.regression.regression import ExhaustiveRegression
 
 random.seed(0)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TMP_DIR = f'{BASE_DIR}/tmp'
 

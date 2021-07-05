@@ -8,6 +8,9 @@ import sys
 
 # Internal imports
 
+MODES = ['classifiers', 'regressors']
+
+
 def dir(dir_name):
     dir_name = dir_name.strip('"')
     if not os.path.isdir(dir_name):
@@ -72,7 +75,7 @@ class ExhauFS(object):
 
         # Add build options
         parser.add_argument('mode', metavar='mode',
-                            type=str, choices=['classifiers', 'regressors'],
+                            type=str, choices=MODES,
                             help='Building mode')
 
         # Parser build options
@@ -114,17 +117,8 @@ class ExhauFS(object):
 
         # Add estimate options
         parser.add_argument('mode', metavar='mode',
-                            type=str, choices=['grid', 'max', 'until'],
+                            type=str, choices=MODES,
                             help='Estimating mode')
-        parser.add_argument('--grid_size', metavar='<num>',
-                            type=int, default=100,
-                            help='Size of grid for values n and k; Default: %(default)s.')
-        parser.add_argument('--warm_up_n', metavar='<num>',
-                            type=int, default=50,
-                            help='Values of n for warm-up; Default: %(default)s.')
-        parser.add_argument('--warm_up_k', metavar='<num>',
-                            type=int, default=2,
-                            help='Values of k for warm-up; Default: %(default)s.')
         parser.add_argument('--max_k', metavar='<num>',
                             type=int, default=100,
                             help='Maximal length of features subset; Default: %(default)s.')
@@ -140,22 +134,14 @@ class ExhauFS(object):
         args = parser.parse_args(sys.argv[2:])
 
         # Run estimator
-        if args.mode == 'grid':
-            from src import time_n_k
-            time_n_k.main(
-                args.config,
-                args.warm_up_n,
-                args.warm_up_k,
-                args.grid_size)
-
-        elif args.mode == 'max' or args.mode == 'until':
-            from src import running_time_estimator
-            running_time_estimator.main(
-                args.config,
-                args.max_k,
-                args.max_estimated_time,
-                args.n_feature_subsets,
-                args.mode == 'max')
+        from src import running_time_estimator
+        running_time_estimator.main(
+            args.config,
+            args.max_k,
+            args.max_estimated_time,
+            args.n_feature_subsets,
+            args.mode == 'regressors',
+        )
 
     def summary(self):
         # Create new parser for summary arguments
@@ -181,7 +167,7 @@ class ExhauFS(object):
 
         # Add summary options
         parser.add_argument('mode', metavar='mode',
-                            type=str, choices=['classifiers', 'regressors', 'features'],
+                            type=str, choices=MODES + ['features'],
                             help='Summary mode')
         parser.add_argument('--output_dir', metavar='<dir>',
                             type=dir, default=os.path.abspath(os.getcwd()),

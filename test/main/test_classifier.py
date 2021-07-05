@@ -9,6 +9,7 @@ from src.core.classification.classifiers import *
 from src.core.classification.classification import ExhaustiveClassification
 
 random.seed(0)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TMP_DIR = f'{BASE_DIR}/tmp'
 
