@@ -18,10 +18,10 @@
 	"preprocessor_kwargs": {
 	},
 	
-	"regressor": "CoxRegression",
-	"regressor_kwargs": {},
-	"regressor_CV_ranges": {},
-	"regressor_CV_folds": 0,
+	"model": "CoxRegression",
+	"model_kwargs": {},
+	"model_CV_ranges": {},
+	"model_CV_folds": 0,
 	
     "scoring_functions": ["concordance_index", "dynamic_auc", "hazard_ratio", "logrank"],
     "main_scoring_function": "concordance_index",

@@ -6,6 +6,7 @@ Exhaustive feature selection for classification and survival analysis.
 [Installation](#installation)  
 [Running ExhaustiveFS](#running-exhaustivefs)  
 [Functions and classes](#functions-and-classes)  
+[Tutorials](#tutorials)  
 [etc](#etc)  
 
 # Introduction
@@ -112,8 +113,6 @@ If you are not sure what values for *n* *k* to use, see [Step 3: defining a *n*,
 </details>
 
 
-**TODO:** add real example to examples/ and write about it here.
-
 ## Step 2: creating configuration file
 
 Configuration file is a json file containing all customizable parameters for the model (classification and survival analysis)  
@@ -141,25 +140,24 @@ Configuration file is a json file containing all customizable parameters for the
       Object/Dictionary of keyword arguments for feature pre-selector function.
 
   * `feature_selector`  
-      TODO: add link and table of possible choices below  
       Name of feature selection function from [feature selectors section](#functions-and-classes).
 
   * `feature_selector_kwargs`  
-      TODO: add link and table of possible choices below  
       Object/Dictionary of keyword arguments for feature selector function.
 
   * `preprocessor`
-      Name of class for data preprocessing from `sklearn.preprocessing`.
+      Name of class for data preprocessing from [sklearn.preprocessing](#https://scikit-learn.org/stable/modules/preprocessing.html).
 
   * `preprocessor_kwargs`
-      Object/Dictionary of keyword arguments for preprocessor class initialization.
+      Object/Dictionary of keyword arguments for preprocessor class initialization.  
+      If you are using `sklearn` model, use `kwargs` parameters from the documentation of the model.
 
   * `model`  
-    TODO: add link and table of possible choices below  
-      Name of class for classification / survival analysis from [Classifiers/Regressors section](#functions-and-classes).
+      Name of class for classification / survival analysis from [Classifiers / Regressors section](#functions-and-classes).
 
   * `model_kwargs`
-      Object/Dictionary of keyword arguments for model initialization.
+      Object/Dictionary of keyword arguments for model initialization.  
+      If you are using `sklearn` model, use `kwargs` parameters from the documentation of the model.
 
   * `model_CV_ranges`
       Object/Dictionary defining model parameters which should be cross-validated. Keys are parameter names, values are lists for grid search.
@@ -387,10 +385,12 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Classifiers</summary>
   
-  - SVC
-  - KNeighborsClassifier
-  - RandomForestClassifier
-  - XGBClassifier
+  - [SVC](#https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
+  - [KNeighborsClassifier](#https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+  - [RandomForestClassifier](#https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+  - [XGBClassifier](#https://xgboost.readthedocs.io/en/latest/python/python_api.html)
+  
+  As a `model_kwargs` value - use parameters from the documentation of chosen model.
   
   #### Accuracy scores
   - TPR
@@ -410,6 +410,36 @@ To get detailed report on the specific model (== specific set of features):
   - logrank
 </details>
 
+# Tutorials
+<details>
+  <summary>Toy example</summary>
+  
+  TODO: Text about toy example
+  Data: 
+  Config: 
+  Results: 
+  
+</details>
+
+<details>
+  <summary>Breast cancer classification</summary>
+  
+  TODO: Text about Breast cancer classification
+  Data: 
+  Config: 
+  Results: 
+  
+</details>
+
+<details>
+  <summary>Cervical cancer survival regression</summary>
+  
+  TODO: Text about Cervical cancer survival regression
+  Data: 
+  Config: 
+  Results: 
+  
+</details>
 
 # etc
 Breast and colorectal cancer microarray datasets: [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).
