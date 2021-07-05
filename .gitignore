@@ -11,3 +11,4 @@ build
 dist
 ExhauFS.egg-info
 Makefile
+.pytest_cache

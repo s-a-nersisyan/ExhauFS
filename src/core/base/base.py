@@ -36,8 +36,9 @@ class ExhaustiveBase(
             preprocessor, preprocessor_kwargs,
             model, model_kwargs,
             model_cv_ranges, model_cv_folds,
-            limit_feature_subsets, n_feature_subsets, shuffle_feature_subsets,
             scoring_functions, main_scoring_function, main_scoring_threshold,
+            limit_feature_subsets=False, n_feature_subsets=None,
+            shuffle_feature_subsets=True,
             n_processes=1, random_state=None, verbose=True,
     ):
         """Class constructor
