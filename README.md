@@ -414,10 +414,38 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Toy example</summary>
   
-  TODO: Text about toy example
-  Data: 
-  Config: 
-  Results: 
+  As a toy example of how the ExhauFS works we used a small [cervical cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  
+  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+
+  The purpose of the toy example is to show that exhaustive search over all triples of features  
+  can yield better results than by using a standard approach of training classifier on all the features  
+  and then select the most important ones.  
+  
+  By executing `exhaufs build classifiers -c <config path>` command we are getting results files in the specified output directory:  
+  - summary_n_k.csv
+  
+  Shows that ~third of the classifiers passed the threshold of *0.65* for minimum of TPR and TNR.
+  
+  | n   | k   |  num_training_reliable | num_validation_reliable | percentage_reliable |
+  | --- | --- |  ---                   | ---                     | ---                 |
+  | 19 | 2    |  137                   | 41                      | 29.927007299270077  |
+  | 19 | 3    |  925                   | 258                     | 29.927007299270077  |
+  | 19 | 4    |  3859                  | 1252                    | 32.44363824825084   |
+  
+  - models.csv
+  
+  In this file, by ranking all models by their performance on the "Training" set we can see that almost all models have accuracy score of 1.0  
+  And among these models there are multiple cases with particularly high accuracy on "Validation" set  
+  
+  | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
+  | ---       |  ---                   | ---                    | --- | --- |
+  | ... | ... | ... | ... | ... |
+  | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
+  | ... | ... | ... | ... | ... |
+  
+    
+  
   
 </details>
 
