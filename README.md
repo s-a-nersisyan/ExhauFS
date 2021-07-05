@@ -259,7 +259,7 @@ To get detailed report on the specific model (== specific set of features):
 
 # Functions ans classes
 <a name="feature-pre-selectors">
-- <details>
+<details>
   <summary>Feature pre-selectors</summary>
   
   - <details>
@@ -275,10 +275,11 @@ To get detailed report on the specific model (== specific set of features):
     }
     ```
     </details>
-  </details>
-</a>  
+</details>
+</a> 
+ 
 <a name="feature-selectors">  
-- <details>
+<details>
   <summary>Feature selectors</summary>
   
   - <details>
@@ -371,9 +372,10 @@ To get detailed report on the specific model (== specific set of features):
       "datasets": ["Training", "Filtration"]
     }
     ```
-    </details>
+</details>
 </a>
-  - <details>
+
+<details>
     <summary>cox_likelihood</summary> 
     
     Select n features with the highest log-likelihood on one-factor Cox regression.
@@ -386,8 +388,8 @@ To get detailed report on the specific model (== specific set of features):
     }
     ```
     </details>
-  </details>
-- <details>
+</details>
+<details>
   <summary>Classifiers</summary>
   
   - SVC
@@ -400,8 +402,8 @@ To get detailed report on the specific model (== specific set of features):
   - FPR
   - TNR
   - min_TPR_TNR
-  </details>
-- <details>
+</details>
+<details>
   <summary>Regressors</summary>
   
   - CoxRegression
@@ -411,7 +413,7 @@ To get detailed report on the specific model (== specific set of features):
   - dynamic_auc
   - hazard_ratio
   - logrank
-  </details>
+</details>
 
 
 # etc
