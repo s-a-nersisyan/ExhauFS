@@ -25,15 +25,13 @@ Input data can consist from different batches (datasets), and each dataset shoul
 
 # Installation
 
-<details>
-  <summary>List of requirements</summary>
-
+### Prerequisites:
+Make sure you have installed all of the following prerequisites on your development machine:
   - python3.6+  
   - pip3
-</details>  
 
 
-You can install the package via:  
+### ExhauFS installation:  
 `pip3 install exhaufs`  
 
 # Running ExhaustiveFS
