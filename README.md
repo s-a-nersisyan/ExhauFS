@@ -414,9 +414,9 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Toy example</summary>
   
-  As a toy example of how the ExhauFS works we used a small [cervical cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  As a toy example of how the ExhauFS works we used a small [cervical cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
   
-  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
 
   The purpose of the toy example is to show that exhaustive search over all triples of features  
   can yield better results than by using a standard approach of training classifier on all the features  
@@ -425,8 +425,8 @@ To get detailed report on the specific model (== specific set of features):
   By executing `exhaufs build classifiers -c <config path>` command we are getting results files in the specified output directory:  
   - `models.csv`
   
-  In this file, by ranking all models by their performance on the "Training" set, we can see that almost all models have accuracy score of 1.0  
-  And among these models there are multiple cases with particularly high accuracy on "Validation" set  
+  In this file, by ranking all models by their performance on the "Training" set, we can see that almost all models have accuracy score of 1.0.  
+  And among these models there are multiple cases with particularly high accuracy on "Validation" set:    
   
   | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
   | ---       |  ---                   | ---                    | --- | --- |
@@ -434,7 +434,8 @@ To get detailed report on the specific model (== specific set of features):
   | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
   | ... | ... | ... | ... | ... |
   
-  Then, to get a full summary of a particular model (in our case - constructed on above three features),  
+  
+  To get a full summary of a particular model (in our case - constructed on above three features),  
   we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c <config path>`  
   which will, again, produce multiple files in the specified output directory, the most important of which are:
   - `report.txt` (contains detailed accuracy scores for all datasets)
@@ -446,17 +447,15 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Breast cancer classification</summary>
   
-  TODO: add correct links
-  As a real-life example of the classification part of the tool we used [breast cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  TODO: add correct links  
+  As a real-life example of the classification part of the tool we used [breast cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk).  
   
-  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
 
   The main objective was to analyse contribution of different pre-processing and feature [pre]selection techniques.  
-  By using z-score as a normalization, `t-test` as a feature selector and `KBinsDiscretizer`(binarization) as a pre-processor we achieved good results  
-  in terms of number of models passing threshold on validation set relative to the number of models passing threshold on training and filtration sets  
-  which indicates that there is no randomness and all of the models are actually "good".   
+  By using `z-score` as a normalization, `t-test` as a feature selector and `KBinsDiscretizer`(binarization) as a pre-processor we achieved good results in terms of number of models passing threshold on validation set relative to the number of models passing threshold on training and filtration sets which indicates that there is no randomness and all of the models are actually "good".   
   
-  First of all, we need to calculate appropriate grid for n/k values, so the pipeline knows what features and their subsets to use.  
+  First of all, we need to calculate appropriate grid for `n/k` values, so the pipeline knows what features and their subsets to use.  
   To do so, we need to define the maximum time we want for the pipeline to work for a single pair of (n, k).  
   In our case, we chose 12 hours. And since we don't want to analyse classifiers with more than 20 features, we set `max_k` as 20.  
   By executing `exhaufs estimate classifiers -c <config path> --max_estimated_time 12 --max_k 20` we are getting n/k grid table in the output directory, which looks like this:  
@@ -504,14 +503,14 @@ To get detailed report on the specific model (== specific set of features):
   <summary>Cervical cancer survival regression</summary>
   
  TODO: add correct links
-  As a real-life example of the regression part of the tool we used [cervical cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  As a real-life example of the regression part of the tool we used [cervical cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk).  
   
-  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
 
   Same with classification, the main objective was to analyse contribution of different feature [pre]selection techniques and accuracy scores using Cox Regression as a main model.  
   We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
   
-  Again, same with classification, firstly we need to make n/k grid table for the pipeline.  
+  Again, same with classification, firstly we need to make `n/k` grid table for the pipeline.  
   After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run  
   `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a n/k grid for the pipeline.  
   
