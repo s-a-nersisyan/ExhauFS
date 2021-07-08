@@ -458,7 +458,7 @@ To get detailed report on the specific model (== specific set of features):
   First of all, we need to calculate appropriate grid for `n/k` values, so the pipeline knows what features and their subsets to use.  
   To do so, we need to define the maximum time we want for the pipeline to work for a single pair of (n, k).  
   In our case, we chose 12 hours. And since we don't want to analyse classifiers with more than 20 features, we set `max_k` as 20.  
-  By executing `exhaufs estimate classifiers -c <config path> --max_estimated_time 12 --max_k 20` we are getting n/k grid table in the output directory, which looks like this:  
+  By executing `exhaufs estimate classifiers -c <config path> --max_estimated_time 12 --max_k 20` we are getting `n/k` grid table in the output directory, which looks like this:  
   
   | n   | k   | Estimated time     |
   | --- | --- | ---                |
@@ -511,8 +511,7 @@ To get detailed report on the specific model (== specific set of features):
   We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
   
   Again, same with classification, firstly we need to make `n/k` grid table for the pipeline.  
-  After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run  
-  `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a n/k grid for the pipeline.  
+  After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a `n/k` grid for the pipeline.  
   
   By executing `exhaufs build regressors -c <config path>` command we are getting results files in the specified output directory:  
   - `summary_n_k.csv`
@@ -538,9 +537,7 @@ To get detailed report on the specific model (== specific set of features):
   we find one model with quite high scores: concordance index = 0.71, hazard ratio = 3, 3-year AUC = 0.67, logrank = 3.1.  
   TODO: add features  
   
-  Then, to get a full summary of this model,  
-  we need to add `features_subset` with those features to the config file and run `exhaufs summary regressors -c <config path>`  
-  which will, again, produce multiple files in the specified output directory, the most important of which are:
+  Then, to get a full summary of this model, we need to add `features_subset` with those features to the config file and run `exhaufs summary regressors -c <config path>` which will, again, produce multiple files in the specified output directory, the most important of which are:
   - `report.txt` (contains detailed accuracy scores for all datasets)
   - `KM_Training.pdf` (contains Kaplan-Meier curve for training set)
   - `KM_Filtration.pdf` (contains Kaplan-Meier curve for filtration set)
