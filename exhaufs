@@ -99,16 +99,14 @@ class ExhauFS(object):
             Estimate pipeline running time
 
             Available estimating modes are:
-              grid     Estimate pipeline running time for all values of n and k 
-                       on the grid of given size using data from a warm-up run 
-                       defined by values of warm_up_n and warm_up_k.
-              max      Search the maximal number of selected features for which 
-                       estimated pipeline running time is less than max_estimated_time.
+              classifiers    Search the maximal number of selected features for which 
+                       estimated classification pipeline running time is less than max_estimated_time.
                        Pipeline running time is calculated using bounded number of
                        feature subsets.
-              until    Calculate estimated pipeline running time using bounded
-                       number of feature subsets while pipeline running time 
-                       is less than max_estimated_time. 
+              regressors     Search the maximal number of selected features for which 
+                       estimated regression pipeline running time is less than max_estimated_time.
+                       Pipeline running time is calculated using bounded number of
+                       feature subsets.
             """,
             formatter_class=argparse.RawDescriptionHelpFormatter)
 

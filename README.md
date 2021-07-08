@@ -423,17 +423,64 @@ To get detailed report on the specific model (== specific set of features):
   and then select the most important ones.  
   
   By executing `exhaufs build classifiers -c <config path>` command we are getting results files in the specified output directory:  
-  - summary_n_k.csv
+  - `models.csv`
   
-  Shows that ~third of the classifiers passed the threshold of *0.65* for minimum of TPR and TNR.
+  In this file, by ranking all models by their performance on the "Training" set, we can see that almost all models have accuracy score of 1.0  
+  And among these models there are multiple cases with particularly high accuracy on "Validation" set  
   
+  | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
+  | ---       |  ---                   | ---                    | --- | --- |
+  | ... | ... | ... | ... | ... |
+  | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
+  | ... | ... | ... | ... | ... |
+  
+  Then, to get a full summary of a particular model (in our case - constructed on above three features),  
+  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c <config path>`  
+  which will, again, produce multiple files in the specified output directory, the most important of which are:
+  - `report.txt` (contains detailed accuracy scores for all datasets)
+  - `ROC_Training.pdf` (contains roc-auc curve for training set)
+  - `ROC_Validation.pdf` (contains roc-auc curve for validation set)
+  
+</details>
+
+<details>
+  <summary>Breast cancer classification</summary>
+  
+  TODO: add correct links
+  As a real-life example of the classification part of the tool we used [breast cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  
+  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+
+  The main objective was to analyse contribution of different pre-processing and feature [pre]selection techniques.  
+  By using z-score as a normalization, `t-test` as a feature selector and `KBinsDiscretizer`(binarization) as a pre-processor we achieved good results  
+  in terms of number of models passing threshold on validation set relative to the number of models passing threshold on training and filtration sets  
+  which indicates that there is no randomness and all of the models are actually "good".   
+  
+  First of all, we need to calculate appropriate grid for n/k values, so the pipeline knows what features and their subsets to use.  
+  To do so, we need to define the maximum time we want for the pipeline to work for a single pair of (n, k).  
+  In our case, we chose 12 hours. And since we don't want to analyse classifiers with more than 20 features, we set `max_k` as 20.  
+  By executing `exhaufs estimate classifiers -c <config path> --max_estimated_time 12 --max_k 20` we are getting n/k grid table in the output directory, which looks like this:  
+  
+  | n   | k   | Estimated time     |
+  | --- | --- | ---                |
+  | ... | ... | ...                |
+  | 59  | 4   | 2.9192129150403865 |
+  | 37  | 5   | 2.8854977554500105 |
+  | 28  | 6   | 2.5242263025045393 |
+  | 24  | 7   | 2.3660491471767426 |
+  
+  We can use path to the above file as a `n_k_path` value in the config and then by executing `exhaufs build classifiers -c <config path>` command we get pipeline results files in the specified output directory:  
+  - `summary_n_k.csv`
+  
+  Shows that above certain values of `k`, almost 100% of the classifiers passed the threshold of *0.65* for minimum of TPR and TNR.
+  TODO: add real table
   | n   | k   |  num_training_reliable | num_validation_reliable | percentage_reliable |
   | --- | --- |  ---                   | ---                     | ---                 |
   | 19 | 2    |  137                   | 41                      | 29.927007299270077  |
   | 19 | 3    |  925                   | 258                     | 29.927007299270077  |
   | 19 | 4    |  3859                  | 1252                    | 32.44363824825084   |
   
-  - models.csv
+  - `models.csv`
   
   In this file, by ranking all models by their performance on the "Training" set we can see that almost all models have accuracy score of 1.0  
   And among these models there are multiple cases with particularly high accuracy on "Validation" set  
@@ -444,28 +491,61 @@ To get detailed report on the specific model (== specific set of features):
   | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
   | ... | ... | ... | ... | ... |
   
-    
-  
-  
-</details>
-
-<details>
-  <summary>Breast cancer classification</summary>
-  
-  TODO: Text about Breast cancer classification
-  Data: 
-  Config: 
-  Results: 
+  Then, to get a full summary of a particular model (in our case - constructed on above three features),  
+  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c <config path>`  
+  which will, again, produce multiple files in the specified output directory, the most important of which are:
+  - `report.txt` (contains detailed accuracy scores for all datasets)
+  - `ROC_Training.pdf` (contains roc-auc curve for training set)
+  - `ROC_Validation.pdf` (contains roc-auc curve for validation set)
   
 </details>
 
 <details>
   <summary>Cervical cancer survival regression</summary>
   
-  TODO: Text about Cervical cancer survival regression
-  Data: 
-  Config: 
-  Results: 
+ TODO: add correct links
+  As a real-life example of the regression part of the tool we used [cervical cancer dataset](#https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
+  
+  Transformed data and config used for pipeline can be found in [OneDrive](#https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+
+  Same with classification, the main objective was to analyse contribution of different feature [pre]selection techniques and accuracy scores using Cox Regression as a main model.  
+  We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
+  
+  Again, same with classification, firstly we need to make n/k grid table for the pipeline.  
+  After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run  
+  `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a n/k grid for the pipeline.  
+  
+  By executing `exhaufs build regressors -c <config path>` command we are getting results files in the specified output directory:  
+  - `summary_n_k.csv`
+  
+  Shows that above certain values of `k`, close to 95% of the regressors passed the threshold of *0.6* for concordance index.
+  
+  | n   | k   | ...  | percentage_reliable |
+  | --- | --- | ---  | ---                 |
+  | ... | ... | ...  | ...                 |
+  | 21  | 9   | ...  | 79.94548176605181   |
+  | 20  | 10  | ...  | 88.44062562932133   |
+  | 20  | 11  | ...  | 93.06034157506852   |
+  | 20  | 12  | ...  | 96.4579532546212    |
+  | 20  | 13  | ...  | 98.52712732293884   |
+  | 21  | 14  | ...  | 98.68958543983824   |
+  | 22  | 15  | ...  | 98.8608905764584    |
+  | 22  | 16  | ...  | 99.55598455598457   |
+  | ... | ... | ...  | ...                 |
+
+  - `models.csv`
+  
+  If we take only models with k=7 and sort them by average between concordance index on training and filtration sets  
+  we find one model with quite high scores: concordance index = 0.71, hazard ratio = 3, 3-year AUC = 0.67, logrank = 3.1.  
+  TODO: add features  
+  
+  Then, to get a full summary of this model,  
+  we need to add `features_subset` with those features to the config file and run `exhaufs summary regressors -c <config path>`  
+  which will, again, produce multiple files in the specified output directory, the most important of which are:
+  - `report.txt` (contains detailed accuracy scores for all datasets)
+  - `KM_Training.pdf` (contains Kaplan-Meier curve for training set)
+  - `KM_Filtration.pdf` (contains Kaplan-Meier curve for filtration set)
+  - `KM_Validation.pdf` (contains Kaplan-Meier curve for validation set)
   
 </details>
 
