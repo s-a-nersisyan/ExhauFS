@@ -11,6 +11,8 @@ def feature_pre_selector(df, ann, **kwargs):
     return list_of_features
 """
 
+from .classification.feature_pre_selectors import *
+
 
 def from_file(df, ann, path_to_file, sep=None):
     """Pre-select features from a given file

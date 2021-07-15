@@ -77,7 +77,6 @@ def main(config_path):
 
                 # Plot actual FPR and TPR of classifier as a dot on ROC curve
                 plt.plot(fpr_def, tpr_def, "o", color="red")
-                # TODO: maybe need to add some test nearby
 
                 plt.xticks(np.arange(0, 1.1, 0.1))
                 plt.yticks(np.arange(0, 1.1, 0.1))

@@ -42,7 +42,6 @@ def load_config_and_input_data(config_path, load_n_k=True):
         sys.exit(1)
 
     # Paths are absolute or relative to config file
-    # TODO: add some checks (files can be opened, indices are the same, columns names are here etc)
     config_dirname = os.path.dirname(config_path)
     df = pd.read_csv(os.path.join(config_dirname, config["data_path"]).replace("\\","/"), index_col=0)
     ann = pd.read_csv(os.path.join(config_dirname, config["annotation_path"]).replace("\\","/"), index_col=0)

@@ -91,7 +91,6 @@ class ExhauFS(object):
             build_regressors.main(args.config)
 
     def estimate(self):
-        # TODO: add regressors to time esimators
         # Create new parser for estimate arguments
         parser = argparse.ArgumentParser(
             prog='exhaufs estimate',
