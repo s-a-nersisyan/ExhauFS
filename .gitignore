@@ -7,3 +7,9 @@ data
 *.csv
 local
 output
+build
+dist
+exhaufs.egg-info
+Makefile
+.pytest_cache
+test/main/tmp
