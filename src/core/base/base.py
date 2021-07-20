@@ -166,8 +166,6 @@ class ExhaustiveBase(
             DataFrame with constructed classifiers and their
             quality scores.
         """
-        self.df = self.df[self.pre_selected_features]
-
         # Iterate over n, k pairs
         all_result_dfs = []
         summary_n_k = pd.DataFrame(columns=[
