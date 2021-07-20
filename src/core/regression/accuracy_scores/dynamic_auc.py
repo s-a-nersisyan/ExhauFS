@@ -27,10 +27,8 @@ def dynamic_auc(y_train, y_test, y_pred, year=3):
         dynamic auc for specified year
     """
 
-    query = (y_test['Time to event'] <= y_train['Time to event'].max()) \
-            & (y_test['Time to event'] >= y_train['Time to event'].min())
-    y_test = y_test[query]
-    y_pred = y_pred[query]
+    y_train = y_train(y_train['Time to event'] <= y_test['Time to event'].max()) \
+            & (y_train['Time to event'] >= y_test['Time to event'].min())
 
     structured_y_train = structure_y_to_sksurv(y_train)
     structured_y_test = structure_y_to_sksurv(y_test)
