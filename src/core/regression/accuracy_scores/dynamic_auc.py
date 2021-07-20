@@ -29,7 +29,6 @@ def dynamic_auc(y_train, y_test, y_pred, year=3):
 
     query = (y_test['Time to event'] <= y_train['Time to event'].max()) \
             & (y_test['Time to event'] >= y_train['Time to event'].min())
-    y_train = y_train[query]
     y_test = y_test[query]
     y_pred = y_pred[query]
 
