@@ -27,11 +27,6 @@ def dynamic_auc(y_train, y_test, y_pred, year=3):
         dynamic auc for specified year
     """
 
-    y_train = y_train[
-        (y_train['Time to event'] <= y_test['Time to event'].max()) \
-        & (y_train['Time to event'] >= y_test['Time to event'].min())
-    ]
-
     print(y_train['Time to event'].max(), y_train['Time to event'].min())
     print(y_test['Time to event'].max(), y_test['Time to event'].min())
 
@@ -42,5 +37,5 @@ def dynamic_auc(y_train, y_test, y_pred, year=3):
         structured_y_train,
         structured_y_test,
         y_pred,
-        [year],
+        [year*365],
     )[0][0]
