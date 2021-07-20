@@ -161,7 +161,7 @@ def initialize_regression_model(config, df, ann, n_k):
         feature_selector_kwargs=config.get("feature_selector_kwargs", {}),
         preprocessor=getattr(preprocessors, config["preprocessor"] or "", None),
         preprocessor_kwargs=config["preprocessor_kwargs"],
-        model=getattr(classifiers, config["model"]),
+        model=getattr(regressors, config["model"]),
         model_kwargs=config.get('model_kwargs', {}),
         model_cv_ranges=config.get("model_CV_ranges", []),
         model_cv_folds=config.get("model_CV_folds", 0),
