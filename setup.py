@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='exhaufs',
-    version='0.01',
+    version='0.05',
     scripts=[
         'exhaufs',
     ],
