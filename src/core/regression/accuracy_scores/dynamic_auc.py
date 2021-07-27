@@ -33,5 +33,5 @@ def dynamic_auc(y_train, y_test, y_pred, year=3):
         structured_y_train,
         structured_y_test,
         y_pred,
-        [year*365],
+        [year],
     )[0][0]

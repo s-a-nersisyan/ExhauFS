@@ -6,6 +6,8 @@ class FeaturePreSelector:
         self.feature_pre_selector = preselector_function
         self.feature_pre_selector_kwargs = kwargs
 
+        self.df = self.df[self.pre_selected_features]
+
     @property
     def pre_selected_features(self):
         """Get pre-selected features.

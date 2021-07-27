@@ -204,7 +204,7 @@ Configuration file is a json file containing all customizable parameters for the
 
 To estimate running time of the exhaustive pipeline and define adequate *n* / *k* values you can run:  
 ```bash
-exaufs estimate regressors|classifiers -c <config_file> --max_k <max_k> --max_estimated_time <max_estimated_time>
+exhaufs estimate regressors|classifiers -c <config_file> --max_k <max_k> --max_estimated_time <max_estimated_time>
 ```
 where
 * `config_file` is the path to json configuration file.
@@ -212,9 +212,8 @@ where
 * `max_estimated_time` is the maximal estimated time (in hours) of single running of the exhaustive pipeline.
 * `n_feature_subsets` is the number of feature subsets processed by the exhaustive pipeline (*100* is usually enough).
 * `search_max_n` is *1* if you need to find the maximal number of selected features for which estimated run time of the exhaustive pipeline is less than `max_estimated_time`, and *0* otherwise.
-* `is_regressor` is *1* if you the estimation is for the regression.
 
-Above script calculates maximum possible values *n* / *k* for each *k*=`1...max_n` such that pipeline running time for each pair (*n*, *k*) is less then `max_estimated_time`
+Above script calculates maximum possible values *n* / *k* for each *k*=`1...max_k` such that pipeline running time for each pair (*n*, *k*) is less then `max_estimated_time`
 
 ## Step 4: running the exhaustive pipeline
 

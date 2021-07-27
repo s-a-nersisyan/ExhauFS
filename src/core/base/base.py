@@ -156,6 +156,8 @@ class ExhaustiveBase(
 
         self.datasets_ids = self.ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy()
 
+        self.df = self.df[self.df.index.isin(self.ann.index)]
+
     def exhaustive_run(self):
         """Run the pipeline for classifier construction
         using exhaustive feature selection.
@@ -166,8 +168,6 @@ class ExhaustiveBase(
             DataFrame with constructed classifiers and their
             quality scores.
         """
-        self.df = self.df[self.pre_selected_features]
-
         # Iterate over n, k pairs
         all_result_dfs = []
         summary_n_k = pd.DataFrame(columns=[
