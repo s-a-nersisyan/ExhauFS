@@ -26,7 +26,7 @@ def main(config_path):
     report.append('//--------------------------------------------')
     for i, dataset_id in enumerate(scores):
         dataset, dataset_type = dataset_id.split(';')
-        report.append('{} ({} set)'.format(dataset, dataset))
+        report.append('{} ({} set)'.format(dataset, dataset_type.lower()))
         for metr, val in scores[dataset_id].items():
             report.append('\t{:12s}: {:.4f}'.format(metr, val))
 

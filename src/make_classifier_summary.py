@@ -70,7 +70,7 @@ def main(config_path):
                 fpr_def = FPR(y, y_pred)
 
                 plt.figure(figsize=(6, 6))
-                plt.title("{} ({} set)".format(dataset, dataset_type))
+                plt.title("{} ({} set), AUC = {:.2f}".format(dataset, dataset_type.lower(), val))
 
                 plt.plot(fpr, tpr)
                 plt.plot([0, 1], [0, 1], "--", c="grey")
