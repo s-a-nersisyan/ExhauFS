@@ -19,7 +19,7 @@ Exhaustive feature selection for classification and survival analysis.
   <li><i>Feature selection:</i> select <b>n</b> features for exhaustive search.</li>
   <li>3. <i>Exhaustive search:</i> iterate through all possible <b>k</b>b-element feature subsets and fit classification/regression models.</li>
 </ol>
-Values of <b>n</b> and <b>k</b> actually define running time of the pipeline (there are <b>C<sub>n</sub><sup>k</sup></b> feature subsets). For example, iterating through all 8-gene signatures composed of *n = 20* genes is possible (see example breast cancer data below), while search for over *n = 1000* genes will never end even on the most powerful supercomputer.
+Values of <b>n</b> and <b>k</b> actually define running time of the pipeline (there are <b>C<sub>n</sub><sup>k</sup></b> feature subsets). For example, iterating through all 8-gene signatures composed of <b>n = 20</b> genes is possible (see example breast cancer data below), while search for over <b>n = 1000</b> genes will never end even on the most powerful supercomputer.
 
 Input data can consist from different batches (datasets), and each dataset should be labeled by one of the following types:
 <ol>
