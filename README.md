@@ -1,16 +1,16 @@
-# ExhaustiveFS
+# ExhauFS
 Exhaustive feature selection for classification and survival analysis.
 
 ## Table of Contents  
 [Introduction](#introduction)  
 [Installation](#installation)  
-[Running ExhaustiveFS](#running-exhaustivefs)  
+[Running ExhauFS](#running-exhaufs)  
 [Functions and classes](#functions-and-classes)  
 [Tutorials](#tutorials)  
 [etc](#etc)  
 
 # Introduction
-The main idea underlying ExhaustiveFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
+The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
 1. **Feature pre-selection:** select fixed number of features for the next steps.
 2. **Feature selection:** select *n* features for exhaustive search.
 3. **Exhaustive search:** iterate through all possible *k*-element feature subsets and fit classification/regression models.
@@ -35,7 +35,7 @@ Make sure you have installed all of the following prerequisites on your developm
 ### ExhauFS installation:  
 `pip3 install exhaufs`  
 
-# Running ExhaustiveFS
+# Running ExhauFS
 
 ## Step 1: data preparation
 
