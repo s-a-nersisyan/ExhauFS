@@ -48,6 +48,7 @@ def main(fname):
     summary_features = pd.DataFrame(data, columns=["k", "classifiers_cnt_for_k", "feature", "percentage_classifiers"])
     summary_features.to_csv("{}/summary_features.csv".format(output_dir))
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Please specify filename with classifiers (e.g. /tmp/classifiers.csv)", file=sys.stderr)

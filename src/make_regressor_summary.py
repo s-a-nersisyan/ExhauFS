@@ -13,6 +13,8 @@ from src.utils import *
 def main(config_path):
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
 
+    saving_format = config.get('saving_format') or 'pdf'
+
     model = initialize_regression_model(config, df, ann, None)
     regressor, best_params = model.fit_model(config['features_subset'])
     scores, _ = model.evaluate_model(regressor, config['features_subset'])
@@ -55,18 +57,18 @@ def main(config_path):
         y = grouped_y[grouped_y['group'] == True]
         plot_kaplan_mayer(y, label='High risk')
 
-        plt.xlabel(config.get('x_label') or 'Time to event')
-        plt.ylabel(config.get('y_label') or 'Probability of event')
+        plt.xlabel(config.get('KM_x_label') or 'Time to event')
+        plt.ylabel(config.get('Ky_label') or 'Probability of event')
 
-        plt.ylim([0, 1.01])
-        plt.yticks(np.arange(0, 1.1, 0.1))
+        plt.ylim([0, 1])
+        plt.yticks(np.arange(0, 1, 0.1))
         
         plt.tight_layout()
         plot_fname = os.path.join(
             output_dir,
             'KM_{}.tif'.format(dataset)
         ).replace('\\', '/')
-        plt.savefig(plot_fname, format="tiff", pil_kwargs={"compression": "tiff_lzw"}, dpi=350)
+        save_plt_fig(plot_fname, saving_format)
         plt.close()
 
     report.append('')
