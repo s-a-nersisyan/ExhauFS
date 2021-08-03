@@ -22,7 +22,7 @@ Input data can consist from different batches (datasets), and each dataset shoul
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
 3. **Validation (test) set:** performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.
 
-![flowchart](https://github.com/s-a-nersisyan/ExhaustiveFS/img/flowchart.png?raw=true)
+![flowchart](https://github.com/s-a-nersisyan/ExhaustiveFS/blob/main/img/flowchart.png?raw=true)
 
 # Installation
 
