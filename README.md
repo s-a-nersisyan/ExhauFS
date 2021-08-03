@@ -10,6 +10,9 @@ Exhaustive feature selection for classification and survival analysis.
 [etc](#etc)  
 
 # Introduction
+
+<img style="float: right;" width="200px" src="https://github.com/s-a-nersisyan/ExhaustiveFS/blob/main/img/flowchart.png?raw=true">
+
 The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
 1. **Feature pre-selection:** select fixed number of features for the next steps.
 2. **Feature selection:** select *n* features for exhaustive search.
@@ -22,7 +25,6 @@ Input data can consist from different batches (datasets), and each dataset shoul
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
 3. **Validation (test) set:** performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.
 
-![flowchart](https://github.com/s-a-nersisyan/ExhaustiveFS/blob/main/img/flowchart.png?raw=true)
 
 # Installation
 
