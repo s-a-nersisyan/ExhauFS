@@ -22,7 +22,7 @@ Input data can consist from different batches (datasets), and each dataset shoul
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
 3. **Validation (test) set:** performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.
 
-**TODO:** add flowchart.
+![flowchart](https://github.com/s-a-nersisyan/ExhaustiveFS/img/flowchart.png?raw=true)
 
 # Installation
 
@@ -120,7 +120,7 @@ Configuration file is a json file containing all customizable parameters for the
 <details>
   <summary>Available parameters</summary> 
 
-  🔴!NOTE! - All paths to files / directories should be relative to the configuration file directory  
+  🔴!NOTE! - All paths to files / directories can be either relative to the configuration file directory or absolute paths 
   * `data_path`
       Path to csv table of the data.
 
