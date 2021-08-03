@@ -11,7 +11,7 @@ Exhaustive feature selection for classification and survival analysis.
 
 # Introduction
 
-<img align="right" width="400px" src="https://github.com/s-a-nersisyan/ExhaustiveFS/blob/v-novosad-dev/img/flowchart.jpg?raw=true">
+<img align="right" width="400px" src="https://github.com/s-a-nersisyan/ExhauFS/blob/v-novosad-dev/img/flowchart.png?raw=true">
 <div>
 <p>The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:</p>
 <ol>

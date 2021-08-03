@@ -14,7 +14,7 @@ setuptools.setup(
     description='Exhaustive Feature Selection',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/s-a-nersisyan/ExhaustiveFS',
+    url='https://github.com/s-a-nersisyan/ExhauFS',
     packages=setuptools.find_packages(),
     install_requires=[
         'scipy',

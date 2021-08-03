@@ -14,11 +14,9 @@ def save_model_feature_importances(config, classifier, fname):
         imp = classifier.coef_[0]
     if config["model"] == "RandomForestClassifier":
         imp = classifier.feature_importances_
-    print(imp)
 
     names = config["features_subset"]
     imp, names = zip(*sorted(zip(imp, names)))
-    print(imp, names)
     plt.barh(range(len(names)), imp, align="center")
     plt.yticks(range(len(names)), names)
     plt.title("Classifier feature importances")
@@ -31,6 +29,8 @@ def main(config_path):
 
     # Load config and input data
     config, df, ann, _ = load_config_and_input_data(config_path, load_n_k=False)
+
+    saving_format = config.get('saving_format') or 'pdf'
 
     # If necessary, add ROC AUC metric
     if "ROC_AUC" not in config["scoring_functions"]:
@@ -90,9 +90,10 @@ def main(config_path):
                 plt.tight_layout()
                 plot_fname = os.path.join(
                     output_dir,
-                    "ROC_{}.tif".format(dataset)
+                    "ROC_{}.{}".format(dataset, saving_format)
                 ).replace("\\", "/")
-                plt.savefig(plot_fname, format="tiff", pil_kwargs={"compression": "tiff_lzw"}, dpi=350)
+                save_plt_fig(plot_fname, saving_format)
+
                 plt.close()
 
         report.append("")

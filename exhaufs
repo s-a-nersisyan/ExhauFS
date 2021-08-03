@@ -37,12 +37,13 @@ class ExhauFS(object):
               build       Build feature selector pipeline
               estimate    Estimate running time of a pipeline
               summary     Get summary of a model
+              km_plot     Plot Kaplan-Maier curve for the specified classifier
             """,
             formatter_class=argparse.RawDescriptionHelpFormatter)
 
         # Read the first positional argument defining a command
         parser.add_argument('command', metavar='command',
-                            type=str, choices=['build', 'estimate', 'summary'],
+                            type=str, choices=['build', 'estimate', 'summary', 'km_plot'],
                             help='Subcommand to run')
         args = parser.parse_args(sys.argv[1:2])
 
@@ -139,6 +140,24 @@ class ExhauFS(object):
             args.n_feature_subsets,
             args.mode == 'regressors',
         )
+
+    def km_plot(self):
+        # Create new parser for summary arguments
+        parser = argparse.ArgumentParser(
+            prog='exhaufs km_plot',
+            description="""
+            Plot Kaplan-Maier curve for the specified classifier
+            """,
+            formatter_class=argparse.RawDescriptionHelpFormatter)
+
+        # Add common options
+        self.common_args(parser)
+
+        # Parser summary options
+        args = parser.parse_args(sys.argv[2:])
+
+        from src import make_km_plot_for_classifier
+        make_km_plot_for_classifier.main(args.config)
 
     def summary(self):
         # Create new parser for summary arguments
