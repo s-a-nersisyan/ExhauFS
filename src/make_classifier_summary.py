@@ -86,12 +86,13 @@ def main(config_path):
 
                 plt.xlabel("1 - Specificity")
                 plt.ylabel("Sensitivity")
-
+                
+                plt.tight_layout()
                 plot_fname = os.path.join(
                     output_dir,
-                    "ROC_{}.pdf".format(dataset)
+                    "ROC_{}.tif".format(dataset)
                 ).replace("\\", "/")
-                plt.savefig(plot_fname)
+                plt.savefig(plot_fname, format="tiff", pil_kwargs={"compression": "tiff_lzw"}, dpi=350)
                 plt.close()
 
         report.append("")

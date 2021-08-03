@@ -45,24 +45,28 @@ def main(config_path):
         plt.figure(figsize=(6, 6))
         plt.title('{} ({} set), $p = {}$'.format(
             dataset,
-            dataset,
+            dataset_type.lower(),
             float_to_latex(logrank_test(structure_y_to_sksurv(y), group_indicators)[1]),
         ))
+        
+        y = grouped_y[grouped_y['group'] == False]
+        plot_kaplan_mayer(y, label='Low risk')
 
         y = grouped_y[grouped_y['group'] == True]
         plot_kaplan_mayer(y, label='High risk')
 
-        y = grouped_y[grouped_y['group'] == False]
-        plot_kaplan_mayer(y, label='Low risk')
-
-        plt.xlabel('Time to event')
+        plt.xlabel(config.get('x_label') or 'Time to event')
         plt.ylabel(config.get('y_label') or 'Probability of event')
 
+        plt.ylim([0, 1.01])
+        plt.yticks(np.arange(0, 1.1, 0.1))
+        
+        plt.tight_layout()
         plot_fname = os.path.join(
             output_dir,
-            'KM_{}.pdf'.format(dataset)
+            'KM_{}.tif'.format(dataset)
         ).replace('\\', '/')
-        plt.savefig(plot_fname)
+        plt.savefig(plot_fname, format="tiff", pil_kwargs={"compression": "tiff_lzw"}, dpi=350)
         plt.close()
 
     report.append('')
