@@ -12,17 +12,20 @@ Exhaustive feature selection for classification and survival analysis.
 # Introduction
 
 <img align="right" width="400px" src="https://github.com/s-a-nersisyan/ExhaustiveFS/blob/main/img/flowchart.png?raw=true">
-The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:
-1. **Feature pre-selection:** select fixed number of features for the next steps.
-2. **Feature selection:** select *n* features for exhaustive search.
-3. **Exhaustive search:** iterate through all possible *k*-element feature subsets and fit classification/regression models.
-
+<div>
+<p>The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:</p>
+<ol>
+  <li>1. <i>**Feature pre-selection:**</i> select fixed number of features for the next steps.</li>
+  <li>2. **Feature selection:** select *n* features for exhaustive search.</li>
+  <li>3. **Exhaustive search:** iterate through all possible *k*-element feature subsets and fit classification/regression models.</li>
+</ol>
 Values of *n* and *k* actually define running time of the pipeline (there are *C<sub>n</sub><sup>k</sup>* feature subsets). For example, iterating through all 8-gene signatures composed of *n = 20* genes is possible (see example breast cancer data below), while search for over *n = 1000* genes will never end even on the most powerful supercomputer.
 
 Input data can consist from different batches (datasets), and each dataset should be labeled by one of the following types:
 1. **Training set:** samples from training datasets will be used for tuning classification/regression models. At least one such dataset is required; if multiple given, the union will be used.
 2. **Filtration set:** all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.
 3. **Validation (test) set:** performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.
+</div>
 
 # Installation
 
