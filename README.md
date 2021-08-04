@@ -419,13 +419,12 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Toy example</summary>
   
-  As a toy example of how the ExhauFS works we used a small [cervical cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
-  
-  Input data and configs used for this example can be found [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EiEFGj6qQqJJnXA-tXFPbjkBAuuUGbztI4LTuSQbcQ3jSQ?e=kPI1vD).  
+  As a toy example for ExhauFS workflow illustration we used a small [cervical cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EiEFGj6qQqJJnXA-tXFPbjkBAuuUGbztI4LTuSQbcQ3jSQ?e=kPI1vD).  
 
-  The purpose of the toy example is to show that exhaustive search over all triples of features  
-  can yield better results than by using a standard approach of training classifier on all the features  
-  and then select the most important ones. 
+  We start from `data.csv` and `annotation.csv` files: the first one contains data matrix and the
+  second one maps each sample to class label and dataset type (training or validation). In this
+  example we brute force all existing feature triples - this information is reflected in `n_k.csv`
+  file (n = 19 is the total number of features).
   
   By executing `exhaufs build classifiers -c config_for_build_classifiers.json` command we are getting result files in the specified `results_build_classifiers` output directory:
   - `models.csv`
