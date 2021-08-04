@@ -206,24 +206,22 @@ class ExhaustiveBase(
                 ],
                 columns=['Gene', 'Count'],
             )
+            features_summary['Total'] = len(df_n_k_results)
+            features_summary['Percentage'] = features_summary['Count'] / features_summary['Total'] * 100
 
             # Under null hypothesis, each count is a RV ~ Bin(len(chunk), k/n)
             features_summary['p-value'] = [binom_stat(len(df_n_k_results), k / n).sf(c) for c in features_summary['Count']]
-            features_summary['n'] = n
-            features_summary['k'] = k
-            features_summary['Total'] = len(df_n_k_results)
             features_summary['FDR'] = features_summary['p-value'] * len(features_summary) / \
                                       rankdata(features_summary['p-value'])
             features_summary['FDR'] = np.minimum(features_summary['FDR'], 1)
-            features_summary = features_summary.sort_values('FDR', ascending=False)
+            features_summary = features_summary.sort_values('FDR')
+            
+            features_summary['n'] = n
+            features_summary['k'] = k
+            features_summary = features_summary[['n', 'k', 'Gene', 'Count', 'Total', 'Percentage', 'p-value', 'FDR']]
 
             all_counts.append(features_summary)
-
             features_summary = pd.concat(all_counts)
-            features_summary['Percentage'] = features_summary['Count'] / features_summary['Total'] * 100
-            features_summary = features_summary[['Gene', 'Count', 'n', 'k', 'Percentage', 'p-value', 'FDR']]\
-                .set_index('Gene')
-
             features_summary.to_csv('{}/summary_features.csv'.format(self.output_dir))
 
             # Summary table #1: number of models which passed
