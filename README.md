@@ -421,13 +421,13 @@ To get detailed report on the specific model (== specific set of features):
   
   As a toy example of how the ExhauFS works we used a small [cervical cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 19 features and 72 samples.  
   
-  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  Input data and configs used for this example can be found [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EiEFGj6qQqJJnXA-tXFPbjkBAuuUGbztI4LTuSQbcQ3jSQ?e=kPI1vD).  
 
   The purpose of the toy example is to show that exhaustive search over all triples of features  
   can yield better results than by using a standard approach of training classifier on all the features  
-  and then select the most important ones.  
+  and then select the most important ones. 
   
-  By executing `exhaufs build classifiers -c <config path>` command we are getting results files in the specified output directory:  
+  By executing `exhaufs build classifiers -c config_for_build_classifiers.json` command we are getting result files in the specified `results_build_classifiers` output directory:
   - `models.csv`
   
   In this file, by ranking all models by their performance on the "Training" set, we can see that almost all models have accuracy score of 1.0.  
@@ -441,11 +441,11 @@ To get detailed report on the specific model (== specific set of features):
   
   
   To get a full summary of a particular model (in our case - constructed on above three features),  
-  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c <config path>`  
+  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c config_for_summary_classifiers.json`  
   which will, again, produce multiple files in the specified output directory, the most important of which are:
   - `report.txt` (contains detailed accuracy scores for all datasets)
-  - `ROC_Training.pdf` (contains roc-auc curve for training set)
-  - `ROC_Validation.pdf` (contains roc-auc curve for validation set)
+  - `ROC_CervicalCancerBehaviorRisk_Training.pdf` (contains ROC curve for training set)
+  - `ROC_CervicalCancerBehaviorRisk_Validation.pdf` (contains ROC curve for validation set)
   
 </details>
 
