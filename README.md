@@ -13,13 +13,14 @@ Exhaustive feature selection for classification and survival analysis.
 
 <img align="right" width="400px" src="https://github.com/s-a-nersisyan/ExhauFS/blob/v-novosad-dev/img/flowchart.png?raw=true">
 <div>
-<p>The main idea underlying ExhauFS is the exhaustive search of feature subsets for constructing the most powerfull classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make search practically feasible. Briefly, the following pipeline is implemented:</p>
+<p>The main idea behind ExhauFS is the exhaustive search of feature subsets to construct the most powerful classification and survival regression models. Since computational complexity of such approach grows exponentially with respect to combination length, we first narrow down features list in order to make the search practically feasible. Briefly, a pipeline is implemented as follows:</p>
 <ol>
-  <li><i>Feature pre-selection:</i> select fixed number of features for the next steps.</li>
-  <li><i>Feature selection:</i> select <b>n</b> features for exhaustive search.</li>
-  <li>3. <i>Exhaustive search:</i> iterate through all possible <b>k</b>b-element feature subsets and fit classification/regression models.</li>
+  <li><i>Feature pre-selection:</i> filter features by specified method.</li>
+  <li><i>Feature selection:</i> select "best" <b>n</b> features for exhaustive search.</li>
+  <li><i>Exhaustive search:</i> iterate through all possible <b>k</b>-element feature subsets and fit classification/regression models.</li>
+  <li><i>Evaluation:</i> evaluate each model and make summary of all passed feature subsets</li>
 </ol>
-Values of <b>n</b> and <b>k</b> actually define running time of the pipeline (there are <b>C<sub>n</sub><sup>k</sup></b> feature subsets). For example, iterating through all 8-gene signatures composed of <b>n = 20</b> genes is possible (see example breast cancer data below), while search for over <b>n = 1000</b> genes will never end even on the most powerful supercomputer.
+Values <b>n</b> and <b>k</b> also define running time of the pipeline (there are <b>C<sub>n</sub><sup>k</sup></b> feature subsets). And, for example, iterating through all 8-gene signatures composed of <b>n = 20</b> genes is possible (see example breast cancer data below), while search over <b>n = 1000</b> genes is impossible due to time constraints.
 
 Input data can consist from different batches (datasets), and each dataset should be labeled by one of the following types:
 <ol>
@@ -149,7 +150,7 @@ Configuration file is a json file containing all customizable parameters for the
       Name of feature selection function from [feature selectors section](#functions-and-classes).
 
   * `feature_selector_kwargs`  
-      Object/Dictionary of keyword arguments for feature selector function.
+      Object/Dictionary of keyword arguments for feature selector function. Boolean `use_filtration` indicates whether to use *Filtration* dataset besides *Training* dataset for the selector function.
 
   * `preprocessor`
       Name of class for data preprocessing from [sklearn.preprocessing](#https://scikit-learn.org/stable/modules/preprocessing.html).
@@ -258,7 +259,7 @@ To get detailed report on the specific model (== specific set of features):
   * For regressor run `exhaufs summary regressors -c <config_file>`    
 * Check the detailed report in `output_dir`
 
-# Functions ans classes
+# Functions and classes
 <details>
   <summary>Feature pre-selectors</summary>
   
@@ -276,7 +277,6 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
 </details>
-</a> 
  
 <details>
   <summary>Feature selectors</summary>

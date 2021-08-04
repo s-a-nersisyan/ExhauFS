@@ -13,8 +13,10 @@ def feature_selector(df, ann, n, **kwargs):
 
 from .regression.feature_selectors import *
 from .classification.feature_selectors import *
+from .wrappers import feature_selector_wrapper
 
 
+@feature_selector_wrapper()
 def from_file(df, ann, n, path_to_file, sep=None):
     """Select first n features from a given file
     
@@ -48,7 +50,8 @@ def from_file(df, ann, n, path_to_file, sep=None):
     return [feature for feature in features_from_file if feature in df.columns][:n]
 
 
-def entity(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def entity(df, ann, n):
     """Select first n features from a given DataFrame
     Returns
     -------
@@ -59,7 +62,8 @@ def entity(df, ann, n, datasets=None):
     return list(df.columns)[:n]
 
 
-def median(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def median(df, ann, n):
     """Select n features with the highest median value
     Returns
     -------
