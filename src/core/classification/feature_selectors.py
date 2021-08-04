@@ -4,10 +4,11 @@ from scipy.stats import \
     ttest_ind, \
     f_oneway
 
-from src.core.utils import get_datasets
+from src.core.wrappers import feature_selector_wrapper
 
 
-def f_test(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def f_test(df, ann, n):
     """Select n features with the lowest p-values according to f-test
 
     Parameters
@@ -21,33 +22,26 @@ def f_test(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
-    datasets : array-like
-        List of dataset identifiers which should be used to calculate
-        test statistic. By default (None), union of all non-validation
-        datasets will be used.
+
     Returns
     -------
     list
         List of n features associated with the lowest p-values.
     """
-    datasets = get_datasets(ann, datasets)
-
-    samples = ann.loc[ann["Dataset"].isin(datasets)].index
-    df_subset = df.loc[samples]
-    ann_subset = ann.loc[samples]
-    X = df_subset.to_numpy()
-    y = ann_subset["Class"].to_numpy()
+    X = df.to_numpy()
+    y = ann["Class"].to_numpy()
 
     statistics, pvalues = f_oneway(
         *[X[y == class_ind] for class_ind in np.unique(y)],
         axis=0,
     )
-    features = df_subset.columns
+    features = df.columns
 
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
 
 
-def t_test(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def t_test(df, ann, n):
     """Select n features with the lowest p-values according to t-test
 
     Parameters
@@ -61,33 +55,22 @@ def t_test(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
-    datasets : array-like
-        List of dataset identifiers which should be used to calculate
-        test statistic. By default (None), union of all non-validation
-        datasets will be used.
-    feature : str
-        Feature by witch to make hypothesis
     Returns
     -------
     list
         List of n features associated with the lowest p-values.
     """
-
-    datasets = get_datasets(ann, datasets)
-
-    samples = ann.loc[ann["Dataset"].isin(datasets)].index
-    df_subset = df.loc[samples]
-    ann_subset = ann.loc[samples]
-    X = df_subset.to_numpy()
-    y = ann_subset["Class"].to_numpy()
+    X = df.to_numpy()
+    y = ann["Class"].to_numpy()
 
     statistics, pvalues = ttest_ind(X[y == 0], X[y == 1], axis=0)
-    features = df_subset.columns
+    features = df.columns
 
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
 
 
-def spearman_correlation(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def spearman_correlation(df, ann, n):
     """Select n features with the highest correlation with target label
 
     Parameters
@@ -101,29 +84,16 @@ def spearman_correlation(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
-    feature : str
-        Feature by witch to make hypothesis
-    datasets : array-like
-        List of dataset identifiers which should be used to calculate
-        correlation. By default (None), union of all non-validation
-        datasets will be used.
-
     Returns
     -------
     list
         List of n features associated with the highest absolute
         values of Spearman correlation.
     """
-
-    datasets = get_datasets(ann, datasets)
-
-    samples = ann.loc[ann["Dataset"].isin(datasets)].index
-    df_subset = df.loc[samples]
-    ann_subset = ann.loc[samples]
-    X = df_subset.to_numpy()
-    y = ann_subset["Class"].to_numpy()
+    X = df.to_numpy()
+    y = ann["Class"].to_numpy()
 
     pvalues = [spearmanr(X[:, j], y).pvalue for j in range(X.shape[1])]
-    features = df_subset.columns
+    features = df.columns
 
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]

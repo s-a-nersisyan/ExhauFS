@@ -1,11 +1,12 @@
 from sksurv.metrics import cumulative_dynamic_auc
 
+from src.core.wrappers import feature_selector_wrapper
 from src.core.regression.models import CoxRegression
 from src.core.regression.utils import structure_y_to_sksurv
-from src.core.utils import get_datasets
 
 
-def cox_dynamic_auc(df, ann, n, datasets=None, year=3):
+@feature_selector_wrapper()
+def cox_dynamic_auc(df, ann, n, year=3):
     """Select n features with the highest time-dependent auc on one-factor Cox regression.
 
     Parameters
@@ -19,10 +20,6 @@ def cox_dynamic_auc(df, ann, n, datasets=None, year=3):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
-    datasets : array-like
-        List of dataset identifiers which should be used to calculate
-        test statistic. By default (None), union of all non-validation
-        datasets will be used.
     year: float
         Timepoint for which to calculate AUC score
     Returns
@@ -30,21 +27,18 @@ def cox_dynamic_auc(df, ann, n, datasets=None, year=3):
     list
         List of n features associated with the highest auc.
     """
-    datasets = get_datasets(ann, datasets)
+    ann = ann[['Event', 'Time to event']]
 
-    samples = ann.loc[ann['Dataset'].isin(datasets)].index
-    df_subset = df.loc[samples]
-    ann_subset = ann.loc[samples, ['Event', 'Time to event']]
-    structured_y = structure_y_to_sksurv(ann_subset)
-    columns = df_subset.columns
+    structured_y = structure_y_to_sksurv(ann)
+    columns = df.columns
 
     scores = []
     for j, column in enumerate(columns):
-        df_j = df_subset[[column]]
+        df_j = df[[column]]
         model = CoxRegression()
-        model.fit(df_j, ann_subset)
+        model.fit(df_j, ann)
         preds = model.predict(df_j)
-        auc, _ = cumulative_dynamic_auc(structured_y, structured_y, preds, [year * 365])
+        auc, _ = cumulative_dynamic_auc(structured_y, structured_y, preds, [year])
         score = auc[0]
 
         scores.append(score)

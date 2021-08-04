@@ -1,8 +1,9 @@
 from src.core.regression.models import CoxRegression
-from src.core.utils import get_datasets
+from src.core.wrappers import feature_selector_wrapper
 
 
-def cox_concordance(df, ann, n, datasets=None):
+@feature_selector_wrapper()
+def cox_concordance(df, ann, n):
     """Select n features with the highest concordance index on one-factor Cox regression.
 
     Parameters
@@ -16,27 +17,20 @@ def cox_concordance(df, ann, n, datasets=None):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
-    datasets : array-like
-        List of dataset identifiers which should be used to calculate
-        test statistic. By default (None), union of all non-validation
-        datasets will be used.
     Returns
     -------
     list
         List of n features associated with the highest c-index.
     """
-    datasets = get_datasets(ann, datasets)
+    ann = ann[['Event', 'Time to event']]
 
-    samples = ann.loc[ann['Dataset'].isin(datasets)].index
-    df_subset = df.loc[samples]
-    ann_subset = ann.loc[samples, ['Event', 'Time to event']]
-    columns = df_subset.columns
+    columns = df.columns
 
     scores = []
     for j, column in enumerate(columns):
-        df_j = df_subset[[column]]
+        df_j = df[[column]]
         model = CoxRegression()
-        model.fit(df_j, ann_subset)
+        model.fit(df_j, ann)
         score = model.concordance_index_
 
         scores.append(score)
