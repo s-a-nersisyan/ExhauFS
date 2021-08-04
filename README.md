@@ -381,13 +381,13 @@ exhaufs build regressors -c <config_file>
 ```
 
 This will generate multiple files in the specified output folder:
-* models.csv: this file contains all models (classifiers or regressors) which passed the filtration together with their quality metrics.
-* summary_n_k.csv: for each pair of *n*, *k* three numbers are given: number of models which passed the filtration,
+* `models.csv`: this file contains all models (classifiers or regressors) which passed the filtration together with their quality metrics.
+* `summary_n_k.csv`: for each pair of *n*, *k* three numbers are given: number of models which passed the filtration,
 number of models which showed reliable performance (i.e., passed quality thresholds) on the validation set and
 their ratio (in %). Low percentage of validation-reliable models together with high number of 
 filtration-reliable models is usually associated with overfitting.
-* summary_features.csv: for each feature percentage of models carrying this feature 
-is listed (models which passed the filtration are considered).
+* `summary_features.csv`: for each pair (n, k), for each feature, percentage of models carrying this feature 
+is listed (only models which passed the filtration are considered).
 
 ## Step 5: generating report for a single model
 To get detailed report on the specific model (== specific set of features): 
@@ -398,25 +398,25 @@ To get detailed report on the specific model (== specific set of features):
     * `features_subset` - set of features belonging to the classifier or regressor of interest;
 * * For classifier run `exhaufs summary classifiers -c <config_file>`   
   * For regressor run `exhaufs summary regressors -c <config_file>`    
-* Check the detailed report in `output_dir`
+* Check the detailed report in the `output_dir`
 
 # Functions and classes
 <details>
   <summary>Feature pre-selectors</summary>
   
-  - <details>
-    <summary>from_file</summary> 
+  <details>
+  <summary>from_file</summary> 
     
-    Pre-select features from a given file
+  Pre-select features from a given file
     
-    __name__: from_file     
-    __kwargs__:   
-    ```json
-    {
-      "sep": " "
-    }
-    ```
-    </details>
+  __name__: from_file     
+  __kwargs__:   
+  ```json
+  {
+    "sep": " "
+  }
+  ```
+  </details>
 </details>
  
 <details>
