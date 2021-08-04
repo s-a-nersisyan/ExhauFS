@@ -172,9 +172,6 @@ class ExhauFS(object):
                              SVM or RF classifier), and save trained model to file.
               regressors     Fit and evaluate regressor, generate report of its accuracy 
                              metrics for datasets, plot Kaplan-Meier curves, and save trained model to file. 
-              features       Read classifiers.csv from output directory and generate table 
-                             that for each feature contains percentage of reliable classifiers 
-                             which use it.
             """,
             formatter_class=argparse.RawDescriptionHelpFormatter)
 
@@ -183,14 +180,8 @@ class ExhauFS(object):
 
         # Add summary options
         parser.add_argument('mode', metavar='mode',
-                            type=str, choices=MODES + ['features'],
+                            type=str, choices=MODES,
                             help='Summary mode')
-        parser.add_argument('--output_dir', metavar='<dir>',
-                            type=dir, default=os.path.abspath(os.getcwd()),
-                            help='Directory with output files; Default: %(default)s.')
-        parser.add_argument('--plot', metavar='<file>',
-                            type=file,
-                            help='Plot classifier-participation-curves for features.')
 
         # Parser summary options
         args = parser.parse_args(sys.argv[2:])
@@ -202,17 +193,6 @@ class ExhauFS(object):
         elif args.mode == 'regressors':
             from src import make_regressor_summary
             make_regressor_summary.main(args.config)
-        elif args.mode == 'features':
-
-            # Gererate table that for each feature contains percentage 
-            # of reliable classifiers which use it.
-            from src import get_features_summary
-            get_features_summary.main(args.output_dir)
-
-            # Plot classifier-participation-curves for features
-            if args.plot is not None:
-                from src import plot_features_summary
-                plot_features_summary.main(args.plot)
 
 
 if __name__ == '__main__':
