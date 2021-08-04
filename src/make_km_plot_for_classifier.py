@@ -1,10 +1,12 @@
 import pickle
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sksurv.compare import compare_survival as logrank_test
 
 from src.core.classification.classification import ExhaustiveClassification
+from src.core.regression.regression import ExhaustiveRegression
 from src.core.regression.utils import structure_y_to_sksurv, plot_kaplan_mayer
 from src.core.utils import float_to_latex
 from src.utils import *
@@ -21,10 +23,9 @@ def main(config_path):
     with open(model_path, 'rb') as f:
         model, preprocessor = pickle.load(f)
 
-    print(model)
     for dataset, dataset_type in ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy():
         X = df.loc[ann['Dataset'] == dataset, config['features_subset']].to_numpy()
-        y = ann.loc[ann['Dataset'] == dataset, ExhaustiveClassification.y_features]
+        y = ann.loc[ann['Dataset'] == dataset, ExhaustiveRegression.y_features]
 
         if preprocessor:
             X = preprocessor.transform(X)
@@ -34,7 +35,7 @@ def main(config_path):
         plt.figure(figsize=(6, 6))
         plt.title('{} ({} set), $p = {}$'.format(
             dataset,
-            dataset_type,
+            dataset_type.lower(),
             float_to_latex(logrank_test(structure_y_to_sksurv(y), groups)[1]),
         ))
 
