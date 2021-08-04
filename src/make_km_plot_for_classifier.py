@@ -24,8 +24,14 @@ def main(config_path):
         model, preprocessor = pickle.load(f)
 
     for dataset, dataset_type in ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy():
-        X = df.loc[ann['Dataset'] == dataset, config['features_subset']].to_numpy()
-        y = ann.loc[ann['Dataset'] == dataset, ExhaustiveRegression.y_features]
+        X = df.loc[
+            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            config['features_subset']
+        ].to_numpy()
+        y = ann.loc[
+            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            ExhaustiveRegression.y_features
+        ]
 
         if preprocessor:
             X = preprocessor.transform(X)
@@ -54,7 +60,7 @@ def main(config_path):
         plt.tight_layout()
         plot_fname = os.path.join(
             output_dir,
-            f'KM.{saving_format}',
+            "KM_{}_{}.{}".format(dataset, dataset_type, saving_format)
         ).replace('\\', '/')
         save_plt_fig(plot_fname, saving_format)
         plt.close()

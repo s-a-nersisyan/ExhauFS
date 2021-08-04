@@ -33,8 +33,14 @@ def main(config_path):
             report.append('\t{:12s}: {:.4f}'.format(metr, val))
 
         # Plot Cox K-M curve
-        X = df.loc[ann['Dataset'] == dataset, config['features_subset']]
-        y = ann.loc[ann['Dataset'] == dataset, model.y_features]
+        X = df.loc[
+            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            config['features_subset']
+        ]
+        y = ann.loc[
+            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            model.y_features
+        ]
 
         if model.preprocessor:
             X = model.preprocess(X)
@@ -66,7 +72,7 @@ def main(config_path):
         plt.tight_layout()
         plot_fname = os.path.join(
             output_dir,
-            'KM_{}.tif'.format(dataset)
+            "KM_{}_{}.{}".format(dataset, dataset_type, saving_format)
         ).replace('\\', '/')
         save_plt_fig(plot_fname, saving_format)
         plt.close()

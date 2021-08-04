@@ -56,8 +56,14 @@ def main(config_path):
 
             # Plot ROC curve
             if metr == "ROC_AUC":
-                X = df.loc[ann["Dataset"] == dataset, config["features_subset"]].to_numpy()
-                y = ann.loc[ann["Dataset"] == dataset, "Class"].to_numpy()
+                X = df.loc[
+                    (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+                    config["features_subset"]
+                ].to_numpy()
+                y = ann.loc[
+                    (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+                    "Class"
+                ].to_numpy()
 
                 if model.preprocessor:
                     X = model.preprocessor.transform(X)
@@ -90,7 +96,7 @@ def main(config_path):
                 plt.tight_layout()
                 plot_fname = os.path.join(
                     output_dir,
-                    "ROC_{}.{}".format(dataset, saving_format)
+                    "ROC_{}_{}.{}".format(dataset, dataset_type, saving_format)
                 ).replace("\\", "/")
                 save_plt_fig(plot_fname, saving_format)
 
