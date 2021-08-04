@@ -17,9 +17,11 @@ from datetime import datetime
 
 
 def save_plt_fig(name, format):
-    kwargs = {'compression': 'tiff_lzw'} if format == 'tiff' else None
-
-    plt.savefig(name, format=format, pil_kwargs=kwargs, dpi=350)
+    if format == 'tiff':
+        kwargs = {'compression': 'tiff_lzw'} if format == 'tiff' else None
+        plt.savefig(name, format=format, pil_kwargs=kwargs, dpi=350)
+    else:
+        plt.savefig(name, format=format, dpi=350)
 
 
 def getattr_with_kwargs(module, method):
