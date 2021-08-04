@@ -18,10 +18,12 @@ def f_test(df, ann):
         List of features without difference between types of dataset intersected with a list of
         features from a given DataFrame.
     """
-    # datasets = get_datasets(ann)
+    dataset_ids = ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy()
 
-    samples = [df.loc[ann['Dataset type'] == dataset] for dataset in ['Training']]
-    # samples = [df.loc[ann['Dataset type'] == dataset] for dataset in datasets]
+    samples = [
+        df.loc[(ann['Dataset'] == dataset) & (ann['Dataset type'] == dataset_type)]
+        for dataset, dataset_type in dataset_ids
+    ]
     statistics, pvalues = f_oneway(*samples, axis=0)
 
     return df.columns[pvalues > 0.05].to_list()
