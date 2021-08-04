@@ -396,9 +396,14 @@ To get detailed report on the specific model (== specific set of features):
     * `annotation_path` - path to annotation file
     * `output_dir` - path to output directory for detailed report
     * `features_subset` - set of features belonging to the classifier or regressor of interest;
+    * `saving_format` - either "tiff" or "pdf": format of the saved plots documents;
 * * For classifier run `exhaufs summary classifiers -c <config_file>`   
   * For regressor run `exhaufs summary regressors -c <config_file>`    
 * Check the detailed report in the `output_dir`
+
+If you also have time-to-event data for classification problem, you can make Kaplan-Meier plots based on the classifier predictions.  
+To do so you can run `exhaufs km_plot -c <config_file>` and check the `output_dir` directory.  
+You can also specify `KM_x_label` and `KM_y_label` in the config to change plot axis names.  
 
 # Functions and classes
 <details>
