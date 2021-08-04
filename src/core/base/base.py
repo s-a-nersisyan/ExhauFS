@@ -1,11 +1,13 @@
 import pandas as pd
 import random
+import numpy as np
 
 from multiprocessing import Pool
 import time
 import math
 import itertools
 
+from scipy.stats import binom as binom_stat, rankdata
 from scipy.special import binom
 
 from src.core.regression.accuracy_scores import \
@@ -170,6 +172,7 @@ class ExhaustiveBase(
         """
         # Iterate over n, k pairs
         all_result_dfs = []
+        all_counts = []
         summary_n_k = pd.DataFrame(columns=[
             'n', 'k',
             'num_training_reliable',
@@ -194,6 +197,34 @@ class ExhaustiveBase(
             res['n'] = res['n'].astype(int)
             res['k'] = res['k'].astype(int)
             res.to_csv('{}/models.csv'.format(self.output_dir))
+
+            all_genes = [g for clf in df_n_k_results.index for g in clf.split(';')]
+            features_summary = pd.DataFrame(
+                [
+                    [g, all_genes.count(g)]
+                    for g in sorted(list(set(all_genes)))
+                ],
+                columns=['Gene', 'Count'],
+            )
+
+            # Under null hypothesis, each count is a RV ~ Bin(len(chunk), k/n)
+            features_summary['p-value'] = [binom_stat(len(df_n_k_results), k / n).sf(c) for c in features_summary['Count']]
+            features_summary['n'] = n
+            features_summary['k'] = k
+            features_summary['Total'] = len(df_n_k_results)
+            features_summary['FDR'] = features_summary['p-value'] * len(features_summary) / \
+                                      rankdata(features_summary['p-value'])
+            features_summary['FDR'] = np.minimum(features_summary['FDR'], 1)
+            features_summary = features_summary.sort_values('FDR', ascending=False)
+
+            all_counts.append(features_summary)
+
+            features_summary = pd.concat(all_counts)
+            features_summary['Percentage'] = features_summary['Count'] / features_summary['Total'] * 100
+            features_summary = features_summary[['Gene', 'Count', 'n', 'k', 'Percentage', 'p-value', 'FDR']]\
+                .set_index('Gene')
+
+            features_summary.to_csv('{}/summary_features.csv'.format(self.output_dir))
 
             # Summary table #1: number of models which passed
             # scoring threshold on training + filtration sets,

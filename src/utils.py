@@ -207,6 +207,10 @@ def get_summary_features(models):
             ],
             columns=['Gene', 'Count'],
         )
+        print(features_summary['Count'])
+        print(all_genes)
+        print(k, n, len(chunk), binom(len(chunk), k / n))
+        exit()
         # Under null hypothesis, each count is a RV ~ Bin(len(chunk), k/n)
         features_summary['p-value'] = [binom(len(chunk), k / n).sf(c) for c in features_summary['Count']]
         features_summary['n'] = n
