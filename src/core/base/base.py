@@ -222,7 +222,7 @@ class ExhaustiveBase(
 
             all_counts.append(features_summary)
             features_summary = pd.concat(all_counts)
-            features_summary.to_csv('{}/summary_features.csv'.format(self.output_dir))
+            features_summary.to_csv('{}/summary_features.csv'.format(self.output_dir), index=None)
 
             # Summary table #1: number of models which passed
             # scoring threshold on training + filtration sets,
