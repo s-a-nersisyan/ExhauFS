@@ -4,7 +4,7 @@ Exhaustive feature selection for classification and survival analysis.
 ## Table of Contents  
 [Introduction](#introduction)  
 [Installation](#installation)  
-[A toy example](#toy)  
+[A toy example](#a-toy-example)  
 [Running ExhauFS](#running-exhaufs)  
 [Functions and classes](#functions-and-classes)  
 [More complex tutorials](#tutorials)  
@@ -44,7 +44,7 @@ Make sure you have installed all of the following prerequisites on your developm
 `pip3 install exhaufs`
 
 # A toy example
-We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EiEFGj6qQqJJnXA-tXFPbjkBAuuUGbztI4LTuSQbcQ3jSQ?e=kPI1vD).  
+We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `toy_example` directory.  
 
 We start from `data.csv` and `annotation.csv` files: the first one contains data matrix and the
 second one maps each sample to class label and dataset type (training or validation). In this

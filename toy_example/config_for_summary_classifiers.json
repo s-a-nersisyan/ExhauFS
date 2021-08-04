@@ -1,0 +1,22 @@
+{
+	"data_path": "data.csv",
+	"annotation_path": "annotation.csv",
+	"output_dir": "results_summary_classifiers",
+
+	"features_subset": ["perception_vulnerability", "socialSupport_instrumental", "empowerment_desires"],
+
+	"preprocessor": "",
+	"preprocessor_kwargs": {},
+
+	"model": "RandomForestClassifier",
+	"model_kwargs": {
+		"n_estimators": 10
+	},
+	"model_CV_ranges": {},
+	"model_CV_folds": 0,
+
+	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
+	"main_scoring_function": "min_TPR_TNR",
+
+	"random_state": 17
+}
