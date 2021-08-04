@@ -23,6 +23,7 @@ def f_test(df, ann):
     samples = [
         df.loc[(ann['Dataset'] == dataset) & (ann['Dataset type'] == dataset_type)]
         for dataset, dataset_type in dataset_ids
+        if dataset_type != "Validation"
     ]
     statistics, pvalues = f_oneway(*samples, axis=0)
 
