@@ -27,7 +27,7 @@ Input data can consist from different batches (datasets), and each dataset shoul
 <ol>
 <li><i>Training set:</i> samples from training datasets will be used for tuning classification/regression models. At least one such dataset is required; if multiple given, the union will be used.</li>
 <li><i>Filtration set:</i> all tuned models will be first evaluated on training and filtration sets. If specified thresholds for accuracy are reached, model will be evaluated on validation (test) sets. The use of filtration sets is optional.</li>
-<li><i>Validation (test) set:</i> performance of models which passed filtration thresholds are then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.</li>
+<li><i>Validation (test) set:</i> performance of models that passed filtration thresholds then evaluated on validation sets. At least one such dataset is required; if multiple given, model will be evaluated on all test sets independently.</li>
 </ol>
 
 </div>
@@ -226,7 +226,7 @@ Before running the tool, you should prepare three csv tables containing actual d
 </details>
 
 
-Sample annotation table formats are different for classification and survival analysis. For classification it should contain binary indicator of sample class (e.g., 1 for recurrent tumor and 0 for non-recurrent), dataset (batch) label and dataset type (Training/Filtration/Validation).  
+Annotation table format is different for classification and survival analysis. For classification it should contain binary indicator of sample class (e.g., 1 for recurrent tumor and 0 for non-recurrent), dataset (batch) label and dataset type (Training/Filtration/Validation).  
 It is important that `Class = 1` represents "Positives" and `Class = 0` are "negatives", otherwise accuracy scores may be calculated incorrectly.   
 Note that annotation should be present for each sample listed in the data table in the same order:
 
@@ -263,7 +263,7 @@ For survival analysis, annotation table should contain binary event indicator an
 </details>
 
 
-Table with *n* and *k* grid for exhaustive feature selection:  
+Table with *n* / *k* grid for exhaustive feature selection:  
 *n* is a number of selected features, *k* is a length of each features subset.  
 
 If you are not sure what values for *n* *k* to use, see [Step 3: defining a *n*, *k* grid](#step-3-defining-a-n-k-grid)  
@@ -300,7 +300,7 @@ Configuration file is a json file containing all customizable parameters for the
       Path to a *n*/*k* grid file.
 
   * `output_dir`
-      Path to directory for output files. If not exist, it will be created.
+      Path to directory for output files. If it doesn't exist, it will be created.
 
   * `feature_pre_selector`  
       Name of feature pre-selection function from [feature pre-selectors section](#functions-and-classes).
@@ -315,7 +315,7 @@ Configuration file is a json file containing all customizable parameters for the
       Object/Dictionary of keyword arguments for feature selector function. Boolean `use_filtration` indicates whether to use *Filtration* dataset besides *Training* dataset for the selector function.
 
   * `preprocessor`
-      Name of class for data preprocessing from [sklearn.preprocessing](#https://scikit-learn.org/stable/modules/preprocessing.html).
+      Name of class for data preprocessing from [sklearn.preprocessing](https://scikit-learn.org/stable/modules/preprocessing.html).
 
   * `preprocessor_kwargs`
       Object/Dictionary of keyword arguments for preprocessor class initialization.  
@@ -334,23 +334,8 @@ Configuration file is a json file containing all customizable parameters for the
   * `model_CV_folds`
       Number of folds for K-Folds cross-validation.
 
-  * `limit_feature_subsets`
-      If *true*, limit the number of processed feature subsets.
-
-  * `n_feature_subsets`
-      Number of processed feature subsets.
-
-  * `shuffle_feature_subsets`
-      If *true*, processed feature subsets are selected randomly instead of alphabetical order.
-
-  * `max_n`
-      Maximal number of selected features.
-
-  * `max_estimated_time`
-      Maximal estimated pipeline running time.
-
   * `scoring_functions`
-      List with names for scoring functions (from [Accuracy scores section](#functions-and-classes)) which will be calculated for each model.
+      List with names for scoring functions (from [Accuracy scores section](#functions-and-classes)) which will be calculated for each model. If you need to pass parameters to the function (e.g. `years` in dynamic auc score), you can use object {"name": `function name`, "kwargs": `parameters object`}.
 
   * `main_scoring_function`
       Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for model filtering.
@@ -358,7 +343,7 @@ Configuration file is a json file containing all customizable parameters for the
   * `main_scoring_threshold`
       A number defining threshold for model filtering: models with score below this threshold on training/filtration sets will not be further evaluated.
 
-    * `n_processes`
+  * `n_processes`
       Number of processes / threads to run on.
   
   * `random_state`
@@ -377,22 +362,20 @@ exhaufs estimate regressors|classifiers -c <config_file> --max_k <max_k> --max_e
 ```
 where
 * `config_file` is the path to json configuration file.
-* `max_k` is the maximal length of each features subset.
-* `max_estimated_time` is the maximal estimated time (in hours) of single running of the exhaustive pipeline.
-* `n_feature_subsets` is the number of feature subsets processed by the exhaustive pipeline (*100* is usually enough).
-* `search_max_n` is *1* if you need to find the maximal number of selected features for which estimated run time of the exhaustive pipeline is less than `max_estimated_time`, and *0* otherwise.
+* `max_k` is the maximum length of each features subset.
+* `max_estimated_time` is the time constraint (in hours) for a pipeline running time on one pair of (n, k).
 
 Above script calculates maximum possible values *n* / *k* for each *k*=`1...max_k` such that pipeline running time for each pair (*n*, *k*) is less then `max_estimated_time`
 
 ## Step 4: running the exhaustive pipeline
 
-When input data, configuration file and *n*, *k* grid are ready,
-the exhaustive pipeline could be executed -  
+When input data, configuration file and *n* / *k* grid are ready,  
+the exhaustive pipeline can be executed as follows -  
 * __Classifiers__:
 ```bash
 exhaufs build classifiers -c <config_file>
 ```
-* __Regressions__:
+* __Regressors__:
 ```bash
 exhaufs build regressors -c <config_file>
 ```
@@ -408,15 +391,11 @@ is listed (models which passed the filtration are considered).
 
 ## Step 5: generating report for a single model
 To get detailed report on the specific model (== specific set of features): 
-* Create configuration file (use ./examples/make_<u>(classifier | regressor)</u>_summary/config.json as
-   template) and set following key parameters:
-    * `data_path` - path to dataset used for search of classifiers
-  (relative to directory with configuration file);
-    * "annotation_path" - path to annotation file (relative to directory 
-      with configuration file);
-    * `output_dir` - path to output directory for detailed report 
-      (relative to directory with configuration file);
-    * `features_subset` - set of features belonging to the classifier of interest;
+* Create configuration file (use ./examples/make_<u>(classifier | regressor)</u>_summary/config.json as a template) and set following key parameters:
+    * `data_path` - path to dataset used for search of classifiers or regressors
+    * `annotation_path` - path to annotation file
+    * `output_dir` - path to output directory for detailed report
+    * `features_subset` - set of features belonging to the classifier or regressor of interest;
 * * For classifier run `exhaufs summary classifiers -c <config_file>`   
   * For regressor run `exhaufs summary regressors -c <config_file>`    
 * Check the detailed report in `output_dir`
