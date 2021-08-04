@@ -335,7 +335,7 @@ Configuration file is a json file containing all customizable parameters for the
       Number of folds for K-Folds cross-validation.
 
   * `scoring_functions`
-      List with names for scoring functions (from [Accuracy scores section](#functions-and-classes)) which will be calculated for each model. If you need to pass parameters to the function (e.g. `years` in dynamic auc score), you can use object {"name": `function name`, "kwargs": `parameters object`}.
+      List with names for scoring functions (from [Accuracy scores section](#functions-and-classes)) which will be calculated for each model. If you need to pass parameters to the function (e.g. `year` in dynamic auc score), you can use object {"name": `function name`, "kwargs": `parameters object`}.
 
   * `main_scoring_function`
       Key from scoring_functions dict defining the "main" scoring function which will be optimized during cross-validation and will be used for model filtering.
@@ -404,56 +404,12 @@ To get detailed report on the specific model (== specific set of features):
 <details>
   <summary>Feature pre-selectors</summary>
   
-  <details>
-  <summary>from_file</summary> 
-    
-  Pre-select features from a given file
-    
-  __name__: from_file     
-  __kwargs__:   
-  ```json
-  {
-    "sep": " "
-  }
-  ```
-  </details>
-</details>
- 
-<details>
-  <summary>Feature selectors</summary>
-  
-  - <details>
-    <summary>t_test</summary> 
-    
-    Select n features with the lowest p-values according to t-test
-    
-    __name__: t_test    
-    __kwargs__:   
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
-    </details>
-  - <details>
-    <summary>spearman_correlation</summary> 
-    
-    Select n features with the highest correlation with target label
-    
-    __name__: spearman_correlation   
-    __kwargs__:   
-    ```json
-    {
-      "datasets": ["Training", "Filtration"]
-    }
-    ```
-    </details>
   - <details>
     <summary>from_file</summary> 
-     
-    Select first n features from a given file
     
-    __name__: spearman_correlation   
+    Pre-select features from a given file
+    
+    __name__: from_file     
     __kwargs__:   
     ```json
     {
@@ -462,14 +418,67 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
   - <details>
+    <summary>f_test</summary> 
+    
+    Pre-select features without difference between different datasets and types
+    
+    __name__: f_test     
+    </details>
+</details>
+ 
+<details>
+  <summary>Feature selectors</summary>
+  
+  - <details>
+    <summary>from_file</summary> 
+     
+    Select first n features from a given file
+    
+    __name__: from_file   
+    __kwargs__:   
+    ```json
+    {
+      "sep": " "
+    }
+    ```
+    </details>
+  - <details>
+    <summary>t_test</summary> 
+    
+    Select n features with the lowest p-values according to t-test
+    
+    __name__: t_test    
+    __kwargs__: 
+    ```json
+    {
+      "use_filtration": false // whether to use filtration dataset with training dataset
+    }
+    ```
+    </details>
+  - <details>
+    <summary>spearman_correlation</summary> 
+    
+    Select n features with the highest correlation with target label
+    
+    __name__: spearman_correlation  
+    __kwargs__: 
+    ```json
+    {
+      "use_filtration": false // whether to use filtration dataset with training dataset
+    }
+    ``` 
+    </details>
+  - <details>
     <summary>median</summary> 
     
     Select n features with the highest median value  
     __name__: median  
-    __kwargs__:   
+    __kwargs__: 
     ```json
-    {}
-    ```
+    {
+      "use_filtration": false // whether to use filtration dataset with training dataset
+    }
+    ``` 
     </details>
     
   ##### Regression specific selectors:
@@ -479,12 +488,12 @@ To get detailed report on the specific model (== specific set of features):
     Select n features with the highest concordance index on one-factor Cox regression.
     
     __name__: cox_concordance  
-    __kwargs__:  
+    __kwargs__: 
     ```json
     {
-      "datasets": ["Training", "Filtration"]
+      "use_filtration": false // whether to use filtration dataset with training dataset
     }
-    ```
+    ``` 
     </details>
   - <details>
     <summary>cox_dynamic_auc</summary> 
@@ -496,7 +505,7 @@ To get detailed report on the specific model (== specific set of features):
     ```json
     {
       "year": 3, // time at which to calculate auc
-      "datasets": ["Training", "Filtration"]
+      "use_filtration": false // whether to use filtration dataset with training dataset
     }
     ```
     </details>
@@ -505,13 +514,13 @@ To get detailed report on the specific model (== specific set of features):
     
     Select n features with the highest hazard ratio on one-factor Cox regression.
     
-    __name__: cox_hazard_ratio   
-    __kwargs__:   
+    __name__: cox_hazard_ratio 
+    __kwargs__: 
     ```json
     {
-      "datasets": ["Training", "Filtration"]
+      "use_filtration": false // whether to use filtration dataset with training dataset
     }
-    ```
+    ```   
     </details>
     <details>
     <summary>cox_likelihood</summary> 
@@ -519,12 +528,12 @@ To get detailed report on the specific model (== specific set of features):
     Select n features with the highest log-likelihood on one-factor Cox regression.
     
     __name__: cox_likelihood  
-    __kwargs__:  
+    __kwargs__: 
     ```json
     {
-      "datasets": ["Training", "Filtration"]
+      "use_filtration": false // whether to use filtration dataset with training dataset
     }
-    ```
+    ``` 
     </details>
 </details>
 
