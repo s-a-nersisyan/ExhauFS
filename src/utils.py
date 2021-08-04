@@ -192,36 +192,3 @@ def initialize_regression_model(config, df, ann, n_k):
         random_state=config['random_state'],
         verbose=config.get('verbose', True),
     )
-
-
-def get_summary_features(models):
-    # For each feature calculate
-    # percentage of reliable models which use it
-    all_counts = []
-    for (n, k), chunk in models.groupby(['n', 'k']):
-        all_genes = [g for clf in chunk.index for g in clf.split(';')]
-        features_summary = pd.DataFrame(
-            [
-                [g, all_genes.count(g)]
-                for g in sorted(list(set(all_genes)))
-            ],
-            columns=['Gene', 'Count'],
-        )
-
-        # Under null hypothesis, each count is a RV ~ Bin(len(chunk), k/n)
-        features_summary['p-value'] = [binom(len(chunk), k / n).sf(c) for c in features_summary['Count']]
-        features_summary['n'] = n
-        features_summary['k'] = k
-        features_summary['Total'] = len(chunk)
-        features_summary['FDR'] = features_summary['p-value'] * len(features_summary) / \
-                                  rankdata(features_summary['p-value'])
-        features_summary['FDR'] = np.minimum(features_summary['FDR'], 1)
-        features_summary = features_summary.sort_values('FDR', ascending=False)
-
-        all_counts.append(features_summary)
-
-    features_summary = pd.concat(all_counts)
-    features_summary['Percentage'] = features_summary['Count'] / features_summary['Total'] * 100
-    features_summary = features_summary[['Gene', 'Count', 'n', 'k', 'Percentage', 'p-value', 'FDR']].set_index('Gene')
-
-    return features_summary
