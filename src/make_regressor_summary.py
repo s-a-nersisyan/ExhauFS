@@ -60,7 +60,7 @@ def main(config_path):
         plt.xlabel(config.get('KM_x_label') or 'Time to event')
         plt.ylabel(config.get('Ky_label') or 'Probability of event')
 
-        plt.ylim([0, 1])
+        plt.ylim([0, 1.01])
         plt.yticks(np.arange(0, 1, 0.1))
         
         plt.tight_layout()
