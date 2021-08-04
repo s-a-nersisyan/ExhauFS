@@ -149,7 +149,7 @@ Configuration file is a json file containing all customizable parameters for the
       Name of feature selection function from [feature selectors section](#functions-and-classes).
 
   * `feature_selector_kwargs`  
-      Object/Dictionary of keyword arguments for feature selector function.
+      Object/Dictionary of keyword arguments for feature selector function. Usable key is a boolean `use_filtration` that indicates whether to use *Filtration* dataset besides *Training* dataset for the selector function.
 
   * `preprocessor`
       Name of class for data preprocessing from [sklearn.preprocessing](#https://scikit-learn.org/stable/modules/preprocessing.html).
@@ -276,7 +276,6 @@ To get detailed report on the specific model (== specific set of features):
     ```
     </details>
 </details>
-</a> 
  
 <details>
   <summary>Feature selectors</summary>
