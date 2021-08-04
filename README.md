@@ -424,27 +424,46 @@ To get detailed report on the specific model (== specific set of features):
   We start from `data.csv` and `annotation.csv` files: the first one contains data matrix and the
   second one maps each sample to class label and dataset type (training or validation). In this
   example we brute force all existing feature triples - this information is reflected in `n_k.csv`
-  file (n = 19 is the total number of features).
+  file (n = 19 is the total number of features). Prior to ExhauFS run we should also create
+  a configuration file. Here we use random forest classifier and standard accuracy metrics 
+  (`config_for_build_classifiers.json`). Since all 19 features are used, we do not specify any
+  feature selector and pre-selector. In order to get only highly accurate classifiers, we impose
+  0.9 threshold on the minimum of sensitivity (TPR) and specificity (TNR) on the training set.
   
-  By executing `exhaufs build classifiers -c config_for_build_classifiers.json` command we are getting result files in the specified `results_build_classifiers` output directory:
+  Now we are ready to execute ExhauFS: simply run 
+  
+  `exhaufs build classifiers -c config_for_build_classifiers.json`
+  
+  command. Output files can be found in `results_build_classifiers` directory:
   - `models.csv`
   
-  In this file, by ranking all models by their performance on the "Training" set, we can see that almost all models have accuracy score of 1.0.  
-  And among these models there are multiple cases with particularly high accuracy on "Validation" set:    
+  This file contains accuracy metrics for all models which passed 0.9 threshold filtration on the training set.
+  The file is sorted according to the classifier accuracy on the training set, so 
+  we can see that almost all models have sensitivity and specificity equal to 1.0.  
+  And among these models there are multiple cases with particularly high accuracy on the validation set, e.g.:
   
   | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
   | ---       |  ---                   | ---                    | --- | --- |
   | ... | ... | ... | ... | ... |
-  | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
+  | perception_vulnerability;socialSupport_instrumental;empowerment_desires      | 0.9 | 0.91 | 19 | 3 |
   | ... | ... | ... | ... | ... |
   
   
-  To get a full summary of a particular model (in our case - constructed on above three features),  
-  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c config_for_summary_classifiers.json`  
-  which will, again, produce multiple files in the specified output directory, the most important of which are:
-  - `report.txt` (contains detailed accuracy scores for all datasets)
-  - `ROC_CervicalCancerBehaviorRisk_Training.pdf` (contains ROC curve for training set)
-  - `ROC_CervicalCancerBehaviorRisk_Validation.pdf` (contains ROC curve for validation set)
+  Let us take a closer look to this particular classifier. To do that, we should create an
+  additional configuration file with `features_subset` parameter equal to the desired
+  triple (`config_for_summary_classifiers.json`). To run ExhauFS in the summary mode,
+  simply execute the following command:
+
+  `exhaufs summary classifiers -c config_for_summary_classifiers.json`
+  
+  Note, that we do not specify any feature selection/pre-selection or 
+  accuracy threshold parameters for the summary mode of ExhauFS. Generated
+  files include the following entries:
+  - `report.txt`: accuracy scores for training and validation datasets
+  - `ROC_CervicalCancerBehaviorRisk_Training.pdf`: ROC curve for the training set.
+  The red dot stands for actual sensitivity and specificity. For example, the classifier
+  does not work ideally on the training set despite AUC equals 1.
+  - `ROC_CervicalCancerBehaviorRisk_Validation.pdf`: ROC curve for validation set.
   
 </details>
 
