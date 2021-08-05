@@ -1,36 +1,30 @@
 {
-    "data_path": "/home/v-novosad/ExhaustiveFS/data/colorectal-miRNK/5prime_data_filtered.csv",
-    "annotation_path": "../annotation.csv",
-    "n_k_path": "/home/v-novosad/ExhaustiveFS/data/n_k.csv",
-    "output_dir": "model",
+    "data_path": "data.csv",
+    "annotation_path": "annotation.csv",
+    "n_k_path": "n_k.csv",
+    "output_dir": "results_summary_regressors",
 
-    "feature_pre_selector": "",
+    "feature_pre_selector": null,
     "feature_pre_selector_kwargs": {},
 
     "feature_selector": "cox_concordance",
-    "feature_selector_kwargs": {
-        "datasets": ["Training"]
-    },
+    "feature_selector_kwargs": {},
 
-	"preprocessor": "",
-	"preprocessor_kwargs": {
-        "n_bins": 2,
-        "encode": "ordinal"
-	},
+	"preprocessor": null,
+	"preprocessor_kwargs": {},
 
     "model": "CoxRegression",
-    "model_kwargs": {
-    },
+    "model_kwargs": {},
     "model_CV_ranges": {},
-    "model_CV_folds": 2,
+    "model_CV_folds": 0,
 
     "scoring_functions": ["concordance_index", "dynamic_auc", "hazard_ratio", "logrank"],
     "main_scoring_function": "concordance_index",
-    "main_scoring_threshold": 0.4,
+    "main_scoring_threshold": 0.6,
 
     "features_subset": ["hsa-miR-200a-5p|0", "hsa-miR-26b-5p|0", "hsa-miR-21-3p|0", "hsa-miR-126-3p|0", "hsa-let-7e-5p|0", "hsa-miR-374a-3p|0", "hsa-miR-141-5p|0"],
 
-    "n_processes": 4,
+    "n_processes": 1,
     "random_state": 17,
     "verbose": true,
 

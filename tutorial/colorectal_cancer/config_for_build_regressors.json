@@ -1,0 +1,28 @@
+{
+    "data_path": "data.csv",
+    "annotation_path": "annotation.csv",
+    "n_k_path": "n_k.csv",
+    "output_dir": "results_build_regressors",
+
+    "feature_pre_selector": null,
+    "feature_pre_selector_kwargs": {},
+
+    "feature_selector": "cox_concordance",
+    "feature_selector_kwargs": {},
+
+	"preprocessor": null,
+	"preprocessor_kwargs": {},
+
+    "model": "CoxRegression",
+    "model_kwargs": {},
+    "model_CV_ranges": {},
+    "model_CV_folds": 0,
+
+    "scoring_functions": ["concordance_index", "dynamic_auc", "hazard_ratio", "logrank"],
+    "main_scoring_function": "concordance_index",
+    "main_scoring_threshold": 0.6,
+
+    "n_processes": 1,
+    "random_state": 17,
+    "verbose": true
+}

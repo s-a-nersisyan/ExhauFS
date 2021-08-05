@@ -10,7 +10,7 @@
 	"feature_selector": null,
 	"feature_selector_kwargs": {},
 
-	"preprocessor": "",
+	"preprocessor": null,
 	"preprocessor_kwargs": {},
 
 	"model": "RandomForestClassifier",

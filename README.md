@@ -119,9 +119,9 @@ the manuscript.
   as in the previous toy example (however, this will take several days to finish).
   Here we review two output reports which were not covered in the toy example:
   
-  - [`summary_n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_build_classifiers/summary_features.csv)
+  - [`summary_n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_build_classifiers/summary_n_k.csv)
   
-  For each n, k pair the number of classifiers which passed the 0.65 accuracy threshold 
+  For each *n, k* pair the number of classifiers which passed the 0.65 accuracy threshold 
   on the training and the filtration sets is presented (num_training_reliable). All
   these classifiers were evaluated on the validation set; num_validation_reliable and
   percentage_reliable columns contain the fraction of these classifiers which also
@@ -134,7 +134,7 @@ the manuscript.
 
   This is a technical though useful file: the list of pre-selected genes is sorted according to the rate of
   differential expression (`t_test` feature selection). Each pipeline iteration begins from
-  the selection of the first n entries from this file.
+  the selection of the first *n* entries from this file.
  	
   As in the previous toy example, let us take a closer look to the single gene signature
   (see [`config_for_summary_classifiers.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/config_for_summary_classifiers.json)). The following output files were not
@@ -163,26 +163,14 @@ the manuscript.
   Same with classification, the main objective was to analyse contribution of different feature [pre]selection techniques and accuracy scores using Cox Regression as a main model.  
   We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
   
-  Again, same with classification, firstly we need to make `n/k` grid table for the pipeline.  
-  After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a `n/k` grid for the pipeline.  
+  Again, same with classification, firstly we need to make *n, k* grid table for the pipeline.  
+  As a result of `exhaufs estimate regressors -c confifg_for_estimate_regressors.json --max_estimated_time 3 --max_k 20` we got the [estimated_times.csv](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_estimated_times/estimated_times.csv) table with *n/k* grid and predicted running time for each pair.
   
-  By executing `exhaufs build regressors -c <config path>` command we are getting results files in the specified output directory:  
-  - [`summary_n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_build_regressors/summary_n_k.csv)
+  Same with examples above, we can build regression models or make summary for one specific set of features as follows:
+  - `exhaufs build regressors -c confifg_for_build_regressors.json` which will produce same files as for classification task.
+  - `exhaufs summary regressors -c confifg_for_summary_regressors.json` which will produce a detailed report for the specified set of features and also a Kaplan-Meier plots for each dataset type.
   
-  Shows that above certain values of `k`, close to 95% of the regressors passed the threshold of *0.6* for concordance index.
-
-  - [`models.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_build_regressors/models.csv)
-  
-  If we take only models with k=7 and sort them by average between concordance index on training and filtration sets  
-  we find one model with quite high scores: concordance index = 0.71, hazard ratio = 3, 3-year AUC = 0.67, logrank = 3.1.  
-  TODO: add features  
-  
-  Then, to get a full summary of this model, we need to add `features_subset` with those features to the config file and run `exhaufs summary regressors -c <config path>` which will, again, produce multiple files in the specified output directory, the most important of which are:
-  - [`report.txt`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/report.txt) (contains detailed accuracy scores for all datasets)
-  - [`KM_Training.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Training.pdf) (contains Kaplan-Meier curve for training set)
-  - [`KM_Filtration.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Filtration.pdf) (contains Kaplan-Meier curve for filtration set)
-  - [`KM_Validation.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Validation.pdf) (contains Kaplan-Meier curve for validation set)
-  
+  Where [confifg_for_build_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_build_regressors.json) and [confifg_for_summary_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_summary_regressors.json) can be found in the [tutorials/colorectal_caner](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer) directory.
 </details>
 
 # Running ExhauFS
