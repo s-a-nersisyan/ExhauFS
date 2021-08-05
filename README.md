@@ -162,10 +162,9 @@ the manuscript.
 <details>
   <summary>Colorectal cancer (survival regression)</summary>
   
-  TODO: add correct links
-  As a real-life example of the regression part of the tool we used [colorectal cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk).  
+  As a real-life example of the regression part of the tool we used colorectal cancer dataset.  
   
-  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  Transformed data and config used for pipeline can be found [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/Est199kj_IhNtZMf0cM2T-0BvvzM2amkZD22uvhtvUTMXA?e=R79vhh).  
 
   Same with classification, the main objective was to analyse contribution of different feature [pre]selection techniques and accuracy scores using Cox Regression as a main model.  
   We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
@@ -209,7 +208,7 @@ the manuscript.
 
 ## Step 1: data preparation
 
-Before running the tool, you should prepare three csv tables containing actual data, its annotation and *n* \ *k* grid. Both for classification and survival analysis data table should contain numerical values associated with samples (rows) and features (columns):
+Before running the tool, you should prepare three csv tables containing actual data, its annotation and *n* / *k* grid. Both for classification and survival analysis data table should contain numerical values associated with samples (rows) and features (columns):
 
 <details>
   <summary>Example</summary>
