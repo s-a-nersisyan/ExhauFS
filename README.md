@@ -164,13 +164,13 @@ the manuscript.
   We achieved best results using `concordance_index` as a feature selector and as a main scoring function.  
   
   Again, same with classification, firstly we need to make *n, k* grid table for the pipeline.  
-  As a result of `exhaufs estimate regressors -c confifg_for_estimate_regressors.json --max_estimated_time 3 --max_k 20` we got the [estimated_times.csv](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_estimated_times/estimated_times.csv) table with *n/k* grid and predicted running time for each pair.
+  As a result of `exhaufs estimate regressors -c confifg_for_estimate_regressors.json --max_estimated_time 3 --max_k 20` we got the [estimated_times.csv](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_estimated_times/estimated_times.csv) table with *n/k* grid and predicted running time for each pair of values.
   
   Same with examples above, we can build regression models or make summary for one specific set of features as follows:
-  - `exhaufs build regressors -c confifg_for_build_regressors.json` which will produce same files as for classification task.
-  - `exhaufs summary regressors -c confifg_for_summary_regressors.json` which will produce a detailed report for the specified set of features and also a Kaplan-Meier plots for each dataset type.
+  - `exhaufs build regressors -c confifg_for_build_regressors.json` will produce same files as for classification task.
+  - `exhaufs summary regressors -c confifg_for_summary_regressors.json` will produce a detailed report for the specified set of features and also a Kaplan-Meier plots for each dataset type.
   
-  Where [confifg_for_build_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_build_regressors.json) and [confifg_for_summary_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_summary_regressors.json) can be found in the [tutorials/colorectal_caner](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer) directory.
+  Where [confifg_for_build_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_build_regressors.json) and [confifg_for_summary_regressors.json](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/confifg_for_summary_regressors.json) can be found in the [tutorial/colorectal_cancer](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer) directory.
 </details>
 
 # Running ExhauFS
