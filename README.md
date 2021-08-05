@@ -45,6 +45,10 @@ Make sure you have installed all of the following prerequisites on your developm
 
 # Tutorial
 
+In this section we illustrate the main functionality of ExhauFS, and
+together with that show how to reproduce the results present in 
+the manuscript.
+
 <details>
   <summary>A toy example (classification)</summary>
   We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `tutorial/cervical_cancer` directory.  
@@ -117,7 +121,9 @@ Make sure you have installed all of the following prerequisites on your developm
   - `"preprocessor": "StandardScaler"` - prior classifier fitting, data are centered and scaled (z-score transformation).
   - `"model": "SVC"` - Support Vector machine Classifier (SVC) is used. Additional arguments are used to specify linear kernel, normalization for unbalanced classes and a cross-validation grid for penalty parameter (C) estimation.
 
-  Here we review two output reports which were not covered in the previous toy example (`results_build_classifiers` directory):
+  Classifier construction with the given `n_k.csv` file could be done by the same command
+  as in the previous toy example (however, this will take several days to finish).
+  Here we review two output reports which were not covered in the toy example:
   
   - `summary_n_k.csv`
   
@@ -137,7 +143,7 @@ Make sure you have installed all of the following prerequisites on your developm
   the selection of the first n entries from this file.
  	
   As in the previous toy example, let us take a closer look to the single gene signature
-  (see `config_for_summary_classifiers.json`). Let us also review the output files which were not
+  (see `config_for_summary_classifiers.json`). The following output files were not
   covered in the toy example:
   - `feature_importances.pdf` (contains coefficients of the linear SVM classifier)
   - `model.pkl` (Python-pickled classifier and pre-processor objects)
