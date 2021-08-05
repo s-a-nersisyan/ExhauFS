@@ -52,7 +52,7 @@ the manuscript.
 <details>
   <summary>A toy example (classification)</summary>
   
-  We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `tutorial/cervical_cancer` directory.  
+  We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in [`tutorial/cervical_cancer`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer) directory.  
   
   We start from [`data.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/data.csv) and [`annotation.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/annotation.csv) files: the first one contains data matrix and the
   second one maps each sample to class label and dataset type (training or validation). In this
