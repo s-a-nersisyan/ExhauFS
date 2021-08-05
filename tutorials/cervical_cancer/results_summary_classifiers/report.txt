@@ -1,0 +1,14 @@
+Accuracy metrics:
+//--------------------------------------------
+CervicalCancerBehaviorRisk (Validation set)
+	TPR         : 0.9000
+	TNR         : 0.9615
+	min_TPR_TNR : 0.9000
+	ROC_AUC     : 0.9558
+
+CervicalCancerBehaviorRisk (Training set)
+	TPR         : 0.9091
+	TNR         : 1.0000
+	min_TPR_TNR : 0.9091
+	ROC_AUC     : 1.0000
+
