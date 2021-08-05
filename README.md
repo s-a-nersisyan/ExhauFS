@@ -47,7 +47,7 @@ Make sure you have installed all of the following prerequisites on your developm
 
 <details>
   <summary>A toy example (classification)</summary>
-  We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `tutorials/cervical_cancer` directory.  
+  We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `tutorial/cervical_cancer` directory.  
   
   We start from `data.csv` and `annotation.csv` files: the first one contains data matrix and the
   second one maps each sample to class label and dataset type (training or validation). In this
@@ -105,62 +105,58 @@ Make sure you have installed all of the following prerequisites on your developm
 <details>
   <summary>Breast cancer (classification)</summary>
   
-  TODO: add correct links  
-  As a real-life example of the classification part of the tool we used [breast cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk).  
-  
-  Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  
+  As a real-life example of the classification module of the tool we used multi-cohort breast cancer dataset.
+  The objective is to predict whether a patient will have cancer recurrence within first 5 years after the surgery
+  based on gene expression profile in the removed tumor (see our manuscript for the details). 
+  Configuration and output files for this example are
+  located in `tutorial/breast_cancer` folder, input data can be downloaded [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EihEOok4stJFnCjGxqL14qgBSqxLzUy7hBThWp4_jE3HKw?e=bges1q). The microarray data are split into independent training, filtration and validation sets.
+ 
+  The following options are used (`config_for_build_classifiers.json`):
+  - `"feature_pre_selector": "f_test"` - this is for pre-selection of genes whose expression distribution is similar in training and filtration datasets (the batch effect removal approach).
+  - `"feature_selector": "t_test"` - top n most differentially expressed genes are selected. Additional option `"use_filtration": true` means that Student's t-test will be applied to the union of training and filtration sets.
+  - `"preprocessor": "StandardScaler"` - prior classifier fitting, data are centered and scaled (z-score transformation).
+  - `"model": "SVC"` - Support Vector machine Classifier (SVC) is used. Additional arguments are used to specify linear kernel, normalization for unbalanced classes and a cross-validation grid for penalty parameter (C) estimation.
 
-  The main objective was to analyse contribution of different pre-processing and feature [pre]selection techniques.  
-  By using `z-score` as a normalization, `t-test` as a feature selector and `KBinsDiscretizer`(binarization) as a pre-processor we achieved good results in terms of number of models passing threshold on validation set relative to the number of models passing threshold on training and filtration sets which indicates that there is no randomness and all of the models are actually "good".   
+  Here we review two output reports which were not covered in the previous toy example (`results_build_classifiers` directory):
   
-  First of all, we need to calculate appropriate grid for `n/k` values, so the pipeline knows what features and their subsets to use.  
-  To do so, we need to define the maximum time we want for the pipeline to work for a single pair of (n, k).  
-  In our case, we chose 12 hours. And since we don't want to analyse classifiers with more than 20 features, we set `max_k` as 20.  
-  By executing `exhaufs estimate classifiers -c <config path> --max_estimated_time 12 --max_k 20` we are getting `n/k` grid table in the output directory, which looks like this:  
-  
-  | n   | k   | Estimated time     |
-  | --- | --- | ---                |
-  | ... | ... | ...                |
-  | 59  | 4   | 2.9192129150403865 |
-  | 37  | 5   | 2.8854977554500105 |
-  | 28  | 6   | 2.5242263025045393 |
-  | 24  | 7   | 2.3660491471767426 |
-  
-  We can use path to the above file as a `n_k_path` value in the config and then by executing `exhaufs build classifiers -c <config path>` command we get pipeline results files in the specified output directory:  
   - `summary_n_k.csv`
   
-  Shows that above certain values of `k`, almost 100% of the classifiers passed the threshold of *0.65* for minimum of TPR and TNR.
-  TODO: add real table
-  | n   | k   |  num_training_reliable | num_validation_reliable | percentage_reliable |
-  | --- | --- |  ---                   | ---                     | ---                 |
-  | 19 | 2    |  137                   | 41                      | 29.927007299270077  |
-  | 19 | 3    |  925                   | 258                     | 29.927007299270077  |
-  | 19 | 4    |  3859                  | 1252                    | 32.44363824825084   |
+  For each n, k pair the number of classifiers which passed the 0.65 accuracy threshold 
+  on the training and the filtration sets is presented (num_training_reliable). All
+  these classifiers were evaluated on the validation set; num_validation_reliable and
+  percentage_reliable columns contain the fraction of these classifiers which also
+  passed 0.65 accuracy threshold on the validation set. For all values of k above
+  10 we see almost 100% passability, which means the absence of overfitting and successful
+  victory over the batch effects (all classifiers which demonstrated reliable performance
+  on the training and the filtration sets were also good on the validation one).
   
-  - `models.csv`
+  - `sorted_features.txt`
+
+  This is a technical though useful file: the list of pre-selected genes is sorted according to the rate of
+  differential expression (`t_test` feature selection). Each pipeline iteration begins from
+  the selection of the first n entries from this file.
+ 	
+  As in the previous toy example, let us take a closer look to the single gene signature
+  (see `config_for_summary_classifiers.json`). Let us also review the output files which were not
+  covered in the toy example:
+  - `feature_importances.pdf` (contains coefficients of the linear SVM classifier)
+  - `model.pkl` (Python-pickled classifier and pre-processor objects)
+
+  ExhauFS also allows one to evaluate constucted classifiers on time-to-event data.
+  For example, let us evaluate the same ten-gene signature on 
+  additional RNA-seq TCGA-BRCA dataset. To do that, we should include to desired feature 
+  subset and pickled model path to the configuration file (`config_for_km_plot.json`).
+  The analysis could be done by running
+
+  `exhaufs km_plot -c config_for_km_plot.json`
   
-  In this file, by ranking all models by their performance on the "Training" set we can see that almost all models have accuracy score of 1.0  
-  And among these models there are multiple cases with particularly high accuracy on "Validation" set  
-  
-  | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
-  | ---       |  ---                   | ---                    | --- | --- |
-  | ... | ... | ... | ... | ... |
-  | behavior_eating;norm_fulfillment;empowerment_knowledge      | 0.9 | 1.0 | 19 | 3 |
-  | ... | ... | ... | ... | ... |
-  
-  Then, to get a full summary of a particular model (in our case - constructed on above three features),  
-  we need to add `features_subset` with those features to the config file and run `exhaufs summary classifiers -c <config path>`  
-  which will, again, produce multiple files in the specified output directory, the most important of which are:
-  - `report.txt` (contains detailed accuracy scores for all datasets)
-  - `ROC_Training.pdf` (contains roc-auc curve for training set)
-  - `ROC_Validation.pdf` (contains roc-auc curve for validation set)
-  
+  This will generate the Kaplan-Meier plot (`results_km_plot/KM_TCGA-BRCA_Validation.pdf`).
 </details>
 
 <details>
   <summary>Colorectal cancer (survival regression)</summary>
   
- TODO: add correct links
+  TODO: add correct links
   As a real-life example of the regression part of the tool we used [colorectal cancer dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk).  
   
   Transformed data and config used for pipeline can be found in [OneDrive](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EpJztBwnLENPuLU8r0fA0awB1mBsck15t2zs7-aG4FXKNw).  

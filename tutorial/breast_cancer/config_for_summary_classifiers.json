@@ -1,0 +1,25 @@
+{
+	"data_path": "microarray_data.csv",
+	"annotation_path": "microarray_annotation.csv",
+	"output_dir": "results_summary_classifiers",
+
+	"features_subset": ["TRIP13", "ZWINT", "EPN3", "ECHDC2", "CX3CR1", "STARD13", "MB", "SLC7A5", "ABAT", "CCNL2"],
+
+	"preprocessor": "StandardScaler",
+	"preprocessor_kwargs": {},
+
+	"model": "SVC",
+	"model_kwargs": {
+		"kernel": "linear",
+		"class_weight": "balanced"
+	},
+	"model_CV_ranges": {
+		"C": [0.00390625, 0.015625, 0.0625, 0.25, 1.0, 4.0, 16.0, 64.0, 256.0]
+	},
+	"model_CV_folds": 5,
+
+	"scoring_functions": ["TPR", "TNR", "min_TPR_TNR"],
+	"main_scoring_function": "min_TPR_TNR",
+
+	"random_state": 17
+}

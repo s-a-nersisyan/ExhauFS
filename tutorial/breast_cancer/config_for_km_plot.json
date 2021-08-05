@@ -1,0 +1,13 @@
+{
+	"data_path": "RNA-seq_data.csv",
+	"annotation_path": "RNA-seq_annotation.csv",
+	"output_dir": "results_km_plot",
+
+	"features_subset": ["TRIP13", "ZWINT", "EPN3", "ECHDC2", "CX3CR1", "STARD13", "MB", "SLC7A5", "ABAT", "CCNL2"],
+	"model_path": "results_summary_classifiers/model.pkl", 
+
+	"random_state": 17,
+
+	"KM_x_label": "Years",
+	"KM_y_label": "Recurrence-free survival"
+}
