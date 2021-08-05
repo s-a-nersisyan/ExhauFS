@@ -51,14 +51,15 @@ the manuscript.
 
 <details>
   <summary>A toy example (classification)</summary>
+  
   We illustrate ExhauFS basics by using a small [cervical cancer toy dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+Cancer+Behavior+Risk) with 72 samples and 19 features. All necessary data for this example can be found in `tutorial/cervical_cancer` directory.  
   
-  We start from `data.csv` and `annotation.csv` files: the first one contains data matrix and the
+  We start from [`data.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/data.csv) and [`annotation.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/annotation.csv) files: the first one contains data matrix and the
   second one maps each sample to class label and dataset type (training or validation). In this
-  example we brute force all existing feature triples - this information is reflected in `n_k.csv`
+  example we brute force all existing feature triples - this information is reflected in [`n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/n_k.csv)
   file (n = 19 is the total number of features). Prior to ExhauFS run we should also create
   a configuration file. Here we use random forest classifier and standard accuracy metrics 
-  (`config_for_build_classifiers.json`). Since all 19 features are used, we do not specify any
+  ([`config_for_build_classifiers.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/config_for_build_classifiers.json)). Since all 19 features are used, we do not specify any
   feature selector and pre-selector. In order to get only highly accurate classifiers, we impose
   0.9 threshold on the minimum of sensitivity (TPR) and specificity (TNR) on the training set.
   
@@ -66,22 +67,15 @@ the manuscript.
   
   `exhaufs build classifiers -c config_for_build_classifiers.json`
   
-  Output files are located in `results_build_classifiers` directory.
+  Output files are located in [`results_build_classifiers`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_build_classifiers) directory.
   In this example, we focus only on two reports:
-  - `models.csv`
+  - [`models.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_build_classifiers/models.csv)
   
   This file contains accuracy metrics for all models which passed 0.9 threshold filtration on the training set.
   The file is sorted according to the classifier accuracy on the training set, so 
   we can see that almost all models have sensitivity and specificity equal to 1.0.
-  Among these models there are multiple cases with particularly high accuracy on the validation set, e.g.:
-  
-  | features  | Validation;min_TPR_TNR | Training;min_TPR_TNR   | n   | k   |
-  | ---       |  ---                   | ---                    | --- | --- |
-  | ... | ... | ... | ... | ... |
-  | perception_vulnerability;socialSupport_instrumental;empowerment_desires      | 0.9 | 0.91 | 19 | 3 |
-  | ... | ... | ... | ... | ... |
-  
-  - `summary_features.csv`
+  Among these models there are multiple cases with particularly high accuracy on the validation set, e.g.  
+  - [`summary_features.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_build_classifiers/summary_features.csv)
   
   Here we see a number of occurrences of each feature in the set of
   constructed models which passed 0.9 accuracy threshold. The most
@@ -91,7 +85,7 @@ the manuscript.
   perception_vulnerability, socialSupport_instrumental and empowerment_desires features.
   To do that, we should create an
   additional configuration file with `features_subset` parameter set to the desired
-  triple (`config_for_summary_classifiers.json`). To run ExhauFS in the summary mode,
+  triple ([`config_for_summary_classifiers.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/config_for_summary_classifiers.json)). To run ExhauFS in the summary mode,
   simply execute the following command:
   
   `exhaufs summary classifiers -c config_for_summary_classifiers.json`
@@ -99,11 +93,11 @@ the manuscript.
   Note, that we do not specify any feature selection/pre-selection or 
   accuracy threshold parameters for the summary mode. The most important of
   generated files are:
-  - `report.txt`: accuracy scores for the training and the validation datasets.
-  - `ROC_CervicalCancerBehaviorRisk_Training.pdf`: ROC curve for the training set.
+  - [`report.txt`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_summary_classifiers/report.txt): accuracy scores for the training and the validation datasets.
+  - [`ROC_CervicalCancerBehaviorRisk_Training.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_summary_classifiers/ROC_CervicalCancerBehaviorRisk_Training.pdf): ROC curve for the training set.
   The red dot stands for actual sensitivity and specificity. For example, the classifier
   does not work ideally on the training set despite AUC equals 1.
-  - `ROC_CervicalCancerBehaviorRisk_Validation.pdf`: ROC curve for validation set.
+  - [`ROC_CervicalCancerBehaviorRisk_Validation.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/cervical_cancer/results_summary_classifiers/ROC_CervicalCancerBehaviorRisk_Validation.pdf): ROC curve for validation set.
 </details>
 
 <details>
@@ -113,19 +107,19 @@ the manuscript.
   The objective is to predict whether a patient will have cancer recurrence within first 5 years after the surgery
   based on gene expression profile in the removed tumor (see our manuscript for the details). 
   Configuration and output files for this example are
-  located in `tutorial/breast_cancer` folder, input data can be downloaded [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EihEOok4stJFnCjGxqL14qgBSqxLzUy7hBThWp4_jE3HKw?e=bges1q). The microarray data are split into independent training, filtration and validation sets.
+  located in [`tutorial/breast_cancer`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer) folder, input data can be downloaded [here](https://eduhseru-my.sharepoint.com/:f:/g/personal/snersisyan_hse_ru/EihEOok4stJFnCjGxqL14qgBSqxLzUy7hBThWp4_jE3HKw?e=bges1q). The microarray data are split into independent training, filtration and validation sets.
  
-  The following options are used (`config_for_build_classifiers.json`):
+  The following options are used ([`config_for_build_classifiers.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/config_for_build_classifiers.json)):
   - `"feature_pre_selector": "f_test"` - this is for pre-selection of genes whose expression distribution is similar in training and filtration datasets (the batch effect removal approach).
   - `"feature_selector": "t_test"` - top n most differentially expressed genes are selected. Additional option `"use_filtration": true` means that Student's t-test will be applied to the union of training and filtration sets.
   - `"preprocessor": "StandardScaler"` - prior classifier fitting, data are centered and scaled (z-score transformation).
   - `"model": "SVC"` - Support Vector machine Classifier (SVC) is used. Additional arguments are used to specify linear kernel, normalization for unbalanced classes and a cross-validation grid for penalty parameter (C) estimation.
 
-  Classifier construction with the given `n_k.csv` file could be done by the same command
+  Classifier construction with the given [`n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/n_k.csv) file could be done by the same command
   as in the previous toy example (however, this will take several days to finish).
   Here we review two output reports which were not covered in the toy example:
   
-  - `summary_n_k.csv`
+  - [`summary_n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_build_classifiers/summary_features.csv)
   
   For each n, k pair the number of classifiers which passed the 0.65 accuracy threshold 
   on the training and the filtration sets is presented (num_training_reliable). All
@@ -136,27 +130,27 @@ the manuscript.
   victory over the batch effects (all classifiers which demonstrated reliable performance
   on the training and the filtration sets were also good on the validation one).
   
-  - `sorted_features.txt`
+  - [`sorted_features.txt`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_build_classifiers/sorted_features.txt)
 
   This is a technical though useful file: the list of pre-selected genes is sorted according to the rate of
   differential expression (`t_test` feature selection). Each pipeline iteration begins from
   the selection of the first n entries from this file.
  	
   As in the previous toy example, let us take a closer look to the single gene signature
-  (see `config_for_summary_classifiers.json`). The following output files were not
+  (see [`config_for_summary_classifiers.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/config_for_summary_classifiers.json)). The following output files were not
   covered in the toy example:
-  - `feature_importances.pdf` (contains coefficients of the linear SVM classifier)
-  - `model.pkl` (Python-pickled classifier and pre-processor objects)
+  - [`feature_importances.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_summary_classifiers/feature_importances.pdf) (contains coefficients of the linear SVM classifier)
+  - [`model.pkl`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_summary_classifiers/model.pkl) (Python-pickled classifier and pre-processor objects)
 
   ExhauFS also allows one to evaluate constucted classifiers on time-to-event data.
   For example, let us evaluate the same ten-gene signature on 
   additional RNA-seq TCGA-BRCA dataset. To do that, we should include to desired feature 
-  subset and pickled model path to the configuration file (`config_for_km_plot.json`).
+  subset and pickled model path to the configuration file ([`config_for_km_plot.json`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/config_for_km_plot.json)).
   The analysis could be done by running
 
   `exhaufs km_plot -c config_for_km_plot.json`
   
-  This will generate the Kaplan-Meier plot (`results_km_plot/KM_TCGA-BRCA_Validation.pdf`).
+  This will generate the Kaplan-Meier plot ([`results_km_plot/KM_TCGA-BRCA_Validation.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/breast_cancer/results_km_plot/KM_TCGA-BRCA_Validation.pdf)).
 </details>
 
 <details>
@@ -173,34 +167,21 @@ the manuscript.
   After choosing maximum time and k values (in this case - maximum time is 3 hours and maximum k is 20) we can run `exhaufs estimate regressors -c <config path> --max_estimated_time 3 --max_k 20` and use the resulting table as a `n/k` grid for the pipeline.  
   
   By executing `exhaufs build regressors -c <config path>` command we are getting results files in the specified output directory:  
-  - `summary_n_k.csv`
+  - [`summary_n_k.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_build_regressors/summary_n_k.csv)
   
   Shows that above certain values of `k`, close to 95% of the regressors passed the threshold of *0.6* for concordance index.
-  
-  | n   | k   | ...  | percentage_reliable |
-  | --- | --- | ---  | ---                 |
-  | ... | ... | ...  | ...                 |
-  | 21  | 9   | ...  | 79.94548176605181   |
-  | 20  | 10  | ...  | 88.44062562932133   |
-  | 20  | 11  | ...  | 93.06034157506852   |
-  | 20  | 12  | ...  | 96.4579532546212    |
-  | 20  | 13  | ...  | 98.52712732293884   |
-  | 21  | 14  | ...  | 98.68958543983824   |
-  | 22  | 15  | ...  | 98.8608905764584    |
-  | 22  | 16  | ...  | 99.55598455598457   |
-  | ... | ... | ...  | ...                 |
 
-  - `models.csv`
+  - [`models.csv`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_build_regressors/models.csv)
   
   If we take only models with k=7 and sort them by average between concordance index on training and filtration sets  
   we find one model with quite high scores: concordance index = 0.71, hazard ratio = 3, 3-year AUC = 0.67, logrank = 3.1.  
   TODO: add features  
   
   Then, to get a full summary of this model, we need to add `features_subset` with those features to the config file and run `exhaufs summary regressors -c <config path>` which will, again, produce multiple files in the specified output directory, the most important of which are:
-  - `report.txt` (contains detailed accuracy scores for all datasets)
-  - `KM_Training.pdf` (contains Kaplan-Meier curve for training set)
-  - `KM_Filtration.pdf` (contains Kaplan-Meier curve for filtration set)
-  - `KM_Validation.pdf` (contains Kaplan-Meier curve for validation set)
+  - [`report.txt`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/report.txt) (contains detailed accuracy scores for all datasets)
+  - [`KM_Training.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Training.pdf) (contains Kaplan-Meier curve for training set)
+  - [`KM_Filtration.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Filtration.pdf) (contains Kaplan-Meier curve for filtration set)
+  - [`KM_Validation.pdf`](https://github.com/s-a-nersisyan/ExhauFS/blob/main/tutorial/colorectal_cancer/results_summary_regressors/KM_Validation.pdf) (contains Kaplan-Meier curve for validation set)
   
 </details>
 
