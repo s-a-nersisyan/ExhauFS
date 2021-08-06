@@ -10,7 +10,7 @@
     "feature_selector": "cox_concordance",
     "feature_selector_kwargs": {},
 
-	"preprocessor": null,
+    "preprocessor": null,
 	"preprocessor_kwargs": {},
 
     "model": "CoxRegression",
