@@ -5,7 +5,7 @@
 
 	"features_subset": ["perception_vulnerability", "socialSupport_instrumental", "empowerment_desires"],
 
-	"preprocessor": "",
+	"preprocessor": null,
 	"preprocessor_kwargs": {},
 
 	"model": "RandomForestClassifier",

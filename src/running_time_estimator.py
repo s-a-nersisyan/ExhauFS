@@ -15,6 +15,8 @@ def main(config_path, max_k, max_estimated_time, n_feature_subsets, is_regressor
     else:
         model = initialize_classification_model(config, df, ann, n_k)
 
+    df, ann = model.df, model.ann
+
     def get_running_time(n, k):
         _, time = model.exhaustive_run_n_k(n, k)
         return model.estimate_run_n_k_time(n, k, time)
