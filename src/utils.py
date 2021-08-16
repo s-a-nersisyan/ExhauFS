@@ -48,6 +48,7 @@ def load_config_and_input_data(config_path, load_n_k=True):
         table with n, k pairs (n_k).
     """
 
+    print('Loading data...')
     try:
         config_file = open(config_path, 'r')
     except:
@@ -85,6 +86,9 @@ def load_config_and_input_data(config_path, load_n_k=True):
     if 'path_to_file' in config.get('feature_selector_kwargs', {}):
         correct_path = os.path.join(config_dirname, config['feature_selector_kwargs']['path_to_file']).replace('\\','/')
         config['feature_selector_kwargs']['path_to_file'] = correct_path
+    print('Loaded data...')
+
+    df = df[df.index.isin(ann.index)]
 
     return config, df, ann, n_k
 

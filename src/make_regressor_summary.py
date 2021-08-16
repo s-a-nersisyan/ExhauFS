@@ -34,11 +34,11 @@ def main(config_path):
 
         # Plot Cox K-M curve
         X = df.loc[
-            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            (ann['Dataset'] == dataset) & (ann['Dataset type'] == dataset_type),
             config['features_subset']
         ]
         y = ann.loc[
-            (ann["Dataset"] == dataset) & (ann["Dataset type"] == dataset_type),
+            (ann['Dataset'] == dataset) & (ann['Dataset type'] == dataset_type),
             model.y_features
         ]
 
