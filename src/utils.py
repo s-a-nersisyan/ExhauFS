@@ -89,6 +89,7 @@ def load_config_and_input_data(config_path, load_n_k=True):
     print('Loaded data...')
 
     df = df[df.index.isin(ann.index)]
+    ann = ann[ann.index.isin(df.index)]
 
     return config, df, ann, n_k
 
