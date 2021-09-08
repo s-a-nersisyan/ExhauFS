@@ -92,7 +92,7 @@ def load_config_and_input_data(config_path, load_n_k=True):
     ann = ann[ann.index.isin(df.index)]
 
     # Ensure that data has the same index order
-    df = df[ann.index]
+    df = df.loc[ann.index]
 
     return config, df, ann, n_k
 
