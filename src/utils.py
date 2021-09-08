@@ -91,6 +91,9 @@ def load_config_and_input_data(config_path, load_n_k=True):
     df = df[df.index.isin(ann.index)]
     ann = ann[ann.index.isin(df.index)]
 
+    # Ensure that data has the same index order
+    df = df[ann.index]
+
     return config, df, ann, n_k
 
 

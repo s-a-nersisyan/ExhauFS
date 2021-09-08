@@ -415,8 +415,9 @@ class ExhaustiveBase(
         """
 
         # Extract training set
-        X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
-        y_train = self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features]
+        samples = self.ann[self.ann['Dataset type'] == 'Training'].index
+        X_train = self.df.loc[samples, features_subset]
+        y_train = self.ann.loc[samples, self.y_features]
         if self.check_if_model_needs_numpy():
             X_train, y_train = X_train.to_numpy(), y_train.to_numpy()
 
@@ -459,12 +460,13 @@ class ExhaustiveBase(
         filtration_passed = True
         for dataset, dataset_type in self.datasets_ids:
             dataset_id = f'{dataset};{dataset_type}'
+            samples = self.ann[(self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type)].index
             X_test = self.df.loc[
-                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                samples,
                 features_subset,
             ]
             y_test = self.ann.loc[
-                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                samples,
                 self.y_features,
             ]
             if self.check_if_model_needs_numpy():
