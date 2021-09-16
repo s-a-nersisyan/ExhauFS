@@ -457,7 +457,7 @@ class ExhaustiveBase(
         """
 
         X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
-        risk_median = X_train.to_numpy().dot(model.coefs.to_numpy())
+        risk_median = X_train.to_numpy().dot(model.coefs.to_numpy()).median()
 
         scores = {}
         filtration_passed = True
