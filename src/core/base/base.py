@@ -456,6 +456,9 @@ class ExhaustiveBase(
             training and filtration sets.
         """
 
+        X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
+        risk_median = X_train.to_numpy().dot(model.coefs.to_numpy())
+
         scores = {}
         filtration_passed = True
         for dataset, dataset_type in self.datasets_ids:
@@ -484,7 +487,12 @@ class ExhaustiveBase(
                     score = self.scoring_functions[s](y_test, y_proba)
                 else:
                     if self.scoring_functions[s] in [hazard_ratio, logrank]:
-                        score = self.scoring_functions[s](y_test, X_test, model.coefs)
+                        score = self.scoring_functions[s](
+                            y_test,
+                            X_test,
+                            model.coefs,
+                            threshold=risk_median,
+                        )
                     elif self.scoring_functions[s] in [dynamic_auc]:
                         score = self.scoring_functions[s](
                             self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],
