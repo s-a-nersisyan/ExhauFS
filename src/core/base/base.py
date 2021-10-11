@@ -158,8 +158,6 @@ class ExhaustiveBase(
 
         self.datasets_ids = self.ann[['Dataset', 'Dataset type']].drop_duplicates().to_numpy()
 
-        self.df = self.df[self.df.index.isin(self.ann.index)]
-
     def exhaustive_run(self):
         """Run the pipeline for classifier construction
         using exhaustive feature selection.
@@ -417,8 +415,9 @@ class ExhaustiveBase(
         """
 
         # Extract training set
-        X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
-        y_train = self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features]
+        samples = self.ann[self.ann['Dataset type'] == 'Training'].index
+        X_train = self.df.loc[samples, features_subset]
+        y_train = self.ann.loc[samples, self.y_features]
         if self.check_if_model_needs_numpy():
             X_train, y_train = X_train.to_numpy(), y_train.to_numpy()
 
@@ -457,16 +456,20 @@ class ExhaustiveBase(
             training and filtration sets.
         """
 
+        X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
+        risk_median = np.median(X_train.to_numpy().dot(model.coefs.to_numpy()))
+
         scores = {}
         filtration_passed = True
         for dataset, dataset_type in self.datasets_ids:
             dataset_id = f'{dataset};{dataset_type}'
+            samples = self.ann[(self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type)].index
             X_test = self.df.loc[
-                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                samples,
                 features_subset,
             ]
             y_test = self.ann.loc[
-                (self.ann['Dataset'] == dataset) & (self.ann['Dataset type'] == dataset_type),
+                samples,
                 self.y_features,
             ]
             if self.check_if_model_needs_numpy():
@@ -484,7 +487,12 @@ class ExhaustiveBase(
                     score = self.scoring_functions[s](y_test, y_proba)
                 else:
                     if self.scoring_functions[s] in [hazard_ratio, logrank]:
-                        score = self.scoring_functions[s](y_test, X_test, model.coefs)
+                        score = self.scoring_functions[s](
+                            y_test,
+                            X_test,
+                            model.coefs,
+                            threshold=risk_median,
+                        )
                     elif self.scoring_functions[s] in [dynamic_auc]:
                         score = self.scoring_functions[s](
                             self.ann.loc[self.ann['Dataset type'] == 'Training', self.y_features],

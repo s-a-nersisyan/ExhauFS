@@ -1,11 +1,8 @@
 import pickle
 
-import numpy as np
-
-import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve
 
-from src.utils import *
+from src.utils.common import *
 from src.core.accuracy_scores import TPR, FPR
 
 

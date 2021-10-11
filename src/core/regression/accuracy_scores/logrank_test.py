@@ -4,7 +4,7 @@ from sksurv.compare import compare_survival as logrank_test
 from src.core.regression.utils import structure_y_to_sksurv
 
 
-def logrank(y_true, x, model_coefs):
+def logrank(y_true, x, model_coefs, threshold):
     """Logrank test
     K-sample log-rank hypothesis test of identical survival functions.
     Compares the pooled hazard rate with each group-specific hazard rate.
@@ -26,6 +26,6 @@ def logrank(y_true, x, model_coefs):
         -log10(logrank test pvalue)
     """
     risk_scores = x.to_numpy().dot(model_coefs.to_numpy())
-    group_indicators = risk_scores >= np.median(risk_scores)
+    group_indicators = risk_scores >= threshold
 
     return -np.log10(logrank_test(structure_y_to_sksurv(y_true), group_indicators)[1])

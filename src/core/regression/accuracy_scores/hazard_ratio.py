@@ -1,7 +1,4 @@
-import numpy as np
-
-
-def hazard_ratio(y_true, x, model_coefs):
+def hazard_ratio(y_true, x, model_coefs, threshold):
     """Hazard ratio can be interpreted as the chance of an event occurring
     in the group A divided by the chance of the event occurring in the group B
     Parameters
@@ -20,7 +17,7 @@ def hazard_ratio(y_true, x, model_coefs):
         hazard_ratio
     """
     risk_scores = x.to_numpy().dot(model_coefs.to_numpy())
-    group_indicators = risk_scores >= np.median(risk_scores)
+    group_indicators = risk_scores >= threshold
     grouped_y = y_true.copy()
     grouped_y['group'] = group_indicators
 

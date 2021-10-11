@@ -9,7 +9,9 @@ def structure_y_to_sksurv(y):
     )
 
 
-def plot_kaplan_mayer(y, label):
+def plot_kaplan_mayer(y, label, title='A'):
     kmf = KaplanMeierFitter()
     kmf.fit(y['Time to event'], y['Event'])
-    kmf.plot(show_censors=True, label=label, ci_show=False)
+    ax = kmf.plot(show_censors=True, label=label, ci_show=False)
+    ax.set_title(title, loc="left", fontdict={"fontsize": "xx-large", "fontweight": "bold"})
+

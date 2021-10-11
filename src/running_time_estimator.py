@@ -1,7 +1,7 @@
 # External imports
 
 # Internal imports
-from src.utils import *
+from src.utils.common import *
 
 
 def main(config_path, max_k, max_estimated_time, n_feature_subsets, is_regressor):
