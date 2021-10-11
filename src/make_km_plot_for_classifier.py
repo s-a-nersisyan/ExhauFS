@@ -1,15 +1,11 @@
 import pickle
 
-import numpy as np
-import matplotlib.pyplot as plt
-
 from sksurv.compare import compare_survival as logrank_test
 
-from src.core.classification.classification import ExhaustiveClassification
 from src.core.regression.regression import ExhaustiveRegression
 from src.core.regression.utils import structure_y_to_sksurv, plot_kaplan_mayer
 from src.core.utils import float_to_latex
-from src.utils import *
+from src.utils.common import *
 
 
 def main(config_path):

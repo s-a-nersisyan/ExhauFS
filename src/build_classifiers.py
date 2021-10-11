@@ -1,4 +1,4 @@
-from .utils import *
+from src.utils.common import *
 
 
 def main(config_path):
