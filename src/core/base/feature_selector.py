@@ -1,3 +1,6 @@
+from src.core.feature_selectors import linear_regression_selector
+
+
 class FeatureSelector:
     def __init__(self, df, ann, output_dir, selector_function, kwargs):
         self.df = df
@@ -9,16 +12,19 @@ class FeatureSelector:
         self.feature_selector_kwargs = kwargs
 
         self.set_sorted_features()
-        self.save_sorted_features()
+        if self.sorted_features:
+            self.save_sorted_features()
 
     def set_sorted_features(self):
+        self.sorted_features = None
         if self.feature_selector:
-            self.sorted_features = self.feature_selector(
-                self.df,
-                self.ann,
-                n=len(self.df.columns),
-                **self.feature_selector_kwargs,
-            )
+            if self.feature_selector not in [linear_regression_selector]:
+                self.sorted_features = self.feature_selector(
+                    self.df,
+                    self.ann,
+                    n=len(self.df.columns),
+                    **self.feature_selector_kwargs,
+                )
         else:
             self.sorted_features = self.df.columns.to_list()
 
@@ -35,4 +41,7 @@ class FeatureSelector:
             List of selected features.
         """
 
-        return self.sorted_features[:n]
+        if self.sorted_features:
+            return self.sorted_features[:n]
+
+        return self.feature_selector(self.df, self.ann, n=n, **self.feature_selector_kwargs)

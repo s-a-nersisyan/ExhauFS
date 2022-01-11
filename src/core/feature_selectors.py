@@ -71,3 +71,9 @@ def median(df, ann, n):
         List of n columns with highest median value.
     """
     return list(df.median().sort_values().index)[:n]
+
+
+@feature_selector_wrapper()
+def linear_regression_selector(df, ann, n):
+    # TODO: add LR method here (or better - make a separate file for more complex methods)
+    return [None]
