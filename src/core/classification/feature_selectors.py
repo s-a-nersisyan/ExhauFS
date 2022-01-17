@@ -4,6 +4,8 @@ from scipy.stats import \
     ttest_ind, \
     f_oneway
 
+from sklearn.linear_model import LogisticRegression
+
 from src.core.wrappers import feature_selector_wrapper
 
 
@@ -97,3 +99,67 @@ def spearman_correlation(df, ann, n):
     features = df.columns
 
     return [feature for feature, pvalue in sorted(zip(features, pvalues), key=lambda x: x[1])][:n]
+
+
+@feature_selector_wrapper()
+def l1_logistic_regression(df, ann, n):
+    """Select n features with l1-penalized
+    logistic regression model
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A pandas DataFrame whose rows represent samples
+        and columns represent features.
+    ann : pandas.DataFrame
+        DataFrame with annotation of samples. Three columns are mandatory:
+        Class (binary labels), Dataset (dataset identifiers) and
+        Dataset type (Training, Filtration, Validation).
+    n : int
+        Number of features to select.
+    Returns
+    -------
+    list
+        List of n features with non-zero coefficients
+    """
+    
+    X = df.to_numpy()
+    y = ann["Class"].to_numpy()
+    
+    if n > len(X):
+        raise Exception("l1 logistic regression cannot select more features than a sample size")
+    
+    def select_features_from_model(model):
+        non_zero_coef = np.abs(model.coef_[0]) >= 1e-5
+        return df.columns.to_numpy()[non_zero_coef].tolist()
+    
+    C_low, C_high = 0, 1e+6
+    model = LogisticRegression(
+        penalty="l1", C=C_high,
+        solver="liblinear", class_weight="balanced",
+        warm_start=True, random_state=17
+    )
+    model.fit(X, y)
+    n_low, n_high = 0, len(select_features_from_model(model))
+    
+    max_iter = 1000
+    C = None
+    for i in range(max_iter):
+        C_mid = (C_low + C_high) / 2
+        model.set_params(C=C_mid)
+        model.fit(X, y)
+        n_mid = len(select_features_from_model(model))
+        if n_mid == n:
+            C = C_mid
+            break
+        elif n < n_mid:
+            C_high = C_mid
+            n_high = n_mid
+        else:
+            C_low = C_mid
+            n_low = n_mid
+
+    if C is None:
+        raise Exception(f"Binary search failed to converge to n = {n} features")
+    
+    return select_features_from_model(model)

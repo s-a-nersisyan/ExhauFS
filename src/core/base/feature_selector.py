@@ -1,4 +1,5 @@
-from src.core.feature_selectors import linear_regression_selector
+from src.core.classification.feature_selectors import l1_logistic_regression
+from src.core.regression.feature_selectors import l1_cox
 
 
 class FeatureSelector:
@@ -18,7 +19,7 @@ class FeatureSelector:
     def set_sorted_features(self):
         self.sorted_features = None
         if self.feature_selector:
-            if self.feature_selector not in [linear_regression_selector]:
+            if self.feature_selector not in [l1_logistic_regression, l1_cox]:
                 self.sorted_features = self.feature_selector(
                     self.df,
                     self.ann,

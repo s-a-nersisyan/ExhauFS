@@ -457,7 +457,10 @@ class ExhaustiveBase(
         """
 
         X_train = self.df.loc[self.ann['Dataset type'] == 'Training', features_subset]
-        risk_median = np.median(X_train.to_numpy().dot(model.coefs.to_numpy()))
+
+        # This is only needed for linear survival regression models
+        if hasattr(model, "coefs"):
+            risk_median = np.median(X_train.to_numpy().dot(model.coefs.to_numpy()))
 
         scores = {}
         filtration_passed = True
