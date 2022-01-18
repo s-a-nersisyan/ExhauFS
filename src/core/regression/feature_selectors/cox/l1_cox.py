@@ -5,7 +5,7 @@ from src.core.wrappers import feature_selector_wrapper
 
 
 @feature_selector_wrapper()
-def l1_cox(df, ann, n):
+def l1_cox(df, ann, n, p_low=0, p_high=1e+6, max_iter=1000):
     """Select n features with sparse L1-penalized Cox model
 
     Parameters
@@ -19,6 +19,12 @@ def l1_cox(df, ann, n):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
+    p_low: float
+        Minimum l1 penalizer value
+    p_high: float
+        Maximum l1 penalizer value
+    max_iter: int
+        Maximum number of iterations before non-convergence error
     Returns
     -------
     list
@@ -26,18 +32,14 @@ def l1_cox(df, ann, n):
     """
 
     ann = ann[['Event', 'Time to event']]
-    columns = df.columns
-    
+
     def select_features_from_model(model):
         non_zero_coef = np.abs(model.coefs) >= 1e-5
         return df.columns.to_numpy()[non_zero_coef].tolist()
     
-    p_low, p_high = 0, 1e+6
     model = CoxRegression(l1_ratio=1, penalizer=p_high)
     model.fit(df, ann)
-    n_low, n_high = len(df.columns), len(select_features_from_model(model))
 
-    max_iter = 1000
     p = None
     for i in range(max_iter):
         p_mid = (p_low + p_high) / 2
@@ -49,10 +51,8 @@ def l1_cox(df, ann, n):
             break
         elif n < n_mid:
             p_low = p_mid
-            n_low = n_mid
         else:
             p_high = p_mid
-            n_high = n_mid
 
     if p is None:
         raise Exception(f"Binary search failed to converge to n = {n} features")

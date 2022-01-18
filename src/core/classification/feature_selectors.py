@@ -102,7 +102,7 @@ def spearman_correlation(df, ann, n):
 
 
 @feature_selector_wrapper()
-def l1_logistic_regression(df, ann, n):
+def l1_logistic_regression(df, ann, n, C_low=0, C_high=1e+6, max_iter=1000):
     """Select n features with l1-penalized
     logistic regression model
 
@@ -117,6 +117,12 @@ def l1_logistic_regression(df, ann, n):
         Dataset type (Training, Filtration, Validation).
     n : int
         Number of features to select.
+    C_low: float
+        Minimum inverse l1 penalizer value
+    C_high: float
+        Maximum inverse l1 penalizer value
+    max_iter: int
+        Maximum number of iterations before non-convergence error
     Returns
     -------
     list
@@ -133,16 +139,13 @@ def l1_logistic_regression(df, ann, n):
         non_zero_coef = np.abs(model.coef_[0]) >= 1e-5
         return df.columns.to_numpy()[non_zero_coef].tolist()
     
-    C_low, C_high = 0, 1e+6
     model = LogisticRegression(
         penalty="l1", C=C_high,
         solver="liblinear", class_weight="balanced",
         warm_start=True, random_state=17
     )
     model.fit(X, y)
-    n_low, n_high = 0, len(select_features_from_model(model))
-    
-    max_iter = 1000
+
     C = None
     for i in range(max_iter):
         C_mid = (C_low + C_high) / 2
@@ -154,10 +157,8 @@ def l1_logistic_regression(df, ann, n):
             break
         elif n < n_mid:
             C_high = C_mid
-            n_high = n_mid
         else:
             C_low = C_mid
-            n_low = n_mid
 
     if C is None:
         raise Exception(f"Binary search failed to converge to n = {n} features")
