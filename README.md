@@ -454,7 +454,25 @@ You can also specify `KM_x_label` and `KM_y_label` in the config to change plot 
     }
     ``` 
     </details>
+
+  ##### Classification specific selectors:
+  - <details>
+    <summary>l1_logistic_regression</summary> 
+       
+    Select n features with the highest concordance index on one-factor Cox regression.
     
+    __name__: l1_logistic_regression  
+    __kwargs__: 
+    ```json
+    {
+      "C_low": 0, // minumum inverse l1 penalizer value
+      "C_high": 1000000, // maximum inverse l1 penalizer value
+      "max_iter": 1000,  // maximum number of iteration until non-convergance error
+      "use_filtration": false // whether to use filtration dataset with training dataset
+    }
+    ``` 
+    </details>
+        
   ##### Regression specific selectors:
   - <details>
     <summary>cox_concordance</summary> 
@@ -496,7 +514,7 @@ You can also specify `KM_x_label` and `KM_y_label` in the config to change plot 
     }
     ```   
     </details>
-    <details>
+  - <details>
     <summary>cox_likelihood</summary> 
     
     Select n features with the highest log-likelihood on one-factor Cox regression.
@@ -505,6 +523,22 @@ You can also specify `KM_x_label` and `KM_y_label` in the config to change plot 
     __kwargs__: 
     ```json
     {
+      "use_filtration": false // whether to use filtration dataset with training dataset
+    }
+    ``` 
+    </details>
+  - <details>
+    <summary>l1_cox</summary> 
+       
+    Select n features with sparse L1-penalized Cox model.
+    
+    __name__: l1_cox  
+    __kwargs__: 
+    ```json
+    {
+      "p_low": 0, // minumum l1 penalizer value
+      "p_high": 1000000, // maximum l1 penalizer value
+      "max_iter": 1000,  // maximum number of iteration until non-convergance error
       "use_filtration": false // whether to use filtration dataset with training dataset
     }
     ``` 
