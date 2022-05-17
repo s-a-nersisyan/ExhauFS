@@ -1,7 +1,7 @@
 # ExhauFS
 Exhaustive feature selection for classification and survival analysis. Please cite this paper if you are using ExhauFS in your work:
 
-Nersisyan S, Novosad V, Galatenko A, Sokolov A, Bokov G, Konovalov A, Alekseev D, Tonevitsky A. ExhauFS: exhaustive search-based feature selection for classification and survival regression. bioRxiv. 2021 Aug 04. doi: [10.1101/2021.08.03.454798](https://doi.org/10.1101/2021.08.03.454798).
+Nersisyan S, Novosad V, Galatenko A, Sokolov A, Bokov G, Konovalov A, Alekseev D, Tonevitsky A. ExhauFS: exhaustive search-based feature selection for classification and survival regression. PeerJ. 2022 Mar 30;10:e13200. doi: [10.7717/peerj.13200](https://doi.org/10.7717/peerj.13200).
 
 ## Table of Contents  
 [Introduction](#introduction)  
